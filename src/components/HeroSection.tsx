@@ -119,7 +119,7 @@ const HeroSection = () => {
           </div>
 
           {/* Right Side: Trust Card */}
-          <div className="flex flex-col bg-black/40 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)] rounded-2xl p-5 lg:p-6 w-full sm:max-w-[320px] transition-all duration-300 group">
+          <div className="flex flex-col bg-black/50 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)] rounded-2xl p-5 lg:p-6 w-full sm:max-w-[320px] transition-all duration-300 group">
             
             {/* Top Row: Stat */}
             <div className="flex items-center gap-6 lg:gap-8">

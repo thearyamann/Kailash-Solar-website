@@ -3,6 +3,75 @@ import { useState, useEffect } from "react";
 import { Menu, X, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/kailash-logo.png";
+
+const Countdown = () => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Setting target to March 31, 2027
+    const targetDate = new Date('2027-03-31T23:59:59').getTime();
+    
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          mins: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          secs: Math.floor((difference % (1000 * 60)) / 1000)
+        });
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!mounted) return null;
+
+  const formatNum = (num: number) => num.toString().padStart(2, '0');
+
+  return (
+    <>
+      {/* Desktop View: Fancy Boxes */}
+      <div className="hidden md:flex items-center gap-1 ml-3 lg:ml-5 shrink-0">
+        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
+          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#194A94]">{formatNum(timeLeft.days)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-[#194A94]/70 -mt-[1px] font-bold">Days</span>
+        </div>
+        <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
+        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
+          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#194A94]">{formatNum(timeLeft.hours)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-[#194A94]/70 -mt-[1px] font-bold">Hrs</span>
+        </div>
+        <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
+        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
+          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#194A94]">{formatNum(timeLeft.mins)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-[#194A94]/70 -mt-[1px] font-bold">Min</span>
+        </div>
+        <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
+        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-[#FFAE00] to-[#E69D00] rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
+          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-white">{formatNum(timeLeft.secs)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-white/90 -mt-[1px] font-bold">Sec</span>
+        </div>
+      </div>
+
+      {/* Mobile View: Sleek Inline Pill */}
+      <div className="md:hidden flex items-center ml-2 text-[10px] shrink-0 bg-black/20 px-2 py-[2px] rounded-full border border-white/10 shadow-inner">
+        <span className="text-white flex items-center gap-[3px]">
+          <span className="text-accent font-black tracking-widest font-mono text-[11px]">{formatNum(timeLeft.days)}</span><span className="text-white/70 text-[7px] font-bold uppercase mr-1">D</span>
+          <span className="text-white/40 animate-pulse pb-0.5">:</span>
+          <span className="text-accent font-black tracking-widest font-mono text-[11px]">{formatNum(timeLeft.hours)}</span><span className="text-white/70 text-[7px] font-bold uppercase mr-1">H</span>
+          <span className="text-white/40 animate-pulse pb-0.5">:</span>
+          <span className="text-accent font-black tracking-widest font-mono text-[11px]">{formatNum(timeLeft.mins)}</span><span className="text-white/70 text-[7px] font-bold uppercase mr-1">M</span>
+          <span className="text-white/40 animate-pulse pb-0.5">:</span>
+          <span className="text-accent font-black tracking-widest font-mono text-[11px]">{formatNum(timeLeft.secs)}</span><span className="text-white/70 text-[7px] font-bold uppercase">S</span>
+        </span>
+      </div>
+    </>
+  );
+};
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -49,6 +118,7 @@ const Header = () => {
               <span className="font-medium text-primary-foreground">
                 ₹1,08,000 PM Surya Ghar Subsidy ends March 2027. <span className="text-accent font-bold ml-1">Claim fast!</span>
               </span>
+              <Countdown />
             </div>
 
             {/* Mobile Continuous Edge-to-Edge Marquee */}
@@ -62,6 +132,7 @@ const Header = () => {
                   <span className="font-medium text-primary-foreground">
                     ₹1,08,000 PM Surya Ghar Subsidy ends March 2027. <span className="text-accent font-bold ml-1">Claim fast!</span>
                   </span>
+                  <Countdown />
                 </div>
                 {/* Copy 2 */}
                 <div className="flex items-center whitespace-nowrap px-4">
@@ -71,6 +142,7 @@ const Header = () => {
                   <span className="font-medium text-primary-foreground">
                     ₹1,08,000 PM Surya Ghar Subsidy ends March 2027. <span className="text-accent font-bold ml-1">Claim fast!</span>
                   </span>
+                  <Countdown />
                 </div>
               </div>
             </div>
