@@ -1,4 +1,5 @@
 {
+  "/page": "app/page.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js"
+  "/blog/pm-surya-ghar-subsidy-meerut/page": "app/blog/pm-surya-ghar-subsidy-meerut/page.js"
 }

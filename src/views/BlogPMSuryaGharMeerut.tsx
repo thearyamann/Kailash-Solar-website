@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Phone } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import StickyCTA from '@/components/StickyCTA';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/pm-surya-ghar-meerut-hero.webp';
 import {
@@ -554,7 +553,6 @@ const BlogPMSuryaGharMeerut = () => {
       </div>
 
       <Footer />
-      <StickyCTA />
     </div>
   );
 };
