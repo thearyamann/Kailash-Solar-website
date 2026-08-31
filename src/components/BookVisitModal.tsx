@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -121,7 +122,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-md w-[95vw] sm:w-full rounded-xl overflow-hidden">
         <div className="w-full bg-card rounded-xl overflow-hidden relative flex flex-col max-h-[90vh] overflow-y-auto hide-scrollbar">
           {/* Top Image Banner */}
-          <div className="relative h-[160px] sm:h-[180px] w-full bg-slate-200 shrink-0">
+          <div className="relative h-[140px] sm:h-[160px] w-full bg-slate-200 shrink-0">
             <img 
               src="/Happyfamily.png" 
               alt="Happy family with solar" 
@@ -129,22 +130,22 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
             />
           </div>
 
-          <div className="p-6 flex-grow flex flex-col bg-card">
+          <div className="p-4 sm:p-6 flex-grow flex flex-col bg-card">
             {/* Typography Section */}
-            <div className="mb-5">
-              <h1 className="text-[26px] sm:text-[28px] leading-[1.1] font-bold font-montserrat text-foreground mb-2">
+            <div className="mb-3.5">
+              <h1 className="text-[22px] sm:text-[28px] leading-[1.1] font-bold font-montserrat text-foreground mb-1.5">
                 Go Solar at <span className="text-accent">₹0 Upfront Cost</span>
               </h1>
-              <p className="text-[14px] leading-relaxed text-muted-foreground mb-2">
+              <p className="text-[13px] sm:text-[14px] leading-relaxed text-muted-foreground mb-1.5">
                 Govt. subsidy pays your down payment. Your electricity savings pay the EMIs.
               </p>
-              <p className="text-[14px] font-bold text-foreground">
+              <p className="text-[13px] sm:text-[14px] font-bold text-foreground">
                 Book a free site visit and claim your <span className="text-primary">₹1,08,000 subsidy before it ends!</span>
               </p>
             </div>
             
             {/* Form Section */}
-            <form onSubmit={handleSubmit} className="space-y-3.5">
+            <form onSubmit={handleSubmit} className="space-y-2.5">
               {submitError && (
                 <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl flex items-start gap-3 mb-4 animate-in fade-in slide-in-from-top-2">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
@@ -162,7 +163,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                     setSubmitError("");
                     setFormData({ ...formData, name: e.target.value });
                   }} 
-                  className="h-[48px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
+                  className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary" 
                 />
               </div>
               
@@ -176,7 +177,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                     setSubmitError("");
                     setFormData({ ...formData, address: e.target.value });
                   }} 
-                  className="h-[48px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
+                  className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary" 
                 />
               </div>
               
@@ -194,13 +195,13 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                     const val = e.target.value.replace(/\D/g, '');
                     if (val.length <= 10) setFormData({ ...formData, phone: val });
                   }} 
-                  className="h-[48px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
+                  className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary" 
                 />
               </div>
 
               <div>
                 <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
-                  <SelectTrigger className="h-[48px] px-4 bg-background border-border rounded-[12px] text-[15px] text-muted-foreground focus:ring-primary">
+                  <SelectTrigger className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] text-muted-foreground focus:ring-primary">
                     <SelectValue placeholder="Monthly Electricity Bill*" />
                   </SelectTrigger>
                   <SelectContent className="rounded-[12px] z-[100]">
@@ -212,14 +213,21 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                 </Select>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex gap-2 sm:gap-3">
                 <Button 
                   type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full h-[52px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
+                  disabled={isSubmitting} 
+                  className="flex-grow h-[48px] rounded-[10px] text-[16px] font-bold shadow-md hover:shadow-lg transition-all active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   {isSubmitting ? "Booking..." : "Book a FREE Consultation"}
                 </Button>
+                <a 
+                  href="tel:+918999999654" 
+                  className="flex-shrink-0 flex items-center justify-center w-[48px] h-[48px] rounded-[10px] bg-primary/10 text-primary hover:bg-primary/20 transition-colors shadow-sm"
+                  title="Call Us Now"
+                >
+                  <Phone className="w-5 h-5" />
+                </a>
               </div>
             </form>
           </div>
