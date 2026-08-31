@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { MessageCircle, Phone, ArrowUp, Calculator, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const StickyCTA = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -62,9 +63,9 @@ const StickyCTA = () => {
               <Home className="w-[22px] h-[22px]" />
             </button>
 
-            <button onClick={() => document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth" })} className="flex items-center justify-center w-10 h-10 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all active:scale-90">
+            <Link href="/quote" className="flex items-center justify-center w-10 h-10 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all active:scale-90">
               <Calculator className="w-[22px] h-[22px]" />
-            </button>
+            </Link>
 
             <button onClick={openWhatsApp} className="flex items-center justify-center w-10 h-10 rounded-full text-[#1da851] hover:text-[#20bd5a] hover:bg-green-50 transition-all active:scale-90 relative">
               <MessageCircle className="w-[22px] h-[22px]" />

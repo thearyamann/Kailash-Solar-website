@@ -2,6 +2,7 @@ import { Home, CheckCircle2, FileCheck, IndianRupee, Sun, ShieldCheck, Award, Za
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import residentialHero from '@/assets/residential-1.webp';
+import Link from 'next/link';
 
 const ResidentialSection = () => {
   const steps = [
@@ -103,10 +104,10 @@ const ResidentialSection = () => {
                 size="lg"
                 asChild
               >
-                <a href="https://app.kailashsolar.com/" target="_blank" rel="noopener noreferrer">
+                <Link href="/quote">
                   <Home className="mr-2" />
                   Get Instant Home Quote
-                </a>
+                </Link>
               </Button>
               <Button
                 variant="outline"

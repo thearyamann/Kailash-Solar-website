@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/kailash-logo.png";
+import { BookVisitModal } from "@/components/BookVisitModal";
 
 const Countdown = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
@@ -180,13 +181,11 @@ const Header = () => {
 
             {/* CTA Button */}
             <div className="hidden lg:flex items-center gap-4">
-              <Button 
-                variant="hero" 
-                size="lg"
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Get Free Quote
-              </Button>
+              <BookVisitModal>
+                <Button variant="hero" size="lg">
+                  Get Free Quote
+                </Button>
+              </BookVisitModal>
             </div>
 
             {/* Mobile Menu Button */}
@@ -215,16 +214,14 @@ const Header = () => {
                   {link.label}
                 </a>
               ))}
-              <Button 
-                variant="hero" 
-                className="w-full mt-4"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-              >
-                Get Free Quote
-              </Button>
+              <BookVisitModal>
+                <Button 
+                  variant="hero" 
+                  className="w-full mt-4"
+                >
+                  Get Free Quote
+                </Button>
+              </BookVisitModal>
             </div>
           </div>
         )}

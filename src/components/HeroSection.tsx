@@ -1,9 +1,28 @@
-import { ArrowRight, FileText, Calculator, Home, User, Sun, Zap } from 'lucide-react';
+"use client";
+
+import { useState } from 'react';
+import { ArrowRight, FileText, Calculator, Home, User, Sun, Zap, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { BookVisitModal } from '@/components/BookVisitModal';
+import { useRouter } from 'next/navigation';
 
 const HeroSection = () => {
+  const [isNavigatingToQuote, setIsNavigatingToQuote] = useState(false);
+  const router = useRouter();
+  
+  const handleQuoteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsNavigatingToQuote(true);
+    setTimeout(() => {
+      router.push('/quote');
+    }, 1500);
+  };
+
   return (
-    <section className="relative min-h-[100vh] lg:min-h-[85vh] flex flex-col justify-center overflow-hidden pb-12 lg:pb-0">
+    <section id="hero" className="relative min-h-[100vh] lg:min-h-[85vh] flex flex-col justify-center overflow-hidden pb-12 lg:pb-0">
+      {/* Auto-opening modal timer for page visit */}
+      <BookVisitModal autoOpenDelay={3500} />
+
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <video
@@ -12,6 +31,7 @@ const HeroSection = () => {
           loop
           muted
           playsInline
+          preload="auto"
           className="w-full h-full object-cover object-[90%_top] lg:object-top"
         />
         <div className="absolute inset-0 bg-solar-gradient-hero" />
@@ -19,16 +39,17 @@ const HeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 relative z-10 pt-28 pb-12 lg:pt-20 lg:pb-36 flex-grow flex flex-col justify-center">
+      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 relative z-30 pt-28 pb-12 lg:pt-20 lg:pb-36 flex-grow flex flex-col justify-center">
         <div className="max-w-full md:max-w-4xl lg:max-w-5xl">
 
           {/* Main Headline */}
           <h1 
-            className="text-[42px] leading-[1.15] sm:text-5xl md:text-6xl lg:text-7xl font-montserrat font-bold text-primary-foreground mb-6 animate-fade-up tracking-tighter sm:tracking-tight drop-shadow-lg" 
+            className="text-[42px] leading-[1.15] sm:text-5xl md:text-5xl lg:text-6xl font-montserrat font-bold text-primary-foreground mb-6 animate-fade-up tracking-tighter sm:tracking-tight drop-shadow-lg" 
             style={{ animationDelay: '0.1s' }}
           >
             Solar Panels. <br />
-            Save 95% on Bills. <span className="text-accent drop-shadow-sm">Guaranteed.</span>
+            Save 95% on Bills. <br />
+            <span className="text-accent drop-shadow-sm">Guaranteed.</span>
           </h1>
 
           {/* Subtext */}
@@ -42,33 +63,34 @@ const HeroSection = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col gap-3 animate-fade-up" style={{ animationDelay: '0.3s' }}>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+              <BookVisitModal>
+                <Button 
+                  variant="hero" 
+                  className="group h-14 px-8 w-full sm:w-auto text-base"
+                >
+                  Get a Free Site Visit
+                  <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </BookVisitModal>
               <Button 
                 variant="hero" 
                 className="group h-14 px-8 w-full sm:w-auto text-base"
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={handleQuoteClick}
               >
-                Get a Free Site Visit
-                <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-              <Button 
-                variant="hero" 
-                className="group h-14 px-8 w-full sm:w-auto text-base"
-                asChild
-              >
-                <a href="https://app.kailashsolar.com/" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto justify-center group">
-                  <FileText className="mr-2 w-5 h-5 text-white" />
-                  Instant Home Solar Quote
-                </a>
+                <FileText className="mr-2 w-5 h-5 text-white" />
+                Instant Home Solar Quote
               </Button>
             </div>
             <div>
               <Button 
                 variant="heroOutline" 
                 className="group h-12 px-6 w-full sm:w-auto"
-                onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })}
+                asChild
               >
-                <Calculator className="mr-2 w-4 h-4" />
-                Calculate Your Savings
+                <a href="#calculator">
+                  <Calculator className="mr-2 w-4 h-4" />
+                  Calculate Your Savings
+                </a>
               </Button>
             </div>
           </div>
@@ -155,6 +177,34 @@ const HeroSection = () => {
         </div>
       </div>
 
+      {/* Floating Loading Overlay without white background */}
+      {isNavigatingToQuote && (
+        <div className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in duration-300">
+          <div className="relative w-24 h-24 mb-4 flex items-center justify-center animate-in zoom-in-95 duration-300">
+            <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible drop-shadow-lg">
+              <g className="animate-[spin_4s_linear_infinite] origin-[50%_45%]">
+                <circle cx="50" cy="45" r="21" className="fill-accent" />
+                <g className="stroke-accent" strokeWidth="3" strokeLinecap="round">
+                  <line x1="50" y1="16" x2="50" y2="7" />
+                  <line x1="50" y1="74" x2="50" y2="83" />
+                  <line x1="79" y1="45" x2="88" y2="45" />
+                  <line x1="21" y1="45" x2="12" y2="45" />
+                  <line x1="70" y1="25" x2="77" y2="18" />
+                  <line x1="30" y1="65" x2="23" y2="72" />
+                  <line x1="30" y1="25" x2="23" y2="18" />
+                  <line x1="70" y1="65" x2="77" y2="72" />
+                </g>
+              </g>
+              <g transform="translate(0, 52)">
+                <polygon points="30,0 60,0 50,15 20,15" className="fill-primary" stroke="white" strokeWidth="2" strokeLinejoin="round" />
+                <polygon points="62,0 92,0 82,15 52,15" className="fill-primary" stroke="white" strokeWidth="2" strokeLinejoin="round" />
+                <polygon points="19,17 49,17 39,32 9,32" className="fill-primary" stroke="white" strokeWidth="2" strokeLinejoin="round" />
+                <polygon points="51,17 81,17 71,32 41,32" className="fill-primary" stroke="white" strokeWidth="2" strokeLinejoin="round" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
