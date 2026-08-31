@@ -96,9 +96,11 @@ const Header = () => {
       <div className="bg-primary text-primary-foreground py-2 border-b border-white/10">
         <div className="container-custom flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0 text-sm">
           <div className="hidden md:flex items-center gap-6">
-            <a href="tel:+918999999654" className="flex items-center gap-2 hover:text-accent transition-colors">
-              <Phone size={14} />
-              <span>+91 8999999654</span>
+            <a href="tel:+918999999654" className="flex items-center">
+              <span className="flex items-center gap-1.5 bg-accent text-accent-foreground font-bold px-2 py-0.5 rounded-sm tracking-wider shadow-sm">
+                <Phone size={14} strokeWidth={3} />
+                8-999-999-654
+              </span>
             </a>
             <a
               href="mailto:sales@kailashsolar.com"
