@@ -1,7 +1,6 @@
 {
   "/page": "app/page.js",
   "/blog/pm-surya-ghar-subsidy-meerut/page": "app/blog/pm-surya-ghar-subsidy-meerut/page.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/quote/page": "app/quote/page.js",
-  "/book-visit/page": "app/book-visit/page.js"
+  "/book-visit/page": "app/book-visit/page.js",
+  "/quote/page": "app/quote/page.js"
 }

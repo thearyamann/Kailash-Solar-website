@@ -126,7 +126,7 @@ export default function QuotePage() {
         <div className="hidden md:flex md:w-5/12 relative bg-primary flex-col justify-center p-12 lg:p-20 text-primary-foreground overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
-            <img src="/happyfamily.png" alt="Happy family with solar" className="w-full h-full object-cover object-[55%_10%]" fetchPriority="high" />
+            <img src="/Happyfamily.png" alt="Happy family with solar" className="w-full h-full object-cover object-[55%_10%]" fetchPriority="high" />
             <div className="absolute inset-0 bg-slate-900/20"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/40 to-transparent"></div>
           </div>
