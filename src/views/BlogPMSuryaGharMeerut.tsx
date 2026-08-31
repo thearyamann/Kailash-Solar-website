@@ -510,8 +510,8 @@ const BlogPMSuryaGharMeerut = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <CTAButton />
                   <Button asChild variant="heroOutline" size="lg">
-                    <a href="tel:+918999999654">
-                      <Phone className="mr-2 w-4 h-4" /> Call +91 89999 99654
+                    <a href="tel:+918999999654" className="font-bold">
+                      <Phone className="mr-2 w-4 h-4 text-accent" strokeWidth={3} /> Call <span className="text-accent">8-999-999-654</span>
                     </a>
                   </Button>
                 </div>
@@ -537,9 +537,9 @@ const BlogPMSuryaGharMeerut = () => {
                 <CTAButton className="w-full" />
                 <a
                   href="tel:+918999999654"
-                  className="mt-3 flex items-center justify-center gap-2 text-sm text-primary font-semibold hover:underline"
+                  className="mt-3 flex items-center justify-center gap-2 text-sm text-accent font-bold hover:underline"
                 >
-                  <Phone className="w-4 h-4" /> +91 89999 99654
+                  <Phone className="w-4 h-4 text-accent" strokeWidth={3} /> 8-999-999-654
                 </a>
               </div>
             </aside>

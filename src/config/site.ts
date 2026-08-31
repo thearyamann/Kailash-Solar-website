@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "Kailash Solar | Top Solar Panel Company in Meerut, UP",
-  description: "Use our free Solar Calculator to see how much you can save on your electricity bill! Call +91 8999999654 for expert solar panel installation in Meerut & PM Surya Ghar subsidies.",
+  description: "Use our free Solar Calculator to see how much you can save on your electricity bill! Call 8-999-999-654 for expert solar panel installation in Meerut & PM Surya Ghar subsidies.",
   url: "https://kailashsolar.com", // Replace with actual domain
   ogImage: "https://kailashsolar.com/og.jpg",
   links: {

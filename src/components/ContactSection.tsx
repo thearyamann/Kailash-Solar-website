@@ -106,8 +106,8 @@ const ContactSection = () => {
                 </div>
                 <div className="pt-1.5">
                   <h4 className="text-sm font-bold text-foreground mb-1 font-montserrat uppercase tracking-wider">Call Us Directly</h4>
-                  <a href="tel:+918999999654" className="text-muted-foreground text-lg hover:text-[#194A94] transition-colors block">
-                    +91 89999 99654
+                  <a href="tel:+918999999654" className="text-accent font-bold text-lg hover:opacity-80 transition-opacity block">
+                    8-999-999-654
                   </a>
                 </div>
               </div>

@@ -51,7 +51,7 @@ export default function PrivacyPolicy() {
                 <p>62, Sec 3, Industrial Area, Shatabdi Nagar</p>
                 <p>Meerut, Uttar Pradesh - 250103</p>
                 <p className="mt-2">Email: <a href="mailto:sales@kailashsolar.com" className="text-primary hover:underline">sales@kailashsolar.com</a></p>
-                <p>Phone: <a href="tel:+918999999654" className="text-primary hover:underline">+91 8999999654</a></p>
+                <p>Phone: <a href="tel:+918999999654" className="text-accent font-bold hover:underline">8-999-999-654</a></p>
               </div>
             </section>
           </div>
