@@ -77,7 +77,7 @@ export default function BookVisitPage() {
         {/* Top Image Banner */}
         <div className="relative h-[180px] w-full bg-slate-200 shrink-0">
           <img 
-            src="/happyfamily.png" 
+            src="/Happyfamily.png" 
             alt="Happy family with solar" 
             className="w-full h-full object-cover object-[55%_10%]"
           />
