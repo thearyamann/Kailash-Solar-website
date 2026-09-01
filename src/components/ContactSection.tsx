@@ -38,6 +38,16 @@ const ContactSection = () => {
       }
 
       const whatsappMessage = encodeURIComponent(`Hi, I'm interested in solar installation.\n\n` + `Name: ${formData.name}\n` + `Phone: ${formData.phone}\n` + `Address: ${formData.address}\n` + `Monthly Bill: ₹${formData.monthlyBill || 'Not specified'}\n` + `Customer Type: ${formData.customerType || 'Not specified'}\n` + `Message: ${formData.message || 'No additional message'}`);
+      
+      if (typeof window !== 'undefined') {
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).dataLayer.push({
+          'event': 'generate_lead',
+          'form_name': 'contact_us',
+          'lead_type': 'contact_us'
+        });
+      }
+
       window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");
       
       toast({

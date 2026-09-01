@@ -103,6 +103,16 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
         `System: ${quoteData.systemSize} kW\n` +
         `Net Cost: ₹${quoteData.netCost.toLocaleString()}`
       );
+      
+      if (typeof window !== 'undefined') {
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).dataLayer.push({
+          'event': 'generate_lead',
+          'form_name': 'quote_booking',
+          'lead_type': 'quote'
+        });
+      }
+
       window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");
       
       toast({

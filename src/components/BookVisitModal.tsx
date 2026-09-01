@@ -93,6 +93,16 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       }
 
       const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `Address/PIN: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
+      
+      if (typeof window !== 'undefined') {
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).dataLayer.push({
+          'event': 'generate_lead',
+          'form_name': 'book_visit',
+          'lead_type': 'book_visit'
+        });
+      }
+
       window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");
       
       toast({
