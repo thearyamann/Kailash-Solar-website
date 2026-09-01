@@ -63,7 +63,7 @@ export default function SolarCompanyMeerut() {
       <Header />
 
       {/* 1. Full-Screen Video Hero Section */}
-      <section className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden pt-20">
+      <section className="relative min-h-[80vh] flex flex-col justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
           <video
             src="/herosection.mp4"
@@ -77,9 +77,9 @@ export default function SolarCompanyMeerut() {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/40" />
         </div>
         
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 py-12 md:py-24">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 py-8 md:py-16">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="space-y-5 md:space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
               <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-black font-montserrat text-white leading-[1.1] tracking-tight">
                 Meerut, Go Solar at Zero Investment!
               </h1>
