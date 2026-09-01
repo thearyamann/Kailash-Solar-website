@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Info, Check } from "lucide-react";
+import { Info, Check, Calculator, Zap, IndianRupee, ArrowRight, Phone } from "lucide-react";
 import Link from "next/link";
 
 export function SolarConsultationForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [agreed, setAgreed] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -55,12 +54,8 @@ export function SolarConsultationForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreed) {
-      setSubmitError("Please agree to the Terms of Use and Privacy Policy.");
-      return;
-    }
-    setIsSubmitting(true);
     setSubmitError("");
+    setIsSubmitting(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tjikswdntqctoqqrnjkq.supabase.co';
@@ -112,21 +107,34 @@ export function SolarConsultationForm() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl w-full max-w-lg mx-auto relative z-20">
-      <h2 className="text-2xl sm:text-3xl font-bold font-montserrat text-slate-900 mb-2">Book a FREE Solar Consultation</h2>
-      <p className="text-slate-600 mb-6">And save up to ₹78,000 with subsidy</p>
+    <div className="bg-card rounded-t-[32px] rounded-b-none md:rounded-[20px] p-6 pt-5 md:pt-7 sm:p-7 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] md:shadow-2xl relative z-20 w-full md:max-w-md mx-auto border-t md:border border-border/50">
+      
+      {/* Mobile drag handle */}
+      <div className="w-12 h-1.5 bg-border/60 rounded-full mx-auto mb-6 md:hidden" />
+
+      <div className="mb-6">
+        <h2 className="text-[22px] sm:text-[24px] font-bold font-montserrat text-foreground mb-1.5">
+          Book a FREE Consultation
+        </h2>
+        <p className="text-[14px] sm:text-[15px] text-muted-foreground font-medium mb-3">
+          Lock in your <span className="font-bold text-foreground">₹1,08,000 subsidy</span> today.
+        </p>
+        <div className="md:hidden inline-flex items-center gap-1.5 text-accent font-bold text-xs bg-accent/10 px-2.5 py-1 rounded-md">
+          <Zap className="w-3.5 h-3.5 fill-accent" /> &quot;Fastest Subsidy Approval in UP&quot;
+        </div>
+      </div>
 
       {submitError && (
-        <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-[12px] text-sm font-medium">
           {submitError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3.5 relative z-10">
         <div>
           <Input 
-            placeholder="Full Name" 
-            className="h-12 border-slate-200"
+            placeholder="Full Name*" 
+            className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70"
             value={formData.name}
             onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
             required 
@@ -135,70 +143,52 @@ export function SolarConsultationForm() {
         
         <div>
           <Input 
-            placeholder="Whatsapp Number" 
+            placeholder="WhatsApp Number*" 
             type="tel"
-            className="h-12 border-slate-200"
+            className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70"
             value={formData.phone}
             onChange={(e) => setFormData(prev => ({...prev, phone: e.target.value}))}
             required 
           />
         </div>
 
-        <div className="space-y-2">
-          <div className="flex items-center text-slate-700 text-sm mb-1">
-            Monthly Electricity Bill <Info className="w-4 h-4 ml-1 text-slate-400" />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {billOptions.map((option) => (
-              <button
-                type="button"
-                key={option}
-                onClick={() => setFormData(prev => ({...prev, monthlyBill: option}))}
-                className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
-                  formData.monthlyBill === option 
-                    ? "bg-slate-900 text-white border-slate-900 shadow-sm" 
-                    : "bg-white text-slate-700 border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="pt-2">
+        <div>
           <Input 
-            placeholder="PIN Code" 
-            className="h-12 border-slate-200"
+            placeholder="PIN Code & Address*" 
+            className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70"
             value={formData.address}
             onChange={(e) => setFormData(prev => ({...prev, address: e.target.value}))}
             required 
           />
         </div>
 
-        <div className="flex items-start gap-2 pt-2">
-          <button 
-            type="button"
-            onClick={() => setAgreed(!agreed)}
-            className={`w-5 h-5 mt-0.5 rounded border flex items-center justify-center transition-colors flex-shrink-0 ${
-              agreed ? 'bg-[#3b82f6] border-[#3b82f6] text-white' : 'border-slate-300 bg-white'
-            }`}
+        <div>
+          <select
+            className="w-full h-[52px] px-4 bg-background border border-border rounded-[12px] text-[15px] focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary text-foreground disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
+            value={formData.monthlyBill}
+            onChange={(e) => setFormData(prev => ({...prev, monthlyBill: e.target.value}))}
+            required
+            style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
           >
-            {agreed && <Check className="w-3.5 h-3.5" />}
-          </button>
-          <p className="text-xs text-slate-600">
-            I agree to Kailash Solar <Link href="/terms" className="text-[#3b82f6] hover:underline">Terms of use</Link> and <Link href="/privacy" className="text-[#3b82f6] hover:underline">Privacy Policy</Link>.
-          </p>
+            <option value="" disabled className="text-muted-foreground">Monthly Electricity Bill*</option>
+            <option value="< 1500">Less than ₹1,500</option>
+            <option value="1500 - 2500">₹1,500 - ₹2,500</option>
+            <option value="2500 - 5000">₹2,500 - ₹5,000</option>
+            <option value="> 5000">More than ₹5,000</option>
+          </select>
         </div>
 
-        <div className="pt-4">
+        <div className="pt-2 flex gap-3">
           <Button 
             type="submit" 
             disabled={isSubmitting}
-            className="w-full h-12 md:h-14 bg-[#0B1536] hover:bg-[#122359] text-white rounded-lg text-base font-bold transition-all shadow-md active:scale-[0.98]"
+            className="flex-grow h-[56px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-lg shadow-primary/20 active:scale-[0.98]"
           >
             {isSubmitting ? "Booking..." : "Book a FREE Consultation"}
           </Button>
+          <a href="tel:+918999999654" className="flex items-center justify-center w-[56px] h-[56px] shrink-0 bg-primary/10 border border-primary/20 rounded-[14px] text-primary hover:bg-primary hover:text-white transition-all shadow-sm active:scale-[0.98]">
+            <Phone className="w-[22px] h-[22px] fill-current" />
+          </a>
         </div>
       </form>
     </div>

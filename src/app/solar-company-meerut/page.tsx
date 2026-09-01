@@ -62,55 +62,64 @@ export default function SolarCompanyMeerut() {
 
       <Header />
 
-      {/* 1. Full-Screen Video Hero Section */}
-      <section className="relative min-h-[80vh] flex flex-col justify-center overflow-hidden pt-20">
-        <div className="absolute inset-0 z-0">
-          <video
-            src="/herosection.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover"
+      <section className="relative min-h-[100dvh] md:min-h-[80vh] flex flex-col justify-between md:justify-center overflow-hidden pt-20 pb-0 md:pb-10">
+        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
+          <img
+            src="/Happyfamily.png"
+            alt="Happy family using solar power"
+            className="w-full h-full object-cover object-bottom md:object-[100%_30%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/40" />
+          {/* Subtle dark overlay without blur to keep image sharp while text is readable */}
+          <div className="absolute inset-0 bg-slate-900/50" />
         </div>
         
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 py-8 md:py-16">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="space-y-5 md:space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
-              <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-black font-montserrat text-white leading-[1.1] tracking-tight">
-                Meerut, Go Solar at Zero Investment!
-              </h1>
+        <div className="container relative z-10 mx-auto px-0 sm:px-6 flex flex-col flex-grow h-full md:grid md:grid-cols-12 md:gap-8 lg:gap-12 md:items-center">
+          
+          {/* TEXT BLOCK: Centered on mobile, normal grid on desktop */}
+          <div className="px-4 md:px-0 flex-grow flex flex-col justify-center md:col-span-7 space-y-4 md:space-y-5 animate-in fade-in slide-in-from-left-8 duration-1000 pt-6 md:pt-0">
+
+            <h1 className="text-[38px] leading-[1.1] md:text-5xl lg:text-6xl font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
+              Meerut's No.1 Choice for <span className="text-accent drop-shadow-sm">Solar Company</span>
+            </h1>
+            
+            <p className="text-[16px] md:text-xl text-white/90 font-medium leading-relaxed max-w-xl pb-4 md:pb-0">
+              Save up to 95%<sup className="text-sm">*</sup> on electricity bills with government subsidy and easy EMI.
+            </p>
+            
+            <div className="grid grid-cols-3 gap-2 md:flex md:items-center md:gap-6 pt-1 md:pt-2 text-sm font-semibold text-white">
               
-              <p className="text-lg md:text-2xl text-slate-200 font-medium leading-relaxed max-w-xl">
-                Save up to 90% on electricity bills with government subsidy and easy EMI.
-              </p>
-              
-              <div className="flex flex-wrap gap-3 pt-4 text-sm font-semibold text-white">
-                <div className="flex items-center gap-2 bg-black/40 px-4 py-2.5 rounded-lg border border-white/10 backdrop-blur-sm">
-                  <ShieldCheck className="w-5 h-5 text-accent"/> 15+ Years of Experience
-                </div>
-                <div className="flex items-center gap-2 bg-black/40 px-4 py-2.5 rounded-lg border border-white/10 backdrop-blur-sm">
-                  <Zap className="w-5 h-5 text-accent"/> 500+ Homes Solarised
-                </div>
-                <div className="flex items-center gap-2 bg-black/40 px-4 py-2.5 rounded-lg border border-white/10 backdrop-blur-sm">
-                  <Sun className="w-5 h-5 text-accent"/> 10MW+ Installation Experience
-                </div>
-                <div className="flex items-center gap-2 bg-black/40 px-4 py-2.5 rounded-lg border border-white/10 backdrop-blur-sm">
-                  <IndianRupee className="w-5 h-5 text-accent"/> ₹5Cr+ Savings in Meerut
-                </div>
+              {/* Block 1: PM Surya Ghar Vendor */}
+              <div className="flex flex-col md:flex-row items-center justify-start gap-2 md:gap-3 text-center md:text-left">
+                <img src="/pmsurya.webp" alt="PM Surya Ghar Vendor" className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0" />
+                <div className="hidden md:block w-[1px] h-10 bg-white/30" />
+                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide">PM Surya Ghar<br/>Vendor</h4>
               </div>
-              
-              <div className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-black/50 border border-white/10 rounded-lg text-white font-medium text-lg">
-                Rated <Star className="w-5 h-5 text-[#f59e0b] fill-[#f59e0b]" /> 4.9 on Google | 180+ ratings
+
+              {/* Block 2: MNRE */}
+              <div className="flex flex-col md:flex-row items-center justify-start gap-2 md:gap-3 text-center md:text-left">
+                <img src="/mnre-logo.svg" alt="MNRE" className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0" />
+                <div className="hidden md:block w-[1px] h-10 bg-white/30" />
+                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide">MNRE<br/>Approved</h4>
+              </div>
+
+              {/* Block 3: UPNEDA */}
+              <div className="flex flex-col md:flex-row items-center justify-start gap-1 md:gap-3 text-center md:text-left">
+                <img src="/upneda-white.png" alt="UPNEDA Approved" className="h-12 md:h-14 w-auto object-contain brightness-0 invert flex-shrink-0 -mb-1 md:mb-0" />
+                <div className="hidden md:block w-[1px] h-10 bg-white/30" />
+                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide">UPNEDA<br/>Approved</h4>
               </div>
             </div>
 
-            <div className="animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
-              <SolarConsultationForm />
+            <div className="pt-2 md:pt-3">
+              <div className="hidden md:inline-flex items-center gap-2.5 px-4 py-1.5 md:py-2 bg-white/20 backdrop-blur-md border border-white/40 rounded-full text-white font-bold text-xs md:text-sm shadow-sm">
+                <Zap className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent fill-accent" /> &quot;Fastest Subsidy Approval in UP&quot;
+              </div>
             </div>
+          </div>
+
+          {/* FORM BLOCK: Bottom sheet on mobile, right column on desktop */}
+          <div className="w-full md:col-span-5 animate-in fade-in slide-in-from-bottom-12 md:slide-in-from-right-8 duration-1000 delay-200 mt-6 md:mt-0">
+            <SolarConsultationForm />
           </div>
         </div>
       </section>
@@ -151,7 +160,7 @@ export default function SolarCompanyMeerut() {
             <p className="text-lg text-slate-600 font-medium">As a local Meerut company, we understand the specific energy needs of our city. We provide end-to-end solar EPC solutions with unmatched quality.</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 md:gap-x-12 md:gap-y-16">
             {[
               { title: "Local Meerut Company", desc: "Based right here in Meerut, ensuring ultra-fast service and support whenever you need it.", img: project1.src },
               { title: "Subsidy Assistance", desc: "We handle the entire PM Surya Ghar Yojana subsidy paperwork for you from start to finish.", img: "/pmsurya.webp" },
@@ -161,11 +170,11 @@ export default function SolarCompanyMeerut() {
               { title: "Quick Installation", desc: "From site survey to commissioning, we complete residential projects in record time.", img: project3.src },
             ].map((feature, i) => (
               <div key={i} className="flex flex-col items-center text-center group">
-                <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-8 shadow-sm transition-all duration-500 ">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 md:mb-8 shadow-sm transition-all duration-500 ">
                   <img src={feature.img} alt={feature.title} className="w-full h-full object-cover transition-transform duration-700 " />
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-slate-900">{feature.title}</h3>
-                <p className="text-slate-600 leading-relaxed max-w-sm">{feature.desc}</p>
+                <h3 className="text-[14px] sm:text-base md:text-2xl font-bold mb-1.5 md:mb-3 text-slate-900 leading-tight">{feature.title}</h3>
+                <p className="text-[11px] sm:text-sm md:text-base text-slate-600 leading-snug md:leading-relaxed max-w-sm line-clamp-3 md:line-clamp-none mt-1">{feature.desc}</p>
               </div>
             ))}
           </div>

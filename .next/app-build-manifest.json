@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/page": [
+    "/solar-company-meerut/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/solar-company-meerut/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -16,35 +16,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/blog/pm-surya-ghar-subsidy-meerut/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/blog/pm-surya-ghar-subsidy-meerut/page.js"
-    ],
-    "/book-visit/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/book-visit/page.js"
-    ],
-    "/book-visit/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/book-visit/layout.js"
-    ],
     "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/_not-found/page.js"
     ],
-    "/quote/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/quote/page.js"
-    ],
-    "/quote/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/quote/layout.js"
+      "static/chunks/app/page.js"
     ]
   }
 }

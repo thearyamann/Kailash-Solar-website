@@ -44,3 +44,6 @@ Targeted at factories, schools, hospitals, and commercial complexes looking for 
 - **Phone:** +91 89999 99654
 - **Email:** sales@kailashsolar.com
 - **Address:** 62, Sec 3, Industrial Area, Shatabdi Nagar, Meerut, UP - 250103
+
+## 6. AI Development Rules
+- **Git Push Policy:** DO NOT run `git push` automatically without asking for explicit permission from the user first. Always make changes locally, wait for the user to review or give permission, and only then push to the remote repository.
