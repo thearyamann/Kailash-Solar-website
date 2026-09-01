@@ -20,6 +20,13 @@ const StickyCTA = () => {
   };
 
   const openWhatsApp = () => {
+    if (typeof window !== 'undefined') {
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      (window as any).dataLayer.push({
+        event: "whatsapp_click",
+      });
+    }
+
     const message = encodeURIComponent("Hi, I'm interested in solar installation. Please share more details.");
     window.open(`https://wa.me/918999999654?text=${message}`, "_blank");
   };
