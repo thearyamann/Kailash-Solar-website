@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { siteConfig } from '../config/site';
 import FAQSchema from "../components/FAQSchema";
-import GoogleAnalytics from "../components/GoogleAnalytics";
 import MetaPixel from "../components/MetaPixel";
 import { Providers } from '../components/providers';
 import { GoogleTagManager } from '@next/third-parties/google';
@@ -161,7 +160,6 @@ export default function RootLayout({
       </head>
       <body>
         <GoogleTagManager gtmId="GTM-WXGHXT7R" />
-        <GoogleAnalytics gaId="AW-XXXXXXXXX" />
         <MetaPixel pixelId="FB-XXXXXXXXX" />
         <Providers>
           {children}

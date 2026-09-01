@@ -84,10 +84,10 @@ const StickyCTA = () => {
             className="h-[46px] bg-[#194A94] hover:bg-[#153a75] text-white rounded-[1.5rem] px-4 sm:px-6 flex items-center whitespace-nowrap flex-shrink-0 justify-center gap-2 font-bold text-sm transition-transform active:scale-95"
             aria-label="Call Us Now"
             onClick={() => {
-              // Google Ads Conversion Tracking
-              if (typeof window !== 'undefined' && (window as any).gtag) {
-                (window as any).gtag('event', 'conversion', {
-                  'send_to': 'AW-XXXXXXXXX/call-conversion-label'
+              if (typeof window !== 'undefined') {
+                (window as any).dataLayer = (window as any).dataLayer || [];
+                (window as any).dataLayer.push({
+                  event: 'phone_call_click'
                 });
               }
               // Meta Pixel Conversion Tracking
