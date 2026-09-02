@@ -21,6 +21,15 @@ const BlogSection = () => {
       readTime: '15 min read',
       href: '/blog/solar-panel-price-meerut',
       image: { src: '/Happyfamily.png' },
+    },
+    {
+      title: 'Why Kailash Solar Is a Leading Solar Company in Meerut',
+      excerpt:
+        'Discover why hundreds of Meerut homeowners choose Kailash Solar for premium panels, expert in-house installation, and seamless PM Surya Ghar subsidy support.',
+      category: 'Meerut Guide',
+      readTime: '10 min read',
+      href: '/blog/best-solar-company-in-meerut',
+      image: { src: '/panel.jpg' },
     }
   ];
 
