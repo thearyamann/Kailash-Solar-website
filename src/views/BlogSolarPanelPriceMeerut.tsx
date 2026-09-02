@@ -289,6 +289,14 @@ const BlogSolarPanelPriceMeerut = () => {
                 Below is a detailed, transparent comparison table of the estimated market prices for premium, on-grid solar installations in Meerut. Keep in mind that these are approximate costs <em>before</em> the massive government subsidy is applied.
               </P>
 
+              <div className="my-10 overflow-hidden rounded-3xl shadow-xl border border-slate-200">
+                <img 
+                  src="/priceflyer.png" 
+                  alt="Kailash Solar Price Flyer for 2026 - Meerut" 
+                  className="w-full h-auto object-cover hover:scale-[1.02] transition-transform duration-500"
+                />
+              </div>
+
               <ComparisonTable 
                 headers={["System Size", "Approx. Cost (Before Subsidy)", "Avg. Monthly Generation", "Suitable For Monthly Bill", "Space Required"]}
                 rows={[
