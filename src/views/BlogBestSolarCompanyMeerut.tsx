@@ -57,8 +57,12 @@ const BlogBestSolarCompanyMeerut = () => {
     const handleScroll = () => {
       const totalScroll = document.documentElement.scrollTop;
       const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scroll = `${totalScroll / windowHeight}`;
-      setScrollProgress(Number(scroll) * 100);
+      if (windowHeight > 0) {
+        const scroll = `${totalScroll / windowHeight}`;
+        setScrollProgress(Number(scroll) * 100);
+      } else {
+        setScrollProgress(0);
+      }
     }
     
     window.addEventListener('scroll', handleScroll);
