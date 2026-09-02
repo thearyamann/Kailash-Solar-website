@@ -236,7 +236,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                 </Button>
                 <a 
                   href="tel:+918999999654" 
-                  className="flex-shrink-0 flex items-center justify-center w-[48px] h-[48px] rounded-[10px] bg-primary/10 text-primary hover:bg-primary/20 transition-colors shadow-sm"
+                  className="flex-shrink-0 flex items-center justify-center w-[48px] h-[48px] rounded-[10px] bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors shadow-sm"
                   title="Call Us Now"
                 >
                   <Phone className="w-5 h-5" />
