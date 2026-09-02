@@ -29,19 +29,73 @@ export default function QuotePage() {
   const { toast } = useToast();
   const router = useRouter();
   
+  const generateResults = (systemSize: number, type: string): CalculatorResults => {
+    const ELECTRICITY_COST = 7.5;
+    const CAPEX_PER_KW = type === 'residential' ? 60000 : 45000;
+    
+    const totalCost = systemSize * CAPEX_PER_KW;
+    const subsidy = type === 'residential' ? (systemSize >= 3 ? 108000 : systemSize * 30000 + 15000) : 0;
+    const netCost = totalCost - subsidy;
+    
+    const dailyGeneration = systemSize * 4; 
+    const monthlyGeneration = dailyGeneration * 30;
+    const monthlySavings = monthlyGeneration * ELECTRICITY_COST;
+    const yearlySavings = monthlySavings * 12;
+    
+    const paybackPeriod = netCost / yearlySavings;
+    const co2Reduction = (dailyGeneration * 365 * 0.82) / 1000; 
+    const spaceRequired = systemSize * 100; // 100 sq ft per kW
+    const phase = systemSize > 5 ? "Three Phase" : "Single Phase";
+
+    return {
+      systemSize,
+      totalCost,
+      subsidy,
+      netCost,
+      monthlyGeneration,
+      yearlySavings,
+      paybackPeriod,
+      co2Reduction,
+      phase,
+      spaceRequired
+    };
+  };
+
+  const getInitialUrlState = () => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const kwParam = searchParams.get('kw');
+      if (kwParam) {
+        const systemSize = parseFloat(kwParam);
+        if (!isNaN(systemSize) && systemSize > 0) {
+          const savedType = localStorage.getItem("kailash_customerType") || "residential";
+          return { step: "results" as const, results: generateResults(systemSize, savedType) };
+        }
+      }
+    }
+    return { step: "input" as const, results: null };
+  };
+
   const [step, setStep] = useState<"input" | "calculating" | "results">("input");
-  
+  const [results, setResults] = useState<CalculatorResults | null>(null);
   const [monthlyBill, setMonthlyBill] = useState("");
   const [customerType, setCustomerType] = useState("residential");
-  
-  const [results, setResults] = useState<CalculatorResults | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load saved progress
+  // Load saved progress and handle URL params
   useEffect(() => {
     const savedBill = localStorage.getItem("kailash_monthlyBill");
     if (savedBill) setMonthlyBill(savedBill);
     const savedType = localStorage.getItem("kailash_customerType");
     if (savedType) setCustomerType(savedType);
+
+    const initialState = getInitialUrlState();
+    if (initialState.step === "results") {
+      setStep("results");
+      setResults(initialState.results);
+    }
+    
+    setIsInitialized(true);
   }, []);
 
   // Save progress
@@ -52,14 +106,6 @@ export default function QuotePage() {
   useEffect(() => {
     localStorage.setItem("kailash_customerType", customerType);
   }, [customerType]);
-
-  const calculateSubsidy = (systemSizeKw: number): number => {
-    if (customerType !== 'residential') return 0;
-    if (systemSizeKw <= 1) return 30000;
-    if (systemSizeKw <= 2) return 60000;
-    if (systemSizeKw <= 3) return 78000;
-    return 78000; // Capped at 78,000 for standard central, but user mentioned 1,08,000 earlier which includes state. We'll use 108000 for 3kW+.
-  };
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,37 +119,9 @@ export default function QuotePage() {
 
     setTimeout(() => {
       const bill = parseFloat(monthlyBill);
-      const ELECTRICITY_COST = 7.5;
-      const CAPEX_PER_KW = customerType === 'residential' ? 60000 : 45000;
-      
       const systemSize = Math.max(1, Math.ceil(bill / 1500));
-      const totalCost = systemSize * CAPEX_PER_KW;
-      const subsidy = customerType === 'residential' ? (systemSize >= 3 ? 108000 : systemSize * 30000 + 15000) : 0;
-      const netCost = totalCost - subsidy;
       
-      const dailyGeneration = systemSize * 4; 
-      const monthlyGeneration = dailyGeneration * 30;
-      const monthlySavings = monthlyGeneration * ELECTRICITY_COST;
-      const yearlySavings = monthlySavings * 12;
-      
-      const paybackPeriod = netCost / yearlySavings;
-      const co2Reduction = (dailyGeneration * 365 * 0.82) / 1000; 
-      const spaceRequired = systemSize * 100; // 100 sq ft per kW
-      const phase = systemSize > 5 ? "Three Phase" : "Single Phase";
-
-      setResults({
-        systemSize,
-        totalCost,
-        subsidy,
-        netCost,
-        monthlyGeneration,
-        yearlySavings,
-        paybackPeriod,
-        co2Reduction,
-        phase,
-        spaceRequired
-      });
-      
+      setResults(generateResults(systemSize, customerType));
       setStep("results");
       
       // Update URL to reflect system size, e.g., ?kw=5kw
@@ -202,7 +220,14 @@ export default function QuotePage() {
             </div>
           </div>
 
-          {step === "input" && (
+          {!isInitialized && (
+            <div className="flex-grow flex flex-col items-center justify-center p-6 text-center mt-0 md:mt-12 h-full">
+              <Loader2 className="w-10 h-10 animate-spin text-primary/60 mb-4" />
+              <p className="text-muted-foreground font-medium animate-pulse">Loading your solar journey...</p>
+            </div>
+          )}
+
+          {isInitialized && step === "input" && (
             <div className="flex-grow flex flex-col p-6 md:p-10 pb-32 md:pb-32 overflow-y-auto mt-0 md:mt-12">
               <div className="w-full max-w-[440px] md:max-w-[480px] mx-auto flex-grow md:flex-grow-0 flex flex-col">
                 <div className="mb-8 md:mb-10">
