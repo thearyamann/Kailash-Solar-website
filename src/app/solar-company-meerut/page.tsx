@@ -260,53 +260,50 @@ export default function SolarCompanyMeerut() {
       {/* 5. PM Surya Subsidy Section (Brand Consistent) */}
       <section className="py-12 lg:py-24 bg-primary text-white">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-            <div className="w-full lg:w-1/2">
-              <div className="inline-block bg-accent text-white px-4 py-1.5 md:px-5 md:py-2 rounded-full text-[12px] md:text-sm font-bold mb-4 md:mb-6 tracking-wide shadow-md">
-                GOVERNMENT SUBSIDY
-              </div>
-              <h2 className="text-[28px] md:text-5xl font-bold font-montserrat mb-4 md:mb-6 leading-[1.2]">PM Surya Ghar Yojana in Meerut</h2>
-              <p className="text-[16px] md:text-xl text-white/90 mb-6 md:mb-8 leading-relaxed font-medium">
-                The Government of India is offering massive subsidies to homeowners in Meerut installing rooftop solar panels. As an MNRE-approved vendor, Kailash Solar helps you claim this subsidy seamlessly.
-              </p>
-              <div className="mb-8">
-                <ul className="space-y-4 md:space-y-6">
-                  <li className="flex flex-col gap-1">
-                    <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
-                      <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 1kW System: Up to ₹45,000 Subsidy
-                    </div>
-                    <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
-                      (₹30,000 Central + ₹15,000 UP State)
-                    </div>
-                  </li>
-                  <li className="flex flex-col gap-1">
-                    <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
-                      <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 2kW System: Up to ₹90,000 Subsidy
-                    </div>
-                    <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
-                      (₹60,000 Central + ₹30,000 UP State)
-                    </div>
-                  </li>
-                  <li className="flex flex-col gap-1">
-                    <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
-                      <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 3kW+ System: Up to ₹1,08,000 Subsidy
-                    </div>
-                    <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
-                      (₹78,000 Central + ₹30,000 UP State)
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div className="mt-8 md:mt-10 flex">
-                <BookVisitModal>
-                  <Button className="w-full md:w-auto h-12 md:h-14 px-8 rounded-full text-[16px] md:text-lg font-bold bg-accent hover:bg-accent/90 text-white shadow-lg transition-transform active:scale-95 hover:-translate-y-0.5">
-                    Check Your Eligibility
-                  </Button>
-                </BookVisitModal>
-              </div>
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-block bg-accent text-white px-4 py-1.5 md:px-5 md:py-2 rounded-full text-[12px] md:text-sm font-bold mb-4 md:mb-6 tracking-wide shadow-md">
+              GOVERNMENT SUBSIDY
             </div>
-            <div className="w-full lg:w-1/2">
-              <img src="/pmsurya.webp" alt="PM Surya Ghar Subsidy Meerut" className="rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl mx-auto max-w-sm lg:max-w-md w-full border-2 md:border-4 border-white/10" />
+            <h2 className="text-[28px] md:text-5xl font-bold font-montserrat mb-4 md:mb-6 leading-[1.2]">PM Surya Ghar Yojana in Meerut</h2>
+            <p className="text-[16px] md:text-xl text-white/90 mb-6 md:mb-10 leading-relaxed font-medium">
+              The Government of India is offering massive subsidies to homeowners in Meerut installing rooftop solar panels. As an MNRE-approved vendor, Kailash Solar helps you claim this subsidy seamlessly.
+            </p>
+            
+            <div className="mb-8 md:mb-12 flex justify-center text-left">
+              <ul className="space-y-4 md:space-y-6">
+                <li className="flex flex-col gap-1">
+                  <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
+                    <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 1kW System: Up to ₹45,000 Subsidy
+                  </div>
+                  <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
+                    (₹30,000 Central + ₹15,000 UP State)
+                  </div>
+                </li>
+                <li className="flex flex-col gap-1">
+                  <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
+                    <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 2kW System: Up to ₹90,000 Subsidy
+                  </div>
+                  <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
+                    (₹60,000 Central + ₹30,000 UP State)
+                  </div>
+                </li>
+                <li className="flex flex-col gap-1">
+                  <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
+                    <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 3kW+ System: Up to ₹1,08,000 Subsidy
+                  </div>
+                  <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
+                    (₹78,000 Central + ₹30,000 UP State)
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="flex justify-center">
+              <BookVisitModal>
+                <Button className="w-full md:w-auto h-12 md:h-14 px-10 rounded-full text-[16px] md:text-lg font-bold bg-accent hover:bg-accent/90 text-white shadow-lg transition-transform active:scale-95 hover:-translate-y-0.5">
+                  Check Your Eligibility
+                </Button>
+              </BookVisitModal>
             </div>
           </div>
         </div>
