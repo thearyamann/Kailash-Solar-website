@@ -7,10 +7,10 @@
 @layer base {
   :root {
     /* Corporate Blue - Primary */
-    --primary: 217 71% 34%;
+    --primary: 216 72% 27%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 217 71% 94%;
-    --primary-dark: 217 71% 24%;
+    --primary-light: 216 72% 94%;
+    --primary-dark: 216 72% 17%;
 
     /* Energetic Orange - Accent */
     --accent: 32 94% 54%;
@@ -39,17 +39,17 @@
     /* Borders */
     --border: 214 20% 88%;
     --input: 214 20% 88%;
-    --ring: 217 71% 34%;
+    --ring: 216 72% 27%;
 
     --radius: 0.75rem;
 
     /* Custom Solar Theme */
-    --solar-blue: 217 71% 34%;
+    --solar-blue: 216 72% 27%;
     --solar-orange: 32 94% 54%;
     --solar-green: 142 72% 42%;
-    --solar-gradient: linear-gradient(135deg, hsl(217 71% 34%) 0%, hsl(217 71% 24%) 100%);
+    --solar-gradient: linear-gradient(135deg, hsl(216 72% 27%) 0%, hsl(216 72% 17%) 100%);
     --solar-gradient-accent: linear-gradient(135deg, hsl(32 94% 54%) 0%, hsl(32 94% 44%) 100%);
-    --solar-gradient-hero: linear-gradient(90deg, hsla(217, 71%, 12%, 0.75) 0%, hsla(217, 71%, 24%, 0.1) 80%);
+    --solar-gradient-hero: linear-gradient(90deg, hsla(216, 72%, 12%, 0.75) 0%, hsla(216, 72%, 17%, 0.1) 80%);
     
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 hsla(220, 20%, 12%, 0.05);
@@ -57,7 +57,7 @@
     --shadow-lg: 0 10px 15px -3px hsla(220, 20%, 12%, 0.1), 0 4px 6px -4px hsla(220, 20%, 12%, 0.1);
     --shadow-xl: 0 20px 25px -5px hsla(220, 20%, 12%, 0.1), 0 8px 10px -6px hsla(220, 20%, 12%, 0.1);
     --shadow-glow: 0 0 30px hsla(32, 94%, 54%, 0.3);
-    --shadow-blue: 0 4px 20px hsla(217, 71%, 34%, 0.25);
+    --shadow-blue: 0 4px 20px hsla(216, 72%, 27%, 0.25);
 
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
@@ -67,14 +67,14 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 216 72% 27%;
   }
 
   .dark {
-    --primary: 217 71% 54%;
+    --primary: 216 72% 54%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 217 71% 14%;
-    --primary-dark: 217 71% 64%;
+    --primary-light: 216 72% 14%;
+    --primary-dark: 216 72% 64%;
 
     --accent: 32 94% 54%;
     --accent-foreground: 0 0% 100%;
@@ -96,7 +96,7 @@
 
     --border: 217 20% 20%;
     --input: 217 20% 20%;
-    --ring: 217 71% 54%;
+    --ring: 216 72% 54%;
   }
 }
 

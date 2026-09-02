@@ -88,12 +88,12 @@ const ContactSection = () => {
         
         {/* Header Section */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-[#194A94]/10 text-[#194A94] rounded-full px-5 py-2 mb-6 border border-[#194A94]/20">
+          <div className="inline-flex items-center gap-2 bg-[#133B76]/10 text-[#133B76] rounded-full px-5 py-2 mb-6 border border-[#133B76]/20">
             <Phone className="w-4 h-4" />
             <span className="font-bold uppercase tracking-widest text-[11px]">Get In Touch</span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 font-montserrat tracking-tight">
-            Ready to Go <span className="text-[#194A94]">Solar?</span>
+            Ready to Go <span className="text-[#133B76]">Solar?</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
             Get a free consultation and exact site assessment. Our engineering team will help you find the perfect solar solution for maximum ROI.
@@ -111,8 +111,8 @@ const ContactSection = () => {
             
             <div className="space-y-8">
               <div className="flex gap-5 items-start group cursor-default">
-                <div className="w-14 h-14 rounded-2xl bg-[#194A94]/10 border border-[#194A94]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#194A94] group-hover:text-white transition-colors duration-300">
-                  <Phone className="w-6 h-6 text-[#194A94] group-hover:text-white transition-colors" />
+                <div className="w-14 h-14 rounded-2xl bg-[#133B76]/10 border border-[#133B76]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#133B76] group-hover:text-white transition-colors duration-300">
+                  <Phone className="w-6 h-6 text-[#133B76] group-hover:text-white transition-colors" />
                 </div>
                 <div className="pt-1.5">
                   <h4 className="text-sm font-bold text-foreground mb-1 font-montserrat uppercase tracking-wider">Call Us Directly</h4>
@@ -135,8 +135,8 @@ const ContactSection = () => {
               </div>
 
               <div className="flex gap-5 items-start group cursor-default">
-                <div className="w-14 h-14 rounded-2xl bg-[#194A94]/10 border border-[#194A94]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#194A94] group-hover:text-white transition-colors duration-300">
-                  <MapPin className="w-6 h-6 text-[#194A94] group-hover:text-white transition-colors" />
+                <div className="w-14 h-14 rounded-2xl bg-[#133B76]/10 border border-[#133B76]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#133B76] group-hover:text-white transition-colors duration-300">
+                  <MapPin className="w-6 h-6 text-[#133B76] group-hover:text-white transition-colors" />
                 </div>
                 <div className="pt-1.5">
                   <h4 className="text-sm font-bold text-foreground mb-1 font-montserrat uppercase tracking-wider">Visit our Office</h4>
@@ -158,9 +158,9 @@ const ContactSection = () => {
           </div>
 
           {/* Right: Form Block (Spans 7 cols) */}
-          <div className="lg:col-span-7 bg-card border border-border rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-[#194A94]/5">
+          <div className="lg:col-span-7 bg-card border border-border rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-[#133B76]/5">
             <div className="flex items-center gap-3 mb-10">
-              <div className="w-12 h-12 rounded-full bg-[#194A94]/10 flex items-center justify-center text-[#194A94]">
+              <div className="w-12 h-12 rounded-full bg-[#133B76]/10 flex items-center justify-center text-[#133B76]">
                 <Send className="w-5 h-5" />
               </div>
               <h3 className="text-2xl font-bold font-montserrat text-foreground tracking-tight">
@@ -173,14 +173,14 @@ const ContactSection = () => {
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-foreground font-bold text-sm">Full Name</Label>
                   <div className="relative group">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[#194A94] transition-colors" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[#133B76] transition-colors" />
                     <Input 
                       id="name" 
                       placeholder="Your name" 
                       required 
                       value={formData.name} 
                       onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#194A94]" 
+                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76]" 
                     />
                   </div>
                 </div>
@@ -188,7 +188,7 @@ const ContactSection = () => {
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-foreground font-bold text-sm">Phone Number</Label>
                   <div className="relative group">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[#194A94] transition-colors" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[#133B76] transition-colors" />
                     <Input 
                       id="phone" 
                       type="tel" 
@@ -196,7 +196,7 @@ const ContactSection = () => {
                       required 
                       value={formData.phone} 
                       onChange={e => setFormData({ ...formData, phone: e.target.value })} 
-                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#194A94]" 
+                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76]" 
                     />
                   </div>
                 </div>
@@ -205,14 +205,14 @@ const ContactSection = () => {
               <div className="space-y-2">
                 <Label htmlFor="address" className="text-foreground font-bold text-sm">Address / Location</Label>
                 <div className="relative group">
-                  <MapPin className="absolute left-4 top-4 w-5 h-5 text-muted-foreground group-focus-within:text-[#194A94] transition-colors" />
+                  <MapPin className="absolute left-4 top-4 w-5 h-5 text-muted-foreground group-focus-within:text-[#133B76] transition-colors" />
                   <Textarea 
                     id="address" 
                     placeholder="Your complete address" 
                     required 
                     value={formData.address} 
                     onChange={e => setFormData({ ...formData, address: e.target.value })} 
-                    className="pl-12 py-4 min-h-[120px] bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#194A94] resize-y" 
+                    className="pl-12 py-4 min-h-[120px] bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76] resize-y" 
                   />
                 </div>
               </div>
@@ -221,14 +221,14 @@ const ContactSection = () => {
                 <div className="space-y-2">
                   <Label htmlFor="monthlyBill" className="text-foreground font-bold text-sm">Average Monthly Bill (₹)</Label>
                   <div className="relative group">
-                    <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[#194A94] transition-colors" />
+                    <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[#133B76] transition-colors" />
                     <Input 
                       id="monthlyBill" 
                       type="number" 
                       placeholder="e.g., 5000" 
                       value={formData.monthlyBill} 
                       onChange={e => setFormData({ ...formData, monthlyBill: e.target.value })} 
-                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#194A94]" 
+                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76]" 
                     />
                   </div>
                 </div>
@@ -236,7 +236,7 @@ const ContactSection = () => {
                 <div className="space-y-2">
                   <Label htmlFor="customerType" className="text-foreground font-bold text-sm">Customer Type</Label>
                   <Select value={formData.customerType} onValueChange={value => setFormData({ ...formData, customerType: value })}>
-                    <SelectTrigger className="h-14 bg-muted/50 border-border rounded-xl text-base focus:ring-[#194A94]">
+                    <SelectTrigger className="h-14 bg-muted/50 border-border rounded-xl text-base focus:ring-[#133B76]">
                       <div className="flex items-center">
                         <Building2 className="w-5 h-5 text-muted-foreground mr-3" />
                         <SelectValue placeholder="Select type" />
@@ -258,14 +258,14 @@ const ContactSection = () => {
                   placeholder="Tell us more about your specific requirements..." 
                   value={formData.message} 
                   onChange={e => setFormData({ ...formData, message: e.target.value })} 
-                  className="p-4 min-h-[120px] bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#194A94] resize-y" 
+                  className="p-4 min-h-[120px] bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76] resize-y" 
                 />
               </div>
 
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="w-full h-14 rounded-xl text-lg font-bold bg-[#194A94] hover:bg-[#194A94]/90 text-white transition-all duration-300 mt-4 shadow-none"
+                className="w-full h-14 rounded-xl text-lg font-bold bg-[#133B76] hover:bg-[#133B76]/90 text-white transition-all duration-300 mt-4 shadow-none"
               >
                 <Send className="w-5 h-5 mr-2" />
                 {isSubmitting ? "Submitting Inquiry..." : "Submit Inquiry"}

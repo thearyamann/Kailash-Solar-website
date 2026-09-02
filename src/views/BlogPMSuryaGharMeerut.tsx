@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Phone } from 'lucide-react';
+import { ArrowLeft, Share2, ArrowRight, CheckCircle2, Phone } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import StickyCTA from '@/components/StickyCTA';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/pm-surya-ghar-meerut-hero.webp';
 import {
@@ -98,8 +99,8 @@ const SubsidyTable = ({
   headers: string[];
   rows: (string | number)[][];
 }) => (
-  <div className="my-6 rounded-xl border border-border overflow-hidden">
-    <Table>
+  <div className="my-6 rounded-xl border border-border overflow-x-auto">
+    <Table className="min-w-[600px]">
       <TableHeader>
         <TableRow className="bg-primary/5">
           {headers.map((h) => (
@@ -135,8 +136,20 @@ const P = ({ children }: { children: React.ReactNode }) => (
 );
 
 const BlogPMSuryaGharMeerut = () => {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollTop;
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scroll = `${totalScroll / windowHeight}`;
+      setScrollProgress(Number(scroll) * 100);
+    }
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   const canonical = `${SITE_URL}${SLUG}`;
   const title =
@@ -155,12 +168,42 @@ const BlogPMSuryaGharMeerut = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
       />
 
-      <Header />
+      <div className="hidden md:block">
+        <Header />
+      </div>
 
-      <main>
+      {/* Mobile App-like Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/95 backdrop-blur-md z-50 border-b border-slate-200 flex items-center justify-between px-4 shadow-sm">
+        <Link href="/" className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors active:scale-95">
+          <ArrowLeft className="w-5 h-5 text-slate-700" />
+        </Link>
+        <span className="font-bold text-sm truncate px-3 text-slate-800">PM Surya Ghar Yojana</span>
+        <button 
+          onClick={() => {
+            if (navigator.share) {
+              navigator.share({
+                title: 'PM Surya Ghar Subsidy Meerut',
+                url: window.location.href
+              }).catch(console.error);
+            }
+          }}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors active:scale-95"
+        >
+          <Share2 className="w-4 h-4 text-slate-700" />
+        </button>
+        {/* Progress Bar */}
+        <div className="absolute bottom-0 left-0 h-[2px] bg-primary/20 w-full">
+          <div 
+            className="h-full bg-primary transition-all duration-150 ease-out" 
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+      </div>
+
+      <main className="pt-14 md:pt-0">
         {/* Hero Image */}
         <section className="bg-card">
-          <div className="container-custom pt-6 md:pt-10">
+          <div className="w-full md:container-custom md:pt-10">
             <img
               src={heroImage.src}
               alt="How to get PM Surya Ghar subsidy in Meerut — up to ₹1,08,000 combined central and UP state subsidy"
@@ -168,13 +211,13 @@ const BlogPMSuryaGharMeerut = () => {
               height={854}
               fetchPriority="high"
               decoding="async"
-              className="w-full h-auto rounded-2xl"
+              className="w-full h-auto md:rounded-2xl"
             />
           </div>
         </section>
 
         {/* Hero */}
-        <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground mt-8 md:mt-12">
+        <section className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground md:mt-12">
           <div className="container-custom py-12 md:py-16">
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-2 bg-accent/20 border border-accent/30 rounded-full px-4 py-1.5 mb-6">
@@ -547,10 +590,7 @@ const BlogPMSuryaGharMeerut = () => {
         </article>
       </main>
 
-      {/* Mobile sticky CTA */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur border-t border-border p-3">
-        <CTAButton className="w-full" />
-      </div>
+      <StickyCTA />
 
       <Footer />
     </div>

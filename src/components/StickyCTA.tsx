@@ -81,7 +81,7 @@ const StickyCTA = () => {
 
           <a 
             href="tel:+918999999654"
-            className="h-[46px] bg-[#194A94] hover:bg-[#153a75] text-white rounded-[1.5rem] px-4 sm:px-6 flex items-center whitespace-nowrap flex-shrink-0 justify-center gap-2 font-bold text-sm transition-transform active:scale-95"
+            className="h-[46px] bg-[#133B76] hover:bg-[#0f3060] text-white rounded-[1.5rem] px-4 sm:px-6 flex items-center whitespace-nowrap flex-shrink-0 justify-center gap-2 font-bold text-sm transition-transform active:scale-95"
             aria-label="Call Us Now"
             onClick={() => {
               if (typeof window !== 'undefined') {

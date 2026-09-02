@@ -38,18 +38,18 @@ const Countdown = () => {
       {/* Desktop View: Fancy Boxes */}
       <div className="hidden md:flex items-center gap-1 ml-3 lg:ml-5 shrink-0">
         <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
-          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#194A94]">{formatNum(timeLeft.days)}</span>
-          <span className="text-[6px] tracking-widest uppercase text-[#194A94]/70 -mt-[1px] font-bold">Days</span>
+          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#133B76]">{formatNum(timeLeft.days)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-[#133B76]/70 -mt-[1px] font-bold">Days</span>
         </div>
         <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
         <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
-          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#194A94]">{formatNum(timeLeft.hours)}</span>
-          <span className="text-[6px] tracking-widest uppercase text-[#194A94]/70 -mt-[1px] font-bold">Hrs</span>
+          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#133B76]">{formatNum(timeLeft.hours)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-[#133B76]/70 -mt-[1px] font-bold">Hrs</span>
         </div>
         <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
         <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
-          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#194A94]">{formatNum(timeLeft.mins)}</span>
-          <span className="text-[6px] tracking-widest uppercase text-[#194A94]/70 -mt-[1px] font-bold">Min</span>
+          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#133B76]">{formatNum(timeLeft.mins)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-[#133B76]/70 -mt-[1px] font-bold">Min</span>
         </div>
         <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
         <div className="flex flex-col items-center justify-center bg-gradient-to-b from-[#FFAE00] to-[#E69D00] rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
