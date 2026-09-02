@@ -197,7 +197,7 @@ const BlogSolarPanelPriceMeerut = () => {
           onClick={() => {
             if (navigator.share) {
               navigator.share({
-                title: 'Solar Panel Price Guide 2025',
+                title: 'Solar Panel Price Guide 2026',
                 url: window.location.href
               }).catch(console.error);
             }
@@ -222,11 +222,11 @@ const BlogSolarPanelPriceMeerut = () => {
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 rounded-full px-4 py-1.5 mb-6">
                 <span className="text-accent text-sm font-bold uppercase tracking-wider">
-                  Solar Price Guide 2025
+                  Solar Price Guide 2026
                 </span>
               </div>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-[1.15] mb-6 text-slate-900 font-montserrat">
-                Solar Panel Price in Meerut (2025): Costs, Subsidies & ROI Complete Guide
+                Solar Panel Price in Meerut (2026): Costs, Subsidies & ROI Complete Guide
               </h1>
               <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-3xl mx-auto">
                 Discover the exact solar panel cost in Meerut for residential and commercial systems. Learn how to calculate your savings, claim the PM Surya Ghar subsidy, and say goodbye to expensive electricity bills forever.
@@ -273,7 +273,7 @@ const BlogSolarPanelPriceMeerut = () => {
                 Fortunately, homeowners are fighting back. The adoption of rooftop solar in areas like Shastri Nagar, Ganga Nagar, Modipuram, and Pallavpuram is skyrocketing. Why? Because installing solar panels is no longer an expensive luxury; it is a smart, highly subsidized financial investment. With the launch of the PM Surya Ghar Muft Bijli Yojana, transitioning to green energy has never been more affordable.
               </P>
               <P>
-                At <Link href="/" className="text-primary font-bold hover:underline">Kailash Solar</Link>, the leading <Link href="/solar-company-meerut" className="text-primary font-bold hover:underline">Solar Company in Meerut</Link>, our mission is to provide transparent, premium, and hassle-free solar EPC (Engineering, Procurement, and Construction) services. In this comprehensive guide, we will break down exactly what you can expect to pay for a solar system in Meerut in 2025, how the subsidy works, and how much money you will ultimately save.
+                At <Link href="/" className="text-primary font-bold hover:underline">Kailash Solar</Link>, the leading <Link href="/solar-company-meerut" className="text-primary font-bold hover:underline">Solar Company in Meerut</Link>, our mission is to provide transparent, premium, and hassle-free solar EPC (Engineering, Procurement, and Construction) services. In this comprehensive guide, we will break down exactly what you can expect to pay for a solar system in Meerut in 2026, how the subsidy works, and how much money you will ultimately save.
               </P>
               
               <div className="w-full aspect-[16/9] bg-slate-200 rounded-2xl flex items-center justify-center my-10 border border-slate-300">

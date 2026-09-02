@@ -14,7 +14,7 @@ const BlogSection = () => {
       image: pmSuryaGharHero,
     },
     {
-      title: 'Solar Panel Price in Meerut (2025): Costs, Subsidies & Complete Guide',
+      title: 'Solar Panel Price in Meerut (2026): Costs, Subsidies & ROI Complete Guide',
       excerpt:
         'Discover the exact solar panel cost in Meerut for residential and commercial systems. Learn how to calculate your savings and choose the right system size.',
       category: 'Pricing Guide',

@@ -2,7 +2,7 @@ import BlogSolarPanelPriceMeerut from '@/views/BlogSolarPanelPriceMeerut';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Solar Panel Price in Meerut (2025) | Installation Cost & Subsidy',
+  title: 'Solar Panel Price in Meerut (2026): Costs, Subsidies & ROI Complete Guide',
   description: 'Find out the exact solar panel price in Meerut for 2kW, 3kW, 5kW, and 10kW systems. Learn about installation costs, PM Surya Ghar subsidy, and ROI.',
   keywords: 'Solar Panel Price in Meerut, Solar Panel Cost in Meerut, Solar System Price Meerut, Solar Installation Cost Meerut, 3kW Solar System Price Meerut, 5kW Solar System Price Meerut, 10kW Solar System Price Meerut, Best Solar Company Meerut, PM Surya Ghar Yojana Meerut',
 };
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Solar Panel Price in Meerut (2025) | Installation Cost & Subsidy",
+  "headline": "Solar Panel Price in Meerut (2026): Costs, Subsidies & ROI Complete Guide",
   "description": "Find out the exact solar panel price in Meerut for 2kW, 3kW, 5kW, and 10kW systems. Learn about installation costs, PM Surya Ghar subsidy, and ROI.",
   "author": {
     "@type": "Organization",
