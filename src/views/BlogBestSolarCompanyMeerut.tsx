@@ -8,8 +8,8 @@ import { BookVisitModal } from "@/components/BookVisitModal";
 import { Button } from "@/components/ui/button";
 import { Phone, ShieldCheck, Sun, Zap, CheckCircle2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Progress } from "@/components/ui/progress";
-import MobileHeader from "@/components/MobileHeader";
+import Link from "next/link";
+import { ArrowLeft, Share2 } from "lucide-react";
 
 const H2 = ({ children, id }: { children: React.ReactNode; id?: string }) => (
   <h2 id={id} className="text-2xl md:text-3xl font-bold text-slate-900 mt-12 mb-6 font-montserrat scroll-mt-24">
@@ -35,16 +35,52 @@ const BlogBestSolarCompanyMeerut = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Why Kailash Solar Is a Leading Solar Company in Meerut',
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <MobileHeader />
 
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-slate-100 hidden md:block">
-        <Progress value={scrollProgress} className="h-full bg-slate-100 [&>div]:bg-primary rounded-none" />
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 h-14 flex items-center justify-between">
+        <Link href="/solar-company-meerut" className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors">
+          <ArrowLeft className="w-5 h-5 text-slate-700" />
+        </Link>
+        <span className="font-bold text-slate-900 text-sm truncate max-w-[200px]">Why Kailash Solar...</span>
+        <button 
+          onClick={handleShare}
+          className="p-2 -mr-2 rounded-full hover:bg-slate-100 transition-colors"
+        >
+          <Share2 className="w-4 h-4 text-slate-700" />
+        </button>
+        {/* Progress Bar */}
+        <div className="absolute bottom-0 left-0 h-[2px] bg-primary/20 w-full">
+          <div 
+            className="h-full bg-primary transition-all duration-150 ease-out" 
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
       </div>
 
-      <main>
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-slate-100 hidden md:block">
+        <div className="h-full bg-primary transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
+      </div>
+
+      <main className="pt-14 md:pt-0">
         <div className="bg-slate-900 text-white py-16 md:py-24 relative overflow-hidden">
           <div className="absolute inset-0 opacity-20 bg-[url('/panel.jpg')] bg-cover bg-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent" />
