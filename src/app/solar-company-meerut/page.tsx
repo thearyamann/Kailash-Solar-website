@@ -206,9 +206,9 @@ export default function SolarCompanyMeerut() {
                   { title: "High ROI & Payback", desc: "Recover your investment in 3-4 years and enjoy free electricity for 25+ years." },
                   { title: "Eco-Friendly Power", desc: "Reduce your carbon footprint and contribute to a greener, cleaner Meerut." },
                 ].map((item, i) => (
-                  <li key={i} className="flex gap-4 lg:gap-5 group items-start">
-                    <div className="shrink-0 w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20 group-hover:bg-accent transition-colors duration-300">
-                      <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6 text-accent group-hover:text-white transition-colors duration-300" />
+                  <li key={i} className="flex gap-4 lg:gap-5 items-start">
+                    <div className="shrink-0 w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
+                      <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6 text-accent" />
                     </div>
                     <div>
                       <h4 className="text-[16px] lg:text-xl font-bold mb-1 text-slate-900 leading-tight">{item.title}</h4>
