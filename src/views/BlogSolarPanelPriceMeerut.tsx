@@ -221,10 +221,10 @@ const BlogSolarPanelPriceMeerut = () => {
               <H2 id="introduction">1. The Rise of Rooftop Solar in Meerut</H2>
               <P>
                 If you live in Meerut, you are probably familiar with two things: abundant sunshine throughout the year, and constantly rising electricity tariffs from PVVNL. Over the last few years, electricity prices have surged significantly, putting an unnecessary financial burden on middle-class families, large joint households, and local businesses alike.
-              </p>
+              </P>
               <P>
                 Fortunately, homeowners are fighting back. The adoption of rooftop solar in areas like Shastri Nagar, Ganga Nagar, Modipuram, and Pallavpuram is skyrocketing. Why? Because installing solar panels is no longer an expensive luxury; it is a smart, highly subsidized financial investment. With the launch of the PM Surya Ghar Muft Bijli Yojana, transitioning to green energy has never been more affordable.
-              </p>
+              </P>
               <P>
                 At <Link href="/" className="text-primary font-bold hover:underline">Kailash Solar</Link>, the leading <Link href="/solar-company-meerut" className="text-primary font-bold hover:underline">Solar Company in Meerut</Link>, our mission is to provide transparent, premium, and hassle-free solar EPC (Engineering, Procurement, and Construction) services. In this comprehensive guide, we will break down exactly what you can expect to pay for a solar system in Meerut in 2025, how the subsidy works, and how much money you will ultimately save.
               </P>
