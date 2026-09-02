@@ -513,12 +513,18 @@ const BlogSolarPanelPriceMeerut = () => {
 
               {/* Section 8 */}
               <H2 id="why-kailash">8. Why Choose Kailash Solar in Meerut?</H2>
+              
+              <div className="bg-primary/5 rounded-2xl p-6 border border-primary/20 mb-8 shadow-sm">
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Meerut's #1 Choice & Most Trusted Solar Company</h3>
+                <p className="text-slate-700 leading-relaxed">
+                  With hundreds of successful residential and commercial installations across the city, Kailash Solar has proudly earned the reputation as the <strong>most trusted and #1 solar company in Meerut</strong>. We do not just sell panels; we build 25-year relationships with our customers by prioritizing strict engineering standards, transparent pricing, and unparalleled after-sales service.
+                </p>
+              </div>
+
               <P>
-                As a homeowner, you are making an investment meant to last 25 years. Choosing a fly-by-night installer offering unrealistically cheap rates is a massive risk that often leads to rejected subsidies, poor wiring, and zero after-sales support.
+                As a homeowner, you are making an investment meant to last over two decades. Choosing a fly-by-night installer offering unrealistically cheap rates is a massive risk that often leads to rejected subsidies, poor wiring, and zero support when things break down. Here is why locals consistently choose us:
               </P>
-              <P>
-                As the <strong>Best Solar Company in Meerut</strong>, Kailash Solar stands out because:
-              </P>
+              
               <ul className="grid sm:grid-cols-2 gap-4 my-8">
                 <li className="bg-white border border-slate-200 p-4 rounded-xl flex items-start gap-3 shadow-sm">
                   <ShieldCheck className="w-6 h-6 text-green-500 shrink-0 mt-0.5" />
