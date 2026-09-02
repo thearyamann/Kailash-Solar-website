@@ -222,50 +222,64 @@ export default function SolarCompanyMeerut() {
         </div>
       </section>
 
-      {/* 4. Local Projects (Area based) */}
-      <section className="py-24 bg-slate-50">
+      {/* 4. Happy Customers (Area based) */}
+      <section className="py-12 lg:py-24 bg-slate-50">
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold font-montserrat mb-6 text-slate-900">Solar Installations in Meerut</h2>
-            <p className="text-lg text-slate-600 font-medium">Take a look at some of our recent rooftop solar and commercial projects powering homes and businesses across the city.</p>
+          <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold font-montserrat mb-4 md:mb-6 text-slate-900">Happy Solar Customers</h2>
+            <p className="text-[16px] md:text-lg text-slate-600 font-medium">Join hundreds of families across Meerut who have slashed their electricity bills and switched to green energy.</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="rounded-[2rem] overflow-hidden aspect-[4/3] group relative shadow-lg">
-              <img src={residential2.src} alt="Solar Panels in Shastri Nagar" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent flex items-end p-8">
+          <div className="grid grid-cols-2 gap-4 md:gap-8 max-w-5xl mx-auto">
+            
+            <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
+              <img src={residential2.src} alt="Happy Customer in Shastri Nagar" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
                 <div>
-                  <h3 className="text-white font-bold text-2xl mb-1">5kW Residential Setup</h3>
-                  <div className="flex items-center text-white/80 font-medium">
-                    <MapPin className="w-4 h-4 mr-1" /> Shastri Nagar, Meerut
+                  <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">Sharma Family - 5kW</h3>
+                  <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
+                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">Shastri Nagar, Meerut</span>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="rounded-[2rem] overflow-hidden aspect-[4/3] group relative shadow-lg">
-              <img src={project1.src} alt="Solar Panels in Pallavpuram" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent flex items-end p-8">
+            <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
+              <img src={project1.src} alt="Happy Customer in Pallavpuram" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
                 <div>
-                  <h3 className="text-white font-bold text-2xl mb-1">10kW Commercial Roof</h3>
-                  <div className="flex items-center text-white/80 font-medium">
-                    <MapPin className="w-4 h-4 mr-1" /> Pallavpuram, Meerut
+                  <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">Gupta Residence - 3kW</h3>
+                  <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
+                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">Pallavpuram, Meerut</span>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="rounded-[2rem] overflow-hidden aspect-[4/3] group relative shadow-lg">
-              <img src={project3.src} alt="Solar Panels in Modipuram" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent flex items-end p-8">
+            <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
+              <img src={project3.src} alt="Happy Customer in Modipuram" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
                 <div>
-                  <h3 className="text-white font-bold text-2xl mb-1">50kW Industrial Plant</h3>
-                  <div className="flex items-center text-white/80 font-medium">
-                    <MapPin className="w-4 h-4 mr-1" /> Modipuram, Meerut
+                  <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">Singh Villa - 7kW</h3>
+                  <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
+                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">Modipuram, Meerut</span>
                   </div>
                 </div>
               </div>
             </div>
+
+            <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
+              <img src={residential1.src} alt="Happy Customer in Kankerkhera" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
+                <div>
+                  <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">Verma House - 5kW</h3>
+                  <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
+                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">Kankerkhera, Meerut</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
