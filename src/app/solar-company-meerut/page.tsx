@@ -9,7 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { 
   ArrowRight, Phone, CheckCircle2, ShieldCheck, Zap, 
   MapPin, Star, Sun, Calculator, Building2, 
-  Wrench, FileText, IndianRupee, TrendingUp, Leaf
+  Wrench, FileText, IndianRupee, TrendingUp, Leaf, ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -310,23 +310,28 @@ export default function SolarCompanyMeerut() {
       </section>
 
       {/* 7. Areas We Serve */}
-      <section className="py-24 bg-slate-50">
+      <section className="py-12 lg:py-24 bg-slate-50">
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold font-montserrat mb-6 text-slate-900">Service Areas in & Around Meerut</h2>
-            <p className="text-lg text-slate-600 font-medium">We proudly install and maintain solar panel systems across the entire Meerut district.</p>
+          <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-montserrat mb-4 md:mb-6 text-slate-900">Service Areas in & Around Meerut</h2>
+            <p className="text-[16px] md:text-lg text-slate-600 font-medium">We proudly install and maintain solar panel systems across the entire Meerut district.</p>
           </div>
           
-          <div className="max-w-5xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-3">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
               {[
                 "Meerut City", "Shastri Nagar", "Jagriti Vihar", "Ganga Nagar", 
                 "Pallavpuram", "Kanker Khera", "Modipuram", "Partapur", 
-                "Sardhana", "Mawana", "Daurala", "Parikshitgarh", 
-                "Rohta", "Jani", "Kharkhoda"
+                "Sardhana", "Mawana", "Daurala", "Parikshitgarh"
               ].map((area, i) => (
-                <div key={i} className="bg-white border border-slate-200 px-6 py-3 rounded-full text-slate-700 font-bold shadow-sm flex items-center gap-2 hover:border-primary hover:text-primary transition-colors cursor-default">
-                  <MapPin className="w-4 h-4" /> {area}
+                <div key={i} className="group bg-white p-3 md:p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-accent/30 transition-all duration-300 flex items-center justify-between cursor-default">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-accent/10 transition-colors shrink-0">
+                      <MapPin className="w-4 h-4 md:w-5 md:h-5 text-slate-400 group-hover:text-accent transition-colors" />
+                    </div>
+                    <span className="font-bold text-slate-700 group-hover:text-slate-900 text-[13px] md:text-base leading-tight">{area}</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-accent opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 hidden md:block" />
                 </div>
               ))}
             </div>
