@@ -199,24 +199,24 @@ export default function SolarCompanyMeerut() {
                 <p className="lg:hidden text-[15px] text-slate-500 mt-2">Why Meerut is switching to rooftop solar</p>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-8">
+              <ul className="space-y-5 lg:space-y-8">
                 {[
-                  { title: "Reduce Bills by 95%", desc: "Generate your own power and drastically reduce reliance on the PVVNL grid.", icon: Zap, color: "text-amber-500", bg: "bg-amber-100/60" },
-                  { title: "Government Subsidy", desc: "Get direct bank transfers up to ₹1,08,000 under the PM Surya Ghar Yojana.", icon: IndianRupee, color: "text-emerald-500", bg: "bg-emerald-100/60" },
-                  { title: "High ROI & Payback", desc: "Recover your investment in 3-4 years and enjoy free electricity for 25+ years.", icon: TrendingUp, color: "text-blue-500", bg: "bg-blue-100/60" },
-                  { title: "Eco-Friendly Power", desc: "Reduce your carbon footprint and contribute to a greener, cleaner Meerut.", icon: Leaf, color: "text-green-500", bg: "bg-green-100/60" },
+                  { title: "Reduce Bills by 95%", desc: "Generate your own power and drastically reduce reliance on the PVVNL grid." },
+                  { title: "Government Subsidy", desc: "Get direct bank transfers up to ₹1,08,000 under the PM Surya Ghar Yojana." },
+                  { title: "High ROI & Payback", desc: "Recover your investment in 3-4 years and enjoy free electricity for 25+ years." },
+                  { title: "Eco-Friendly Power", desc: "Reduce your carbon footprint and contribute to a greener, cleaner Meerut." },
                 ].map((item, i) => (
-                  <div key={i} className="flex gap-4 p-4 lg:p-0 bg-white lg:bg-transparent rounded-2xl shadow-sm lg:shadow-none border border-slate-100 lg:border-none items-start group">
-                    <div className={`shrink-0 w-12 h-12 rounded-[14px] ${item.bg} flex items-center justify-center border border-white/50 lg:border-none lg:group-hover:bg-accent transition-colors duration-300`}>
-                      <item.icon className={`w-6 h-6 ${item.color} lg:group-hover:text-white transition-colors duration-300`} />
+                  <li key={i} className="flex gap-4 lg:gap-5 group items-start">
+                    <div className="shrink-0 w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20 group-hover:bg-accent transition-colors duration-300">
+                      <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6 text-accent group-hover:text-white transition-colors duration-300" />
                     </div>
-                    <div className="pt-0.5">
-                      <h4 className="text-[17px] lg:text-xl font-bold mb-1 text-slate-900 leading-tight">{item.title}</h4>
+                    <div>
+                      <h4 className="text-[16px] lg:text-xl font-bold mb-1 text-slate-900 leading-tight">{item.title}</h4>
                       <p className="text-[14px] lg:text-[16px] text-slate-600 leading-relaxed">{item.desc}</p>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </div>
         </div>
