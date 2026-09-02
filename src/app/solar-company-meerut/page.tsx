@@ -270,10 +270,31 @@ export default function SolarCompanyMeerut() {
                 The Government of India is offering massive subsidies to homeowners in Meerut installing rooftop solar panels. As an MNRE-approved vendor, Kailash Solar helps you claim this subsidy seamlessly.
               </p>
               <div className="mb-8">
-                <ul className="space-y-4 md:space-y-5">
-                  <li className="flex items-center gap-3 text-[15px] md:text-lg font-bold"><CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> Up to ₹30,000 for 1kW systems</li>
-                  <li className="flex items-center gap-3 text-[15px] md:text-lg font-bold"><CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> Up to ₹60,000 for 2kW systems</li>
-                  <li className="flex items-center gap-3 text-[15px] md:text-lg font-bold"><CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> Up to ₹78,000 for 3kW+ systems</li>
+                <ul className="space-y-4 md:space-y-6">
+                  <li className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
+                      <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 1kW System: Up to ₹45,000 Subsidy
+                    </div>
+                    <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
+                      (₹30,000 Central + ₹15,000 UP State)
+                    </div>
+                  </li>
+                  <li className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
+                      <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 2kW System: Up to ₹90,000 Subsidy
+                    </div>
+                    <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
+                      (₹60,000 Central + ₹30,000 UP State)
+                    </div>
+                  </li>
+                  <li className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3 text-[15px] md:text-lg font-bold">
+                      <CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> 3kW+ System: Up to ₹1,08,000 Subsidy
+                    </div>
+                    <div className="text-[13px] md:text-[15px] text-white/80 ml-9 md:ml-10 font-medium">
+                      (₹78,000 Central + ₹30,000 UP State)
+                    </div>
+                  </li>
                 </ul>
               </div>
               <div className="mt-8 md:mt-10 flex">
