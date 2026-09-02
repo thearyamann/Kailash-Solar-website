@@ -68,7 +68,7 @@ const BlogSection = () => {
                 
                 {/* Image Area with Floating Badges */}
                 <div className="relative h-60 overflow-hidden bg-muted flex-shrink-0">
-                  {post.isVideo ? (
+                  {(post as any).isVideo ? (
                     <video
                       src={post.image.src}
                       autoPlay
