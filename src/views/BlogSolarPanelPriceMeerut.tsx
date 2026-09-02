@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, MapPin, Zap, TrendingUp, IndianRupee, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Share2, ArrowRight, CheckCircle2, MapPin, Zap, TrendingUp, IndianRupee, ShieldCheck, Phone } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -123,8 +123,8 @@ const ComparisonTable = ({
   headers: string[];
   rows: (string | React.ReactNode)[][];
 }) => (
-  <div className="my-8 rounded-xl border border-border overflow-hidden shadow-sm">
-    <Table>
+  <div className="my-8 rounded-xl border border-border overflow-x-auto shadow-sm">
+    <Table className="min-w-[600px]">
       <TableHeader>
         <TableRow className="bg-primary/5">
           {headers.map((h) => (
@@ -160,15 +160,57 @@ const P = ({ children }: { children: React.ReactNode }) => (
 );
 
 const BlogSolarPanelPriceMeerut = () => {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollTop;
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scroll = `${totalScroll / windowHeight}`;
+      setScrollProgress(Number(scroll) * 100);
+    }
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <div className="hidden md:block">
+        <Header />
+      </div>
 
-      <main>
+      {/* Mobile App-like Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/95 backdrop-blur-md z-50 border-b border-slate-200 flex items-center justify-between px-4 shadow-sm">
+        <Link href="/" className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors active:scale-95">
+          <ArrowLeft className="w-5 h-5 text-slate-700" />
+        </Link>
+        <span className="font-bold text-sm truncate px-3 text-slate-800">Solar Price Guide</span>
+        <button 
+          onClick={() => {
+            if (navigator.share) {
+              navigator.share({
+                title: 'Solar Panel Price Guide 2025',
+                url: window.location.href
+              }).catch(console.error);
+            }
+          }}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors active:scale-95"
+        >
+          <Share2 className="w-4 h-4 text-slate-700" />
+        </button>
+        {/* Progress Bar */}
+        <div className="absolute bottom-0 left-0 h-[2px] bg-primary/20 w-full">
+          <div 
+            className="h-full bg-primary transition-all duration-150 ease-out" 
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+      </div>
+
+      <main className="pt-14 md:pt-0">
         {/* Hero Area */}
         <section className="bg-slate-50 pt-24 pb-12 md:pt-32 md:pb-16 border-b border-slate-200">
           <div className="container-custom">
@@ -201,7 +243,7 @@ const BlogSolarPanelPriceMeerut = () => {
           <div className="grid lg:grid-cols-[1fr_320px] gap-16">
             
             {/* Main Content */}
-            <div className="max-w-[800px] w-full">
+            <div className="max-w-[800px] w-full min-w-0">
               
               <div className="bg-blue-50/50 rounded-2xl p-6 md:p-8 border border-blue-100 mb-12">
                 <h3 className="font-bold text-slate-900 text-lg mb-4">Table of Contents</h3>
@@ -230,7 +272,7 @@ const BlogSolarPanelPriceMeerut = () => {
               </P>
               
               <div className="w-full aspect-[16/9] bg-slate-200 rounded-2xl flex items-center justify-center my-10 border border-slate-300">
-                <span className="text-slate-500 font-medium">[Image Placeholder: High-quality photo of a recent residential solar installation in Meerut by Kailash Solar]</span>
+                <span className="text-slate-500 font-medium text-center px-4 text-sm md:text-base">[Image Placeholder: High-quality photo of a recent residential solar installation in Meerut by Kailash Solar]</span>
               </div>
 
               {/* Section 2 */}
@@ -466,7 +508,7 @@ const BlogSolarPanelPriceMeerut = () => {
               </ol>
               
               <div className="w-full aspect-[16/9] bg-slate-200 rounded-2xl flex items-center justify-center my-10 border border-slate-300">
-                <span className="text-slate-500 font-medium">[Image Placeholder: Infographic showing the timeline of a typical solar installation]</span>
+                <span className="text-slate-500 font-medium text-center px-4 text-sm md:text-base">[Image Placeholder: Infographic showing the timeline of a typical solar installation]</span>
               </div>
 
               {/* Section 8 */}
