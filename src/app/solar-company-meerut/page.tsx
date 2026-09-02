@@ -153,9 +153,9 @@ export default function SolarCompanyMeerut() {
       </section>
 
       {/* 2. Why Choose Us (Floating Images Layout) */}
-      <section className="py-24 bg-slate-50">
+      <section className="pt-16 pb-8 lg:py-24 bg-slate-50">
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-20">
+          <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-20">
             <h2 className="text-3xl md:text-5xl font-bold font-montserrat mb-6 text-slate-900">Why Choose Kailash Solar in <span className="text-primary">Meerut?</span></h2>
             <p className="text-lg text-slate-600 font-medium">As a local Meerut company, we understand the specific energy needs of our city. We provide end-to-end solar EPC solutions with unmatched quality.</p>
           </div>
@@ -182,13 +182,13 @@ export default function SolarCompanyMeerut() {
       </section>
 
       {/* 3. Benefits of Solar (Native App Mobile / Elegant Desktop) */}
-      <section className="py-12 lg:py-24 bg-slate-50 lg:bg-background">
+      <section className="pt-2 pb-12 lg:py-24 bg-slate-50 lg:bg-background">
         <div className="container mx-auto px-4 lg:px-4">
           <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-16">
             
-            <div className="hidden lg:block lg:w-1/2 relative group">
-              <div className="absolute inset-0 bg-accent/20 rounded-[2rem] transform rotate-3 transition-transform duration-500 group-hover:rotate-6" />
-              <img src="/Happyfamily.png" alt="Benefits of solar panels in Meerut" className="relative rounded-[2rem] shadow-lg w-full object-cover z-10" />
+            <div className="w-full lg:w-1/2 relative group">
+              <div className="hidden lg:block absolute inset-0 bg-accent/20 rounded-[2rem] transform rotate-3 transition-transform duration-500 group-hover:rotate-6" />
+              <img src="/Happyfamily.png" alt="Benefits of solar panels in Meerut" className="relative rounded-2xl lg:rounded-[2rem] shadow-md lg:shadow-lg w-full object-cover z-10" />
             </div>
 
             <div className="w-full lg:w-1/2 space-y-6 lg:space-y-8">
