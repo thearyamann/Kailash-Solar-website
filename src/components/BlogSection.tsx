@@ -13,7 +13,15 @@ const BlogSection = () => {
       href: '/blog/pm-surya-ghar-subsidy-meerut',
       image: pmSuryaGharHero,
     },
-    // More posts will automatically flow into the grid here
+    {
+      title: 'Solar Panel Price in Meerut (2025): Costs, Subsidies & Complete Guide',
+      excerpt:
+        'Discover the exact solar panel cost in Meerut for residential and commercial systems. Learn how to calculate your savings and choose the right system size.',
+      category: 'Pricing Guide',
+      readTime: '15 min read',
+      href: '/blog/solar-panel-price-meerut',
+      image: { src: '/Happyfamily.png' },
+    }
   ];
 
   return (

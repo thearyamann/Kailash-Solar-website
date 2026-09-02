@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Share2, ArrowRight, CheckCircle2, MapPin, Zap, TrendingUp, IndianRupee, ShieldCheck, Phone } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import StickyCTA from '@/components/StickyCTA';
 import { Button } from '@/components/ui/button';
 import { BookVisitModal } from '@/components/BookVisitModal';
 import {
@@ -553,7 +554,7 @@ const BlogSolarPanelPriceMeerut = () => {
               </ul>
 
               <div className="bg-slate-900 text-white rounded-3xl p-8 md:p-12 text-center my-12 shadow-2xl relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[url('/panel.jpg')] bg-cover bg-center" />
+                <div className="absolute inset-0 opacity-20 bg-[url('/Happyfamily.png')] bg-cover bg-center" />
                 <div className="relative z-10">
                   <h3 className="text-3xl md:text-4xl font-bold font-montserrat mb-4">Stop Paying Huge Bills Today</h3>
                   <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">Book a free, no-obligation site survey with our solar experts today. Find out exactly how much you can save.</p>
@@ -614,6 +615,7 @@ const BlogSolarPanelPriceMeerut = () => {
         </article>
       </main>
 
+      <StickyCTA />
       <Footer />
     </div>
   );
