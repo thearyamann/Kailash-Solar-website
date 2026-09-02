@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import StickyCTA from '@/components/StickyCTA';
 import { BookVisitModal } from '@/components/BookVisitModal';
 import { SolarConsultationForm } from '@/components/SolarConsultationForm';
+import BlogSection from "@/components/BlogSection";
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
@@ -448,6 +449,9 @@ export default function SolarCompanyMeerut() {
           </Accordion>
         </div>
       </section>
+
+      {/* 10. Blog Section for SEO */}
+      <BlogSection />
 
       {/* 11 & 12. CTA & Form Section */}
       <section className="py-24 text-white relative overflow-hidden">
