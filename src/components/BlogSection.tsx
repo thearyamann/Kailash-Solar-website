@@ -20,8 +20,7 @@ const BlogSection = () => {
       category: 'Pricing Guide',
       readTime: '15 min read',
       href: '/blog/solar-panel-price-meerut',
-      image: { src: '/herosection.mp4' },
-      isVideo: true,
+      image: { src: '/priceflyer.png' },
     },
     {
       title: 'Why Kailash Solar Is a Leading Solar Company in Meerut',
