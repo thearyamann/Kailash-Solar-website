@@ -9,7 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { 
   ArrowRight, Phone, CheckCircle2, ShieldCheck, Zap, 
   MapPin, Star, Sun, Calculator, Building2, 
-  Wrench, FileText, IndianRupee, TrendingUp, Leaf, ChevronRight
+  Wrench, FileText, IndianRupee, TrendingUp, Leaf, ChevronRight, Users, Plus
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -253,6 +253,23 @@ export default function SolarCompanyMeerut() {
                 </div>
               </div>
             ))}
+            
+            {/* 500+ More Customers Card */}
+            <div className="col-span-2 relative flex flex-col items-center justify-center rounded-2xl md:rounded-[2rem] p-8 md:p-16 overflow-hidden">
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${project2.src})` }}
+              ></div>
+              <div className="absolute inset-0 bg-slate-900/60"></div>
+              
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-accent text-white rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-lg">
+                  <Users className="w-8 h-8 md:w-10 md:h-10" />
+                </div>
+                <h3 className="text-white font-bold text-3xl md:text-5xl mb-2 text-center">500+</h3>
+                <p className="text-white/90 font-medium text-[16px] md:text-xl text-center">More Happy Customers</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -324,16 +341,24 @@ export default function SolarCompanyMeerut() {
                 "Pallavpuram", "Kanker Khera", "Modipuram", "Partapur", 
                 "Sardhana", "Mawana", "Daurala", "Parikshitgarh"
               ].map((area, i) => (
-                <div key={i} className="group bg-white p-3 md:p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-accent/30 transition-all duration-300 flex items-center justify-between cursor-default">
+                <div key={i} className="bg-white p-3 md:p-5 rounded-2xl border border-slate-200 flex items-center justify-between cursor-default">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-accent/10 transition-colors shrink-0">
-                      <MapPin className="w-4 h-4 md:w-5 md:h-5 text-slate-400 group-hover:text-accent transition-colors" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                      <MapPin className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                     </div>
-                    <span className="font-bold text-slate-700 group-hover:text-slate-900 text-[13px] md:text-base leading-tight">{area}</span>
+                    <span className="font-bold text-slate-900 text-[13px] md:text-base leading-tight">{area}</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-accent opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 hidden md:block" />
                 </div>
               ))}
+              {/* 100+ More Areas Card */}
+              <div className="col-span-2 md:col-span-3 lg:col-span-4 bg-accent/5 p-4 md:p-6 rounded-2xl border border-accent/20 flex items-center justify-center cursor-default">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-accent text-white flex items-center justify-center shrink-0">
+                    <Plus className="w-5 h-5 md:w-6 md:h-6" />
+                  </div>
+                  <span className="font-bold text-accent text-[15px] md:text-xl leading-tight">100+ More Areas</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -425,8 +450,12 @@ export default function SolarCompanyMeerut() {
       </section>
 
       {/* 11 & 12. CTA & Form Section */}
-      <section className="py-24 bg-primary text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/hero-solar.webp')] opacity-10 bg-cover bg-center mix-blend-overlay"></div>
+      <section className="py-24 text-white relative overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('/panel.png')` }}
+        ></div>
+        <div className="absolute inset-0 bg-primary/90"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-8">
             <h2 className="text-4xl md:text-6xl font-bold font-montserrat leading-tight">Ready to Go Solar in Meerut?</h2>
