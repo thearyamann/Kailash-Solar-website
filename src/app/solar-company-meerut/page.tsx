@@ -231,55 +231,28 @@ export default function SolarCompanyMeerut() {
           </div>
           
           <div className="grid grid-cols-2 gap-4 md:gap-8 max-w-5xl mx-auto">
-            
-            <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
-              <img src={residential2.src} alt="Happy Customer in Shastri Nagar" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
-                <div>
-                  <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">Sharma Family - 5kW</h3>
-                  <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
-                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">Shastri Nagar, Meerut</span>
+            {[
+              { name: "Sharma Family - 5kW", location: "Shastri Nagar, Meerut", img: residential2.src },
+              { name: "Gupta Residence - 3kW", location: "Pallavpuram, Meerut", img: project1.src },
+              { name: "Singh Villa - 7kW", location: "Modipuram, Meerut", img: project3.src },
+              { name: "Verma House - 5kW", location: "Kankerkhera, Meerut", img: residential1.src },
+              { name: "Agarwal Family - 10kW", location: "Ganga Nagar, Meerut", img: project2.src },
+              { name: "Chauhan Home - 4kW", location: "Saket, Meerut", img: residential2.src },
+              { name: "Bansal Villa - 8kW", location: "Civil Lines, Meerut", img: project1.src },
+              { name: "Tyagi Residence - 5kW", location: "Roorkee Road, Meerut", img: residential1.src },
+            ].map((customer, i) => (
+              <div key={i} className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
+                <img src={customer.img} alt={`Happy Customer in ${customer.location}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
+                  <div>
+                    <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">{customer.name}</h3>
+                    <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
+                      <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">{customer.location}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
-              <img src={project1.src} alt="Happy Customer in Pallavpuram" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
-                <div>
-                  <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">Gupta Residence - 3kW</h3>
-                  <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
-                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">Pallavpuram, Meerut</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
-              <img src={project3.src} alt="Happy Customer in Modipuram" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
-                <div>
-                  <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">Singh Villa - 7kW</h3>
-                  <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
-                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">Modipuram, Meerut</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] group relative shadow-md md:shadow-lg">
-              <img src={residential1.src} alt="Happy Customer in Kankerkhera" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex items-end p-4 md:p-8">
-                <div>
-                  <h3 className="text-white font-bold text-[14px] md:text-2xl mb-1 leading-tight">Verma House - 5kW</h3>
-                  <div className="flex items-center text-white/80 font-medium text-[11px] md:text-base">
-                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0" /> <span className="truncate">Kankerkhera, Meerut</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+            ))}
           </div>
         </div>
       </section>
