@@ -258,35 +258,34 @@ export default function SolarCompanyMeerut() {
       </section>
 
       {/* 5. PM Surya Subsidy Section (Brand Consistent) */}
-      <section className="py-24 bg-primary text-white overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10 bg-[url('/pm-surya-ghar-meerut-hero.webp')] bg-cover bg-center" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2">
-              <div className="inline-block bg-accent text-white px-5 py-2 rounded-full text-sm font-bold mb-6 tracking-wide shadow-md">
+      <section className="py-12 lg:py-24 bg-primary text-white">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+            <div className="w-full lg:w-1/2">
+              <div className="inline-block bg-accent text-white px-4 py-1.5 md:px-5 md:py-2 rounded-full text-[12px] md:text-sm font-bold mb-4 md:mb-6 tracking-wide shadow-md">
                 GOVERNMENT SUBSIDY
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold font-montserrat mb-6">PM Surya Ghar Yojana in Meerut</h2>
-              <p className="text-xl text-white/90 mb-8 leading-relaxed font-medium">
+              <h2 className="text-[28px] md:text-5xl font-bold font-montserrat mb-4 md:mb-6 leading-[1.2]">PM Surya Ghar Yojana in Meerut</h2>
+              <p className="text-[16px] md:text-xl text-white/90 mb-6 md:mb-8 leading-relaxed font-medium">
                 The Government of India is offering massive subsidies to homeowners in Meerut installing rooftop solar panels. As an MNRE-approved vendor, Kailash Solar helps you claim this subsidy seamlessly.
               </p>
-              <div className="bg-white/10 rounded-3xl p-8 border border-white/20 shadow-xl">
-                <ul className="space-y-5">
-                  <li className="flex items-center gap-4 text-lg font-bold"><CheckCircle2 className="w-7 h-7 text-accent shrink-0" /> Up to ₹30,000 for 1kW systems</li>
-                  <li className="flex items-center gap-4 text-lg font-bold"><CheckCircle2 className="w-7 h-7 text-accent shrink-0" /> Up to ₹60,000 for 2kW systems</li>
-                  <li className="flex items-center gap-4 text-lg font-bold"><CheckCircle2 className="w-7 h-7 text-accent shrink-0" /> Up to ₹78,000 for 3kW+ systems</li>
+              <div className="bg-white/10 rounded-2xl md:rounded-3xl p-5 md:p-8 border border-white/20 shadow-xl">
+                <ul className="space-y-4 md:space-y-5">
+                  <li className="flex items-center gap-3 text-[15px] md:text-lg font-bold"><CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> Up to ₹30,000 for 1kW systems</li>
+                  <li className="flex items-center gap-3 text-[15px] md:text-lg font-bold"><CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> Up to ₹60,000 for 2kW systems</li>
+                  <li className="flex items-center gap-3 text-[15px] md:text-lg font-bold"><CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> Up to ₹78,000 for 3kW+ systems</li>
                 </ul>
               </div>
-              <div className="mt-10">
+              <div className="mt-8 md:mt-10 flex">
                 <BookVisitModal>
-                  <Button className="h-14 px-8 rounded-full text-lg font-bold bg-accent hover:bg-accent/90 text-white shadow-lg transition-transform active:scale-95 hover:-translate-y-0.5">
+                  <Button className="w-full md:w-auto h-12 md:h-14 px-8 rounded-full text-[16px] md:text-lg font-bold bg-accent hover:bg-accent/90 text-white shadow-lg transition-transform active:scale-95 hover:-translate-y-0.5">
                     Check Your Eligibility
                   </Button>
                 </BookVisitModal>
               </div>
             </div>
-            <div className="lg:w-1/2">
-              <img src="/pmsurya.webp" alt="PM Surya Ghar Subsidy Meerut" className="rounded-3xl shadow-2xl mx-auto max-w-md w-full border-4 border-white/10" />
+            <div className="w-full lg:w-1/2">
+              <img src="/pmsurya.webp" alt="PM Surya Ghar Subsidy Meerut" className="rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl mx-auto max-w-sm lg:max-w-md w-full border-2 md:border-4 border-white/10" />
             </div>
           </div>
         </div>
