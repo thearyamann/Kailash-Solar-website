@@ -455,7 +455,7 @@ export default function SolarCompanyMeerut() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url('/panel.jpg')` }}
         ></div>
-        <div className="absolute inset-0 bg-primary/90"></div>
+        <div className="absolute inset-0 bg-primary/70"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-8">
             <h2 className="text-4xl md:text-6xl font-bold font-montserrat leading-tight">Ready to Go Solar in Meerut?</h2>
