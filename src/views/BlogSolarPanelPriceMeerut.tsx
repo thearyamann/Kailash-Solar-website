@@ -169,8 +169,12 @@ const BlogSolarPanelPriceMeerut = () => {
     const handleScroll = () => {
       const totalScroll = document.documentElement.scrollTop;
       const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scroll = `${totalScroll / windowHeight}`;
-      setScrollProgress(Number(scroll) * 100);
+      if (windowHeight > 0) {
+        const scroll = `${totalScroll / windowHeight}`;
+        setScrollProgress(Number(scroll) * 100);
+      } else {
+        setScrollProgress(0);
+      }
     }
     
     window.addEventListener('scroll', handleScroll);
@@ -184,7 +188,7 @@ const BlogSolarPanelPriceMeerut = () => {
       </div>
 
       {/* Mobile App-like Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/95 backdrop-blur-md z-50 border-b border-slate-200 flex items-center justify-between px-4 shadow-sm">
+      <div className={`md:hidden fixed top-0 left-0 right-0 h-14 bg-white/95 backdrop-blur-md z-50 border-b border-slate-200 flex items-center justify-between px-4 shadow-sm transition-transform duration-300 ${scrollProgress > 2 ? "translate-y-0" : "-translate-y-full"}`}>
         <Link href="/" className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors active:scale-95">
           <ArrowLeft className="w-5 h-5 text-slate-700" />
         </Link>
@@ -211,7 +215,7 @@ const BlogSolarPanelPriceMeerut = () => {
         </div>
       </div>
 
-      <main className="pt-14 md:pt-0">
+      <main className="pt-0">
         {/* Hero Area */}
         <section className="bg-slate-50 pt-24 pb-12 md:pt-32 md:pb-16 border-b border-slate-200">
           <div className="container-custom">

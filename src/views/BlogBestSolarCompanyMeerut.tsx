@@ -90,7 +90,7 @@ const BlogBestSolarCompanyMeerut = () => {
       <Header />
 
       {/* Mobile Header (Shows only on small screens when scrolling past main header) */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 h-14 flex items-center justify-between">
+      <div className={`md:hidden fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 h-14 flex items-center justify-between transition-transform duration-300 ${scrollProgress > 2 ? 'translate-y-0' : '-translate-y-full'}`}>
         <Link href="/solar-company-meerut" className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors">
           <ArrowLeft className="w-5 h-5 text-slate-700" />
         </Link>
@@ -110,9 +110,9 @@ const BlogBestSolarCompanyMeerut = () => {
         </div>
       </div>
 
-      <main className="pt-14 md:pt-0">
+      <main className="pt-0">
         {/* Hero Area */}
-        <section className="bg-slate-50 pt-24 pb-12 md:pt-32 md:pb-16 border-b border-slate-200">
+        <section className="bg-slate-50 pt-12 pb-12 md:pt-16 md:pb-16 border-b border-slate-200">
           <div className="container-custom">
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 rounded-full px-4 py-1.5 mb-6">
