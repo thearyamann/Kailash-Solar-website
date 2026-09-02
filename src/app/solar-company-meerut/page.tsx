@@ -9,7 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { 
   ArrowRight, Phone, CheckCircle2, ShieldCheck, Zap, 
   MapPin, Star, Sun, Calculator, Building2, 
-  Wrench, FileText, IndianRupee 
+  Wrench, FileText, IndianRupee, TrendingUp, Leaf
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -181,34 +181,42 @@ export default function SolarCompanyMeerut() {
         </div>
       </section>
 
-      {/* 3. Benefits of Solar (Elegant Side-by-Side) */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2 relative group">
+      {/* 3. Benefits of Solar (Native App Mobile / Elegant Desktop) */}
+      <section className="py-12 lg:py-24 bg-slate-50 lg:bg-background">
+        <div className="container mx-auto px-4 lg:px-4">
+          <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-16">
+            
+            <div className="hidden lg:block lg:w-1/2 relative group">
               <div className="absolute inset-0 bg-accent/20 rounded-[2rem] transform rotate-3 transition-transform duration-500 group-hover:rotate-6" />
               <img src="/Happyfamily.png" alt="Benefits of solar panels in Meerut" className="relative rounded-[2rem] shadow-lg w-full object-cover z-10" />
             </div>
-            <div className="lg:w-1/2 space-y-8">
-              <h2 className="text-3xl md:text-5xl font-bold font-montserrat text-slate-900 leading-[1.2]">Smart Reasons to Install Rooftop Solar in Meerut</h2>
-              <ul className="space-y-8">
+
+            <div className="w-full lg:w-1/2 space-y-6 lg:space-y-8">
+              <div className="text-center lg:text-left">
+                <h2 className="text-[26px] md:text-5xl font-bold font-montserrat text-slate-900 leading-[1.2] mb-2 lg:mb-0">
+                  Smart Reasons to Install Solar
+                </h2>
+                <p className="lg:hidden text-[15px] text-slate-500 mt-2">Why Meerut is switching to rooftop solar</p>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-8">
                 {[
-                  { title: "Reduce Bills by 95%", desc: "Generate your own electricity and drastically reduce your reliance on the PVVNL grid." },
-                  { title: "Claim Government Subsidy", desc: "Get direct bank transfers up to ₹1,08,000 under the PM Surya Ghar Muft Bijli Yojana." },
-                  { title: "Increase Property Value", desc: "Homes in Meerut with solar installations sell faster and at a premium price." },
-                  { title: "Eco-Friendly Power", desc: "Reduce your carbon footprint and contribute to a greener, cleaner Uttar Pradesh." },
+                  { title: "Reduce Bills by 95%", desc: "Generate your own power and drastically reduce reliance on the PVVNL grid.", icon: Zap, color: "text-amber-500", bg: "bg-amber-100/60" },
+                  { title: "Government Subsidy", desc: "Get direct bank transfers up to ₹1,08,000 under the PM Surya Ghar Yojana.", icon: IndianRupee, color: "text-emerald-500", bg: "bg-emerald-100/60" },
+                  { title: "High ROI & Payback", desc: "Recover your investment in 3-4 years and enjoy free electricity for 25+ years.", icon: TrendingUp, color: "text-blue-500", bg: "bg-blue-100/60" },
+                  { title: "Eco-Friendly Power", desc: "Reduce your carbon footprint and contribute to a greener, cleaner Meerut.", icon: Leaf, color: "text-green-500", bg: "bg-green-100/60" },
                 ].map((item, i) => (
-                  <li key={i} className="flex gap-5 group">
-                    <div className="shrink-0 w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20 group-hover:bg-accent transition-colors duration-300">
-                      <CheckCircle2 className="w-6 h-6 text-accent group-hover:text-white transition-colors duration-300" />
+                  <div key={i} className="flex gap-4 p-4 lg:p-0 bg-white lg:bg-transparent rounded-2xl shadow-sm lg:shadow-none border border-slate-100 lg:border-none items-start group">
+                    <div className={`shrink-0 w-12 h-12 rounded-[14px] ${item.bg} flex items-center justify-center border border-white/50 lg:border-none lg:group-hover:bg-accent transition-colors duration-300`}>
+                      <item.icon className={`w-6 h-6 ${item.color} lg:group-hover:text-white transition-colors duration-300`} />
                     </div>
-                    <div>
-                      <h4 className="text-xl font-bold mb-1 text-slate-900">{item.title}</h4>
-                      <p className="text-slate-600 leading-relaxed">{item.desc}</p>
+                    <div className="pt-0.5">
+                      <h4 className="text-[17px] lg:text-xl font-bold mb-1 text-slate-900 leading-tight">{item.title}</h4>
+                      <p className="text-[14px] lg:text-[16px] text-slate-600 leading-relaxed">{item.desc}</p>
                     </div>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
         </div>
