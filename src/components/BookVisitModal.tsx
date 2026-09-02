@@ -130,10 +130,10 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
         </DialogTrigger>
       )}
       <DialogContent 
-        className="p-0 border-none bg-transparent shadow-none max-w-md w-[95vw] sm:w-full rounded-xl overflow-hidden"
+        className="p-0 border-none bg-transparent shadow-none max-w-md w-[95vw] sm:w-full rounded-xl overflow-hidden focus:outline-none focus-visible:outline-none"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <div className="w-full bg-card rounded-xl overflow-hidden relative flex flex-col max-h-[90vh] overflow-y-auto hide-scrollbar">
+        <div className="w-full bg-card rounded-xl overflow-hidden relative flex flex-col max-h-[90vh] overflow-y-auto hide-scrollbar focus:outline-none">
           {/* Top Image Banner */}
           <div className="relative h-[140px] sm:h-[160px] w-full bg-slate-200 shrink-0">
             <img 
