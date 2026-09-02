@@ -49,20 +49,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-bold mb-6">Quick Links</h4>
-            <ul className="space-y-3">
-              {["About Us", "Services", "Projects", "Solar Calculator", "Blog", "Contact"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-primary-foreground/90 hover:text-accent transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Services */}
           <div>
             <h4 className="text-lg font-bold mb-6">Our Services</h4>
@@ -79,6 +65,20 @@ const Footer = () => {
                 <li key={service}>
                   <a href="#" className="text-primary-foreground/90 hover:text-accent transition-colors">
                     {service}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-lg font-bold mb-6">Quick Links</h4>
+            <ul className="space-y-3">
+              {["About Us", "Services", "Projects", "Solar Calculator", "Blog", "Contact"].map((link) => (
+                <li key={link}>
+                  <a href="#" className="text-primary-foreground/90 hover:text-accent transition-colors">
+                    {link}
                   </a>
                 </li>
               ))}
