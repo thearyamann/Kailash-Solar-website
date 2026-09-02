@@ -30,7 +30,7 @@ const BlogSection = () => {
       category: 'Meerut Guide',
       readTime: '10 min read',
       href: '/blog/best-solar-company-in-meerut',
-      image: { src: '/panel.jpg' },
+      image: { src: '/Happyfamily.png' },
     }
   ];
 
