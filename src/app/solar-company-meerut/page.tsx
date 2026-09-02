@@ -153,7 +153,7 @@ export default function SolarCompanyMeerut() {
       </section>
 
       {/* 2. Why Choose Us (Floating Images Layout) */}
-      <section className="pt-16 pb-8 lg:py-24 bg-slate-50">
+      <section className="pt-16 pb-10 lg:py-24 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-20">
             <h2 className="text-3xl md:text-5xl font-bold font-montserrat mb-6 text-slate-900">Why Choose Kailash Solar in <span className="text-primary">Meerut?</span></h2>
@@ -182,7 +182,7 @@ export default function SolarCompanyMeerut() {
       </section>
 
       {/* 3. Benefits of Solar (Native App Mobile / Elegant Desktop) */}
-      <section className="pt-2 pb-12 lg:py-24 bg-slate-50 lg:bg-background">
+      <section className="pt-6 pb-12 lg:py-24 bg-slate-50 lg:bg-background">
         <div className="container mx-auto px-4 lg:px-4">
           <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-16">
             
