@@ -20,7 +20,8 @@ const BlogSection = () => {
       category: 'Pricing Guide',
       readTime: '15 min read',
       href: '/blog/solar-panel-price-meerut',
-      image: { src: '/Happyfamily.png' },
+      image: { src: '/herosection.mp4' },
+      isVideo: true,
     },
     {
       title: 'Why Kailash Solar Is a Leading Solar Company in Meerut',
@@ -68,13 +69,24 @@ const BlogSection = () => {
                 
                 {/* Image Area with Floating Badges */}
                 <div className="relative h-60 overflow-hidden bg-muted flex-shrink-0">
-                  <img
-                    src={post.image.src}
-                    alt={post.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
+                  {post.isVideo ? (
+                    <video
+                      src={post.image.src}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                  ) : (
+                    <img
+                      src={post.image.src}
+                      alt={post.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                  )}
                   <div className="absolute top-5 left-5 flex gap-2 z-10">
                     <span className="bg-background/90 backdrop-blur-sm text-foreground font-bold text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg border border-border shadow-sm">
                       {post.category}
