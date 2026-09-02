@@ -269,7 +269,7 @@ export default function SolarCompanyMeerut() {
               <p className="text-[16px] md:text-xl text-white/90 mb-6 md:mb-8 leading-relaxed font-medium">
                 The Government of India is offering massive subsidies to homeowners in Meerut installing rooftop solar panels. As an MNRE-approved vendor, Kailash Solar helps you claim this subsidy seamlessly.
               </p>
-              <div className="bg-white/10 rounded-2xl md:rounded-3xl p-5 md:p-8 border border-white/20 shadow-xl">
+              <div className="mb-8">
                 <ul className="space-y-4 md:space-y-5">
                   <li className="flex items-center gap-3 text-[15px] md:text-lg font-bold"><CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> Up to ₹30,000 for 1kW systems</li>
                   <li className="flex items-center gap-3 text-[15px] md:text-lg font-bold"><CheckCircle2 className="w-6 h-6 md:w-7 md:h-7 text-accent shrink-0" /> Up to ₹60,000 for 2kW systems</li>
