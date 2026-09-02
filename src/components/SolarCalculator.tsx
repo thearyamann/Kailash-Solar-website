@@ -108,6 +108,13 @@ const SolarCalculator = () => {
       roi,
       co2Reduction,
     });
+    
+    // Update URL to reflect system size
+    if (typeof window !== 'undefined') {
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.set('kw', `${systemSize}kw`);
+      window.history.pushState({}, '', newUrl.toString());
+    }
   };
 
   const shareOnWhatsApp = () => {

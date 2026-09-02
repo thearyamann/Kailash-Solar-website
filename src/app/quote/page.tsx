@@ -105,6 +105,13 @@ export default function QuotePage() {
       });
       
       setStep("results");
+      
+      // Update URL to reflect system size, e.g., ?kw=5kw
+      if (typeof window !== 'undefined') {
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('kw', `${systemSize}kw`);
+        window.history.replaceState({}, '', newUrl.toString());
+      }
     }, 2500); // 2.5s loading simulation
   };
 
