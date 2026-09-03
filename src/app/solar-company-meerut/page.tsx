@@ -229,7 +229,7 @@ export default function SolarCompanyMeerut() {
             ].map((feature, i) => (
               <div key={i} className="flex flex-col items-center text-center group">
                 <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 md:mb-8 shadow-sm transition-all duration-500 ">
-                  <img src={feature.img} alt={feature.title} className={`w-full h-full object-cover transition-transform duration-700 ${feature.imgClass || ""}`} />
+                  <img src={feature.img} alt={feature.title} className="w-full h-full object-cover transition-transform duration-700 " />
                 </div>
                 <h3 className="text-[14px] sm:text-base md:text-2xl font-bold mb-1.5 md:mb-3 text-slate-900 leading-tight">{feature.title}</h3>
                 <p className="text-[11px] sm:text-sm md:text-base text-slate-600 leading-snug md:leading-relaxed max-w-sm line-clamp-3 md:line-clamp-none mt-1">{feature.desc}</p>
