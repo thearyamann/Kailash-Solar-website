@@ -4,6 +4,7 @@ import FAQSchema from "../components/FAQSchema";
 import MetaPixel from "../components/MetaPixel";
 import { Providers } from '../components/providers';
 import { GoogleTagManager } from '@next/third-parties/google';
+import NavigationLoader from '../components/NavigationLoader';
 import '../index.css'; // Use existing global styles
 
 export const viewport: Viewport = {
@@ -159,6 +160,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(calculatorSchema) }} />
       </head>
       <body>
+        <NavigationLoader />
         <GoogleTagManager gtmId="GTM-WXGHXT7R" />
         <MetaPixel pixelId="FB-XXXXXXXXX" />
         <Providers>
