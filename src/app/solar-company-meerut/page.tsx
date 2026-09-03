@@ -118,6 +118,9 @@ export default function SolarCompanyMeerut() {
         />
       </head>
 
+      {/* Auto-opening popup modal (same as homepage) */}
+      <BookVisitModal autoOpenDelay={3500} />
+
       <Header />
 
       <section className="relative min-h-[100dvh] md:min-h-[80vh] flex flex-col justify-between md:justify-center overflow-hidden pt-20 pb-0 md:pb-10">
