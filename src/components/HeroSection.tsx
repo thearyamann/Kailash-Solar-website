@@ -84,16 +84,6 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Button 
                 variant="heroOutline" 
-                className="group h-12 px-6 w-full sm:w-auto"
-                asChild
-              >
-                <a href="#calculator">
-                  <Calculator className="mr-2 w-4 h-4" />
-                  Calculate Your Savings
-                </a>
-              </Button>
-              <Button 
-                variant="heroOutline" 
                 className="group h-12 px-6 w-full sm:w-auto bg-accent/20 border-accent/30 hover:bg-accent/30"
                 asChild
               >
