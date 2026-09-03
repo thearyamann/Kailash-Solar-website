@@ -151,23 +151,23 @@ export default function SolarCompanyMeerut() {
               
               {/* Block 1: PM Surya Ghar Vendor */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-2 md:gap-3 text-center md:text-left">
-                <img src="/pmsurya.webp" alt="PM Surya Ghar Vendor" className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0" />
+                <img src="/pmsurya.webp" alt="PM Surya Ghar Vendor" className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
                 <div className="hidden md:block w-[1px] h-10 bg-white/30" />
-                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide">PM Surya Ghar<br/>Vendor</h4>
+                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">PM Surya Ghar<br/>Vendor</h4>
               </div>
 
               {/* Block 2: MNRE */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-2 md:gap-3 text-center md:text-left">
-                <img src="/mnre-logo.svg" alt="MNRE" className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0" />
+                <img src="/mnre-logo.svg" alt="MNRE" className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
                 <div className="hidden md:block w-[1px] h-10 bg-white/30" />
-                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide">MNRE<br/>Approved</h4>
+                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">MNRE<br/>Approved</h4>
               </div>
 
               {/* Block 3: UPNEDA */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-1 md:gap-3 text-center md:text-left">
-                <img src="/upneda-white.png" alt="UPNEDA Approved" className="h-12 md:h-14 w-auto object-contain brightness-0 invert flex-shrink-0 -mb-1 md:mb-0" />
+                <img src="/upneda-white.png" alt="UPNEDA Approved" className="h-12 md:h-14 w-auto object-contain brightness-0 invert flex-shrink-0 -mb-1 md:mb-0 drop-shadow-lg" />
                 <div className="hidden md:block w-[1px] h-10 bg-white/30" />
-                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide">UPNEDA<br/>Approved</h4>
+                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">UPNEDA<br/>Approved</h4>
               </div>
             </div>
 
