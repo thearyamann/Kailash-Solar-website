@@ -2075,6 +2075,10 @@ h1, h2, h3, h4, h5, h6{
 .border-white\/40{
   border-color: rgb(255 255 255 / 0.4);
 }
+.border-blue-700{
+  --tw-border-opacity: 1;
+  border-color: rgb(15 48 96 / var(--tw-border-opacity, 1));
+}
 .border-l-primary{
   border-left-color: hsl(var(--primary));
 }
@@ -2460,6 +2464,10 @@ h1, h2, h3, h4, h5, h6{
 .object-bottom{
   -o-object-position: bottom;
      object-position: bottom;
+}
+.object-left{
+  -o-object-position: left;
+     object-position: left;
 }
 .p-0{
   padding: 0px;

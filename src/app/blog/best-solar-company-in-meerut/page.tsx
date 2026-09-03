@@ -2,14 +2,15 @@ import BlogBestSolarCompanyMeerut from '@/views/BlogBestSolarCompanyMeerut';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Why Kailash Solar Is a Leading Solar Company in Meerut (2025)",
-  description: "Looking for a trusted solar company in Meerut? Discover why homeowners choose Kailash Solar for premium panels, expert in-house installation, and seamless PM Surya Ghar subsidy support.",
+  title: "Solar Company in Meerut for Homes | Why Kailash Solar | Residential Solar EPC",
+  description: "Looking for the right solar company in Meerut for your home? See why Meerut homeowners trust Kailash Solar — UPNEDA-registered, PM Surya Ghar empanelled, 100% in-house installation team, and full subsidy assistance.",
+  keywords: "solar company Meerut, best solar company Meerut, residential solar Meerut, home solar installation Meerut, Kailash Solar Meerut, UPNEDA registered solar Meerut",
   alternates: {
     canonical: "https://kailashsolar.com/blog/best-solar-company-in-meerut"
   },
   openGraph: {
-    title: "Why Kailash Solar Is a Leading Solar Company in Meerut",
-    description: "Looking for a trusted solar company in Meerut? Discover why homeowners choose Kailash Solar for premium panels, expert in-house installation, and seamless PM Surya Ghar subsidy support.",
+    title: "Solar Company in Meerut for Homes | Why Kailash Solar",
+    description: "Why Meerut homeowners choose Kailash Solar — UPNEDA-registered, PM Surya Ghar empanelled, in-house installation team, and full subsidy assistance up to ₹1,08,000.",
     url: "https://kailashsolar.com/blog/best-solar-company-in-meerut",
     siteName: "Kailash Solar",
     images: [
@@ -17,11 +18,17 @@ export const metadata: Metadata = {
         url: "https://kailashsolar.com/panel.jpg",
         width: 1200,
         height: 630,
-        alt: "Kailash Solar engineering team in Meerut",
+        alt: "Kailash Solar team installing home solar panels in Meerut",
       }
     ],
     locale: "en_IN",
     type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Solar Company in Meerut for Homes | Why Kailash Solar",
+    description: "Why Meerut homeowners choose Kailash Solar — UPNEDA-registered, PM Surya Ghar empanelled, in-house team & full subsidy help.",
+    images: ["https://kailashsolar.com/panel.jpg"],
   }
 };
 

@@ -186,7 +186,7 @@ export function SolarConsultationForm() {
           >
             {isSubmitting ? "Booking..." : "Book a FREE Consultation"}
           </Button>
-          <a href="tel:+918999999654" className="flex items-center justify-center w-[56px] h-[56px] shrink-0 bg-primary/10 border border-primary/20 rounded-[14px] text-primary hover:bg-primary hover:text-white transition-all shadow-sm active:scale-[0.98]">
+          <a href="tel:+918999999654" className="flex items-center justify-center w-[56px] h-[56px] shrink-0 bg-blue-600 border border-blue-700 rounded-[14px] text-white hover:bg-blue-700 transition-all shadow-sm active:scale-[0.98]">
             <Phone className="w-[22px] h-[22px] fill-current" />
           </a>
         </div>

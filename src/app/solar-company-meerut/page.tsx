@@ -22,10 +22,33 @@ import project2 from '@/assets/solar-project-2.jpg';
 import project3 from '@/assets/solar-project-3.jpg';
 
 export const metadata: Metadata = {
-  title: "Best Solar Company in Meerut | Rooftop Installation & PM Surya Ghar Subsidy",
-  description: "Looking for the best solar company in Meerut? Kailash Solar offers premium rooftop solar panels, PM Surya Yojana subsidies, and EPC services in Meerut, UP.",
+  title: "Meerut's #1 Choice for Solar Panels for Homes | PM Surya Ghar Subsidy up to ₹1,08,000 | Kailash Solar",
+  description: "Kailash Solar — Meerut's trusted home solar panel company. UPNEDA-registered & PM Surya Ghar empanelled. Install 1–10kW rooftop solar, claim up to ₹1,08,000 subsidy, and get free site visit. Serving Meerut, Ghaziabad & Western UP.",
+  keywords: "solar company in Meerut, home solar panels Meerut, residential solar Meerut, solar panel installation Meerut, PM Surya Ghar Meerut, rooftop solar Meerut, solar subsidy Meerut, UPNEDA solar Meerut, Kailash Solar",
   alternates: {
     canonical: 'https://kailashsolar.com/solar-company-meerut/'
+  },
+  openGraph: {
+    title: "Meerut's #1 Choice for Home Solar Panels | Kailash Solar",
+    description: "Install rooftop solar panels at home in Meerut. Claim up to ₹1,08,000 PM Surya Ghar subsidy. Free site visit. UPNEDA-registered installer. Call 8-999-999-654.",
+    url: "https://kailashsolar.com/solar-company-meerut/",
+    siteName: "Kailash Solar",
+    images: [
+      {
+        url: "https://kailashsolar.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Kailash Solar — Home Solar Panel Installation in Meerut",
+      }
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Meerut's #1 Choice for Home Solar Panels | Kailash Solar",
+    description: "Install rooftop solar at home in Meerut. Up to ₹1,08,000 PM Surya Ghar subsidy. Free site visit. UPNEDA-registered.",
+    images: ["https://kailashsolar.com/og-image.jpg"],
   }
 };
 
@@ -39,14 +62,48 @@ const jsonLd = {
       "@id": "https://kailashsolar.com/solar-company-meerut/#localbusiness",
       "url": "https://kailashsolar.com/solar-company-meerut/",
       "telephone": "+918999999654",
+      "email": "sales@kailashsolar.com",
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "62, Sec 3, Industrial Area, Shatabdi Nagar",
         "addressLocality": "Meerut",
-        "addressRegion": "UP",
+        "addressRegion": "Uttar Pradesh",
+        "postalCode": "250103",
         "addressCountry": "IN"
       },
-      "areaServed": "Meerut",
-      "description": "Premium solar company in Meerut offering rooftop solar installation, PM Surya Ghar subsidy assistance, and EPC services for residential and commercial.",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 28.9845,
+        "longitude": 77.7064
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "areaServed": ["Meerut", "Ghaziabad", "Muzaffarnagar", "Hapur", "Bulandshahr"],
+      "description": "Kailash Solar is a UPNEDA-registered and PM Surya Ghar empanelled solar EPC company in Meerut, offering rooftop solar installation, subsidy assistance, and net metering for homes and businesses.",
+      "sameAs": [
+        "https://kailashsolar.com"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://kailashsolar.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Solar Company in Meerut",
+          "item": "https://kailashsolar.com/solar-company-meerut/"
+        }
+      ]
     }
   ]
 };
@@ -80,11 +137,11 @@ export default function SolarCompanyMeerut() {
           <div className="px-4 md:px-0 flex-grow flex flex-col justify-center md:col-span-7 space-y-4 md:space-y-5 animate-in fade-in slide-in-from-left-8 duration-1000 pt-6 md:pt-0">
 
             <h1 className="text-[38px] leading-[1.1] md:text-5xl lg:text-6xl font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
-              Meerut's No.1 Choice for <span className="text-accent drop-shadow-sm">Solar Company</span>
+              Meerut's #1 Choice for <span className="text-accent drop-shadow-sm">Home Solar Panels</span>
             </h1>
             
             <p className="text-[16px] md:text-xl text-white/90 font-medium leading-relaxed max-w-xl pb-4 md:pb-0">
-              Save up to 95%<sup className="text-sm">*</sup> on electricity bills with government subsidy and easy EMI.
+              Install rooftop solar at home and claim up to ₹1,08,000 in PM Surya Ghar government subsidy — with easy EMI options and a free site visit.
             </p>
             
             <div className="grid grid-cols-3 gap-2 md:flex md:items-center md:gap-6 pt-1 md:pt-2 text-sm font-semibold text-white">
@@ -163,16 +220,16 @@ export default function SolarCompanyMeerut() {
           
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 md:gap-x-12 md:gap-y-16">
             {[
-              { title: "Local Meerut Company", desc: "Based right here in Meerut, ensuring ultra-fast service and support whenever you need it.", img: project1.src },
-              { title: "Subsidy Assistance", desc: "We handle the entire PM Surya Ghar Yojana subsidy paperwork for you from start to finish.", img: "/pmsurya.webp" },
-              { title: "Tier-1 Solar Panels", desc: "We only use premium Tier-1 modules (Adani, Waaree) built for maximum efficiency.", img: residential1.src },
-              { title: "Expert Engineers", desc: "Our in-house professional engineers guarantee safe, structurally sound, and aesthetic rooftop installations.", img: project2.src },
-              { title: "25-Year Warranty", desc: "Enjoy complete peace of mind with a 25-year performance warranty on your solar panels.", img: residential2.src },
-              { title: "Quick Installation", desc: "From site survey to commissioning, we complete residential projects in record time.", img: project3.src },
+              { title: "Local Meerut Company", desc: "Based right here in Meerut, ensuring ultra-fast service and support whenever you need it.", img: "/engineer.png" },
+              { title: "Subsidy Assistance", desc: "We handle the entire PM Surya Ghar Yojana subsidy paperwork for you from start to finish.", img: "/subsidy.png" },
+              { title: "Tier-1 Solar Panels", desc: "We only use premium Tier-1 modules (Adani, Waaree) built for maximum efficiency.", img: "/solarpanel.png" },
+              { title: "Expert Engineers", desc: "Our in-house professional engineers guarantee safe, structurally sound, and aesthetic rooftop installations.", img: "/expert.png" },
+              { title: "25-Year Warranty", desc: "Enjoy complete peace of mind with a 25-year performance warranty on your solar panels.", img: "/warranty.png" },
+              { title: "Quick Installation", desc: "From site survey to commissioning, we complete residential projects in record time.", img: "/installation.png" },
             ].map((feature, i) => (
               <div key={i} className="flex flex-col items-center text-center group">
                 <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 md:mb-8 shadow-sm transition-all duration-500 ">
-                  <img src={feature.img} alt={feature.title} className="w-full h-full object-cover transition-transform duration-700 " />
+                  <img src={feature.img} alt={feature.title} className={`w-full h-full object-cover transition-transform duration-700 ${feature.imgClass || ""}`} />
                 </div>
                 <h3 className="text-[14px] sm:text-base md:text-2xl font-bold mb-1.5 md:mb-3 text-slate-900 leading-tight">{feature.title}</h3>
                 <p className="text-[11px] sm:text-sm md:text-base text-slate-600 leading-snug md:leading-relaxed max-w-sm line-clamp-3 md:line-clamp-none mt-1">{feature.desc}</p>
@@ -189,7 +246,7 @@ export default function SolarCompanyMeerut() {
             
             <div className="w-full lg:w-1/2 relative group">
               <div className="hidden lg:block absolute inset-0 bg-accent/20 rounded-[2rem] transform rotate-3 transition-transform duration-500 group-hover:rotate-6" />
-              <img src="/Happyfamily.png" alt="Benefits of solar panels in Meerut" className="relative rounded-2xl lg:rounded-[2rem] shadow-md lg:shadow-lg w-full object-cover z-10" />
+              <img src="/van.png" alt="Benefits of solar panels in Meerut" className="relative rounded-2xl lg:rounded-[2rem] shadow-md lg:shadow-lg w-full object-cover z-10" />
             </div>
 
             <div className="w-full lg:w-1/2 space-y-6 lg:space-y-8">
@@ -233,14 +290,12 @@ export default function SolarCompanyMeerut() {
           
           <div className="grid grid-cols-2 gap-4 md:gap-8 max-w-5xl mx-auto">
             {[
-              { name: "Sharma Family - 5kW", location: "Shastri Nagar, Meerut", img: residential2.src },
-              { name: "Gupta Residence - 3kW", location: "Pallavpuram, Meerut", img: project1.src },
-              { name: "Singh Villa - 7kW", location: "Modipuram, Meerut", img: project3.src },
-              { name: "Verma House - 5kW", location: "Kankerkhera, Meerut", img: residential1.src },
-              { name: "Agarwal Family - 10kW", location: "Ganga Nagar, Meerut", img: project2.src },
-              { name: "Chauhan Home - 4kW", location: "Saket, Meerut", img: residential2.src },
-              { name: "Bansal Villa - 8kW", location: "Civil Lines, Meerut", img: project1.src },
-              { name: "Tyagi Residence - 5kW", location: "Roorkee Road, Meerut", img: residential1.src },
+              { name: "Happy Customer", location: "Shastri Nagar, Meerut", img: "/happy costumer.jpeg" },
+              { name: "Happy Customer", location: "Pallavpuram, Meerut", img: "/happycostumer2.jpeg" },
+              { name: "Happy Customer", location: "Modipuram, Meerut", img: "/happycostumer3.jpeg" },
+              { name: "Happy Customer", location: "Partapur, Meerut", img: "/happycostumer5.jpeg" },
+              { name: "Happy Customer", location: "Jagriti Vihar, Meerut", img: "/happycostumer6.jpeg" },
+              { name: "Happy Family", location: "Ganga Nagar, Meerut", img: "/ganganagar.jpeg" },
             ].map((customer, i) => (
               <div key={i} className="group">
                 <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] mb-3 md:mb-5 bg-slate-200">
@@ -259,7 +314,7 @@ export default function SolarCompanyMeerut() {
             <div className="col-span-2 relative flex flex-col items-center justify-center rounded-2xl md:rounded-[2rem] p-8 md:p-16 overflow-hidden">
               <div 
                 className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${project2.src})` }}
+                style={{ backgroundImage: `url('/Happyfamily.png')` }}
               ></div>
               <div className="absolute inset-0 bg-slate-900/60"></div>
               

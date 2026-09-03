@@ -2,9 +2,34 @@ import BlogSolarPanelPriceMeerut from '@/views/BlogSolarPanelPriceMeerut';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Solar Panel Price in Meerut (2026): Costs, Subsidies & ROI Complete Guide',
-  description: 'Find out the exact solar panel price in Meerut for 2kW, 3kW, 5kW, and 10kW systems. Learn about installation costs, PM Surya Ghar subsidy, and ROI.',
-  keywords: 'Solar Panel Price in Meerut, Solar Panel Cost in Meerut, Solar System Price Meerut, Solar Installation Cost Meerut, 3kW Solar System Price Meerut, 5kW Solar System Price Meerut, 10kW Solar System Price Meerut, Best Solar Company Meerut, PM Surya Ghar Yojana Meerut',
+  title: 'Solar Panel Price in Meerut 2025 | 2kW to 10kW Cost, Subsidy & ROI Guide',
+  description: 'Exact solar panel installation cost in Meerut for 2kW (₹1.1L), 3kW (₹1.6L), 5kW (₹2.6L) and 10kW (₹4.8L) systems before subsidy. PM Surya Ghar subsidy breakdown, ROI, and payback period explained — by Kailash Solar.',
+  keywords: 'solar panel price Meerut, solar system cost Meerut, 3kW solar price Meerut, 5kW solar system cost Meerut, 10kW solar Meerut, solar installation cost Meerut 2025, PM Surya Ghar subsidy cost Meerut',
+  alternates: {
+    canonical: 'https://kailashsolar.com/blog/solar-panel-price-meerut'
+  },
+  openGraph: {
+    title: 'Solar Panel Price in Meerut 2025 | 2kW–10kW Cost & Subsidy Guide',
+    description: 'How much does solar cost in Meerut? 2kW at ₹1.1L, 3kW at ₹1.6L, 5kW at ₹2.6L. PM Surya Ghar subsidy reduces your cost. Full pricing guide by Kailash Solar.',
+    url: 'https://kailashsolar.com/blog/solar-panel-price-meerut',
+    siteName: 'Kailash Solar',
+    images: [
+      {
+        url: 'https://kailashsolar.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Solar Panel Price Guide for Meerut 2025 — Kailash Solar',
+      }
+    ],
+    locale: 'en_IN',
+    type: 'article',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Solar Panel Price in Meerut 2025 | 2kW–10kW Cost Guide',
+    description: 'Solar panel costs in Meerut — 2kW at ₹1.1L, 3kW at ₹1.6L, 5kW at ₹2.6L. Plus PM Surya Ghar subsidy breakdown.',
+    images: ['https://kailashsolar.com/og-image.jpg'],
+  }
 };
 
 const articleSchema = {

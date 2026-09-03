@@ -2,9 +2,34 @@ import BlogPMSuryaGharMeerut from '@/views/BlogPMSuryaGharMeerut';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'PM Surya Ghar: Muft Bijli Yojana | Apply Online & Get Subsidy in UP',
-  description: 'Official guide to PM Surya Ghar: Muft Bijli Yojana in UP. Apply online for up to ₹78,000 solar subsidy and get free electricity with Kailash Solar.',
-  keywords: 'PM Surya Ghar: Muft Bijli Yojana, PM Surya Ghar apply online, Muft Bijli Yojana UP, Solar subsidy UP, PM Surya Ghar Yojana Meerut',
+  title: 'PM Surya Ghar Subsidy in Meerut 2025 | Up to ₹1,08,000 | Kailash Solar Guide',
+  description: 'Complete guide to PM Surya Ghar: Muft Bijli Yojana subsidy in Meerut, UP. Claim up to ₹1,08,000 (₹78,000 Central + ₹30,000 UPNEDA state subsidy) for your home rooftop solar. Step-by-step process, eligibility & PVVNL net metering explained.',
+  keywords: 'PM Surya Ghar subsidy Meerut, PM Surya Ghar Muft Bijli Yojana UP, solar subsidy Meerut 2025, UPNEDA subsidy Meerut, rooftop solar subsidy UP, PM Surya Ghar apply online Meerut',
+  alternates: {
+    canonical: 'https://kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut'
+  },
+  openGraph: {
+    title: 'PM Surya Ghar Subsidy in Meerut | Up to ₹1,08,000 | Complete Guide',
+    description: 'How to claim up to ₹1,08,000 PM Surya Ghar subsidy in Meerut, UP. Central + UPNEDA state subsidy explained. Eligibility, process & PVVNL net metering — by Kailash Solar.',
+    url: 'https://kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut',
+    siteName: 'Kailash Solar',
+    images: [
+      {
+        url: 'https://kailashsolar.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'PM Surya Ghar Solar Subsidy Guide for Meerut — Kailash Solar',
+      }
+    ],
+    locale: 'en_IN',
+    type: 'article',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PM Surya Ghar Subsidy in Meerut | Up to ₹1,08,000',
+    description: 'Claim up to ₹1,08,000 PM Surya Ghar subsidy in Meerut. Central + UPNEDA state subsidy guide by Kailash Solar.',
+    images: ['https://kailashsolar.com/og-image.jpg'],
+  }
 };
 
 const articleSchema = {
