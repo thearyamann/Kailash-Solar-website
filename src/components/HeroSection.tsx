@@ -84,7 +84,7 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Button 
                 variant="heroOutline" 
-                className="group h-12 px-6 w-full sm:w-auto bg-accent/20 border-accent/30 hover:bg-accent/30"
+                className="group h-12 px-6 w-full sm:w-auto"
                 asChild
               >
                 <a href="/solar-company-meerut/">
