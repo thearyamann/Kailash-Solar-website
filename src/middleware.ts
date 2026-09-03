@@ -7,8 +7,14 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // If the user has already been routed or explicitly visited the homepage, skip
-  if (req.cookies.has('geo_routed')) {
+  // If the user clicked a link from inside our own website (like the Home button),
+  // Next.js will send the 'rsc' header or the browser will send 'sec-fetch-site: same-origin'
+  const isInternalNavigation = 
+    req.headers.has('rsc') || 
+    req.headers.get('sec-fetch-site') === 'same-origin' ||
+    (req.headers.get('referer') || '').includes('kailashsolar.com');
+
+  if (isInternalNavigation) {
     return NextResponse.next();
   }
 
@@ -32,19 +38,10 @@ export function middleware(req: NextRequest) {
   // If the city matches OR if the region (State) matches our target areas
   if (targetCities.includes(city) || targetRegions.includes(region)) {
     // Redirect them to the Meerut specific page
-    const url = new URL('/solar-company-meerut/', req.url);
-    const response = NextResponse.redirect(url);
-    
-    // Set a cookie so we don't redirect them again if they intentionally click "Home"
-    response.cookies.set('geo_routed', 'true', { path: '/', maxAge: 60 * 60 * 24 }); // 24 hours
-    
-    return response;
+    return NextResponse.redirect(new URL('/solar-company-meerut/', req.url));
   }
 
-  // If they don't match the geo, still set the cookie so we don't keep checking
-  const response = NextResponse.next();
-  response.cookies.set('geo_routed', 'true', { path: '/', maxAge: 60 * 60 * 24 });
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
