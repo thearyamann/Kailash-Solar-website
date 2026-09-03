@@ -227,7 +227,7 @@ export default function SolarCompanyMeerut() {
               { title: "Subsidy Assistance", desc: "We handle the entire PM Surya Ghar Yojana subsidy paperwork for you from start to finish.", img: "/subsidy.png" },
               { title: "Tier-1 Solar Panels", desc: "We only use premium Tier-1 modules (Adani, Waaree) built for maximum efficiency.", img: "/solarpanel.png" },
               { title: "Expert Engineers", desc: "Our in-house professional engineers guarantee safe, structurally sound, and aesthetic rooftop installations.", img: "/expert.png" },
-              { title: "25-Year Warranty", desc: "Enjoy complete peace of mind with a 25-year performance warranty on your solar panels.", img: "/warranty.png" },
+              { title: "30-Year Warranty", desc: "Enjoy complete peace of mind with a 30-year performance warranty on your solar panels.", img: "/warranty.png" },
               { title: "Quick Installation", desc: "From site survey to commissioning, we complete residential projects in record time.", img: "/installation.png" },
             ].map((feature, i) => (
               <div key={i} className="flex flex-col items-center text-center group">
@@ -476,7 +476,7 @@ export default function SolarCompanyMeerut() {
               },
               {
                 q: "What warranty do you provide?",
-                a: "We offer a 25-year performance warranty on solar panels and standard manufacturer warranties on inverters (typically 5-10 years), ensuring your investment is completely secure."
+                a: "We offer a 30-year performance warranty on solar panels and standard manufacturer warranties on inverters (typically 5-10 years), ensuring your investment is completely secure."
               },
               {
                 q: "Do I need to clean the solar panels?",

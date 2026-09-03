@@ -97,7 +97,7 @@ const faqSchema = {
       "name": "How long do solar panels last?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "High-quality Tier-1 solar panels (like Waaree or Adani) come with a 25-year performance warranty and easily last 25 to 30 years with minimal maintenance."
+        "text": "High-quality Tier-1 solar panels (like Waaree or Adani) come with a 30-year performance warranty and easily last 30 years with minimal maintenance."
       }
     }
   ]

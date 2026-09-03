@@ -49,7 +49,7 @@ const faqs = [
   },
   {
     q: 'How long do solar panels last?',
-    a: 'Top-tier solar panels come with a 25-year performance warranty. However, because they have no moving parts, a well-maintained system can continue generating electricity for 25 to 30 years or more.',
+    a: 'Top-tier solar panels come with a 30-year performance warranty. However, because they have no moving parts, a well-maintained system can continue generating electricity for 30 years or more.',
   },
   {
     q: 'What is the payback period for rooftop solar?',
