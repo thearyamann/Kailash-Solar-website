@@ -2,24 +2,29 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
-  // Get the city from Vercel's headers or the geo object
-  const city = req.headers.get('x-vercel-ip-city') || req.geo?.city;
-
-  // List of cities that should be redirected to the Meerut page
-  const targetCities = ['Meerut', 'Modinagar', 'Modipuram'];
-
-  // Check if the user is visiting the home page and if their city matches
-  if (req.nextUrl.pathname === '/' && city && targetCities.includes(city)) {
-    // Redirect them to the Meerut specific page
-    const url = new URL('/solar-company-meerut/', req.url);
-    return NextResponse.redirect(url);
+  // Only process if it's exactly the home page
+  if (req.nextUrl.pathname !== '/') {
+    return NextResponse.next();
   }
 
-  // Otherwise, allow the request to proceed as normal
+  // Get the city from Vercel's headers
+  const cityHeader = req.headers.get('x-vercel-ip-city');
+  
+  if (cityHeader) {
+    const city = decodeURIComponent(cityHeader).toLowerCase();
+    
+    // List of cities that should be redirected (all lowercase for comparison)
+    const targetCities = ['meerut', 'modinagar', 'modipuram'];
+
+    if (targetCities.includes(city)) {
+      // Redirect them to the Meerut specific page
+      return NextResponse.redirect(new URL('/solar-company-meerut/', req.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
-// Ensure the middleware only runs on the root path
 export const config = {
-  matcher: '/',
+  matcher: ['/'],
 };
