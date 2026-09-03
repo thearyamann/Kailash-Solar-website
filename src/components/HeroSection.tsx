@@ -81,7 +81,7 @@ const HeroSection = () => {
                 Instant Home Solar Quote
               </Button>
             </div>
-            <div>
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Button 
                 variant="heroOutline" 
                 className="group h-12 px-6 w-full sm:w-auto"
@@ -90,6 +90,16 @@ const HeroSection = () => {
                 <a href="#calculator">
                   <Calculator className="mr-2 w-4 h-4" />
                   Calculate Your Savings
+                </a>
+              </Button>
+              <Button 
+                variant="heroOutline" 
+                className="group h-12 px-6 w-full sm:w-auto bg-accent/20 border-accent/30 hover:bg-accent/30"
+                asChild
+              >
+                <a href="/solar-company-meerut/">
+                  Visit Meerut Branch
+                  <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
               </Button>
             </div>
