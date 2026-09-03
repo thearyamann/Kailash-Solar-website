@@ -13,8 +13,12 @@ export function middleware(req: NextRequest) {
   if (cityHeader) {
     const city = decodeURIComponent(cityHeader).toLowerCase();
     
-    // List of cities that should be redirected (all lowercase for comparison)
-    const targetCities = ['meerut', 'modinagar', 'modipuram'];
+    // Mobile network IPs in Western UP are usually routed through these major hubs
+    const targetCities = [
+      'meerut', 'modinagar', 'modipuram', 
+      'delhi', 'new delhi', 'noida', 'ghaziabad', 'gurugram', 
+      'lucknow', 'muzaffarnagar', 'hapur', 'bulandshahr', 'saharanpur'
+    ];
 
     if (targetCities.includes(city)) {
       // Redirect them to the Meerut specific page
