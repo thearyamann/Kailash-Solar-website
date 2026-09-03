@@ -228,7 +228,7 @@ export default function SolarCompanyMeerut() {
               { title: "Quick Installation", desc: "From site survey to commissioning, we complete residential projects in record time.", img: "/installation.png" },
             ].map((feature, i) => (
               <div key={i} className="flex flex-col items-center text-center group">
-                <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 md:mb-8 shadow-sm transition-all duration-500 ">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 md:mb-8 shadow-sm transition-all duration-500 ">
                   <img src={feature.img} alt={feature.title} className="w-full h-full object-cover transition-transform duration-700 " />
                 </div>
                 <h3 className="text-[14px] sm:text-base md:text-2xl font-bold mb-1.5 md:mb-3 text-slate-900 leading-tight">{feature.title}</h3>
