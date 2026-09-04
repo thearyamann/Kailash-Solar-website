@@ -128,7 +128,7 @@ export default function SolarCompanyMeerut() {
           <img
             src="/Happyfamily.png"
             alt="Happy family using solar power"
-            className="w-full h-full object-cover object-bottom md:object-[100%_30%]"
+            className="w-full h-full object-cover object-[center_80%] md:object-[100%_20%]"
           />
           {/* Subtle dark overlay without blur to keep image sharp while text is readable */}
           <div className="absolute inset-0 bg-slate-900/50" />
@@ -143,8 +143,8 @@ export default function SolarCompanyMeerut() {
               Meerut's No.1 Choice for <span className="text-accent drop-shadow-sm">Home Solar Panels</span>
             </h1>
             
-            <p className="text-[16px] md:text-xl text-white/90 font-medium leading-relaxed max-w-xl pb-4 md:pb-0">
-              Install rooftop solar at home and claim up to ₹1,08,000 in PM Surya Ghar government subsidy — with easy EMI options and a free site visit.
+            <p className="text-[16px] md:text-xl text-white/90 font-medium leading-snug max-w-xl pb-4 md:pb-0">
+              Install rooftop solar and claim up to ₹1,08,000 PM Surya Ghar subsidy — with easy EMIs and a free site visit.
             </p>
             
             <div className="grid grid-cols-3 gap-2 md:flex md:items-center md:gap-6 pt-1 md:pt-2 text-sm font-semibold text-white">
