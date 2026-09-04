@@ -22,14 +22,14 @@ import project2 from '@/assets/solar-project-2.jpg';
 import project3 from '@/assets/solar-project-3.jpg';
 
 export const metadata: Metadata = {
-  title: "Meerut's #1 Choice for Solar Panels for Homes | PM Surya Ghar Subsidy up to ₹1,08,000 | Kailash Solar",
+  title: "Meerut's No.1 Choice for Solar Panels for Homes | PM Surya Ghar Subsidy up to ₹1,08,000 | Kailash Solar",
   description: "Kailash Solar — Meerut's trusted home solar panel company. UPNEDA-registered & PM Surya Ghar empanelled. Install 1–10kW rooftop solar, claim up to ₹1,08,000 subsidy, and get free site visit. Serving Meerut, Ghaziabad & Western UP.",
   keywords: "solar company in Meerut, home solar panels Meerut, residential solar Meerut, solar panel installation Meerut, PM Surya Ghar Meerut, rooftop solar Meerut, solar subsidy Meerut, UPNEDA solar Meerut, Kailash Solar",
   alternates: {
     canonical: 'https://kailashsolar.com/solar-company-meerut/'
   },
   openGraph: {
-    title: "Meerut's #1 Choice for Home Solar Panels | Kailash Solar",
+    title: "Meerut's No.1 Choice for Home Solar Panels | Kailash Solar",
     description: "Install rooftop solar panels at home in Meerut. Claim up to ₹1,08,000 PM Surya Ghar subsidy. Free site visit. UPNEDA-registered installer. Call 8-999-999-654.",
     url: "https://kailashsolar.com/solar-company-meerut/",
     siteName: "Kailash Solar",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Meerut's #1 Choice for Home Solar Panels | Kailash Solar",
+    title: "Meerut's No.1 Choice for Home Solar Panels | Kailash Solar",
     description: "Install rooftop solar at home in Meerut. Up to ₹1,08,000 PM Surya Ghar subsidy. Free site visit. UPNEDA-registered.",
     images: ["https://kailashsolar.com/og-image.jpg"],
   }
@@ -140,7 +140,7 @@ export default function SolarCompanyMeerut() {
           <div className="px-4 md:px-0 flex-grow flex flex-col justify-center md:col-span-7 space-y-4 md:space-y-5 animate-in fade-in slide-in-from-left-8 duration-1000 pt-6 md:pt-0">
 
             <h1 className="text-[38px] leading-[1.1] md:text-5xl lg:text-6xl font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
-              Meerut's #1 Choice for <span className="text-accent drop-shadow-sm">Home Solar Panels</span>
+              Meerut's No.1 Choice for <span className="text-accent drop-shadow-sm">Home Solar Panels</span>
             </h1>
             
             <p className="text-[16px] md:text-xl text-white/90 font-medium leading-relaxed max-w-xl pb-4 md:pb-0">
