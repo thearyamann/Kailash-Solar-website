@@ -33,7 +33,7 @@ const faqs = [
   },
   {
     q: 'How much subsidy is available in Uttar Pradesh?',
-    a: 'Under the PM Surya Ghar Yojana, you can get up to ₹78,000 from the central government and an additional ₹30,000 from the UP state government, totaling a massive ₹1,08,000 subsidy for residential installations of 3kW or more.',
+    a: 'Under the PM Surya Ghar Yojana combined with state schemes, you can get a massive ₹1,08,000 total combined subsidy for residential installations of 3kW or more.',
   },
   {
     q: 'How many panels are needed for a 5kW system?',
@@ -383,15 +383,15 @@ const BlogSolarPanelPriceMeerut = () => {
                 The biggest catalyst for rooftop solar adoption in India right now is the incredible financial support provided by the government. Through the <Link href="/blog/pm-surya-ghar-subsidy-meerut" className="text-primary font-bold hover:underline">PM Surya Ghar: Muft Bijli Yojana</Link>, homeowners in Meerut can receive substantial subsidies deposited directly into their bank accounts.
               </P>
               <P>
-                In Uttar Pradesh, the financial incentive is even sweeter. On top of the central government subsidy, the UP State Government provides an additional state-level subsidy, making Uttar Pradesh one of the most lucrative states in the country to go solar.
+                In Uttar Pradesh, the financial incentive is incredible. The government provides a massive combined subsidy, making Uttar Pradesh one of the most lucrative states in the country to go solar.
               </P>
 
               <ComparisonTable 
-                headers={["System Capacity", "Central Subsidy", "UP State Subsidy", "Total Subsidy Available"]}
+                headers={["System Capacity", "Total Combined Subsidy"]}
                 rows={[
-                  ["1 kW", "₹30,000", "₹15,000", "₹45,000"],
-                  ["2 kW", "₹60,000", "₹30,000", "₹90,000"],
-                  ["3 kW to 10 kW+", "₹78,000", "₹30,000", "₹1,08,000"],
+                  ["1 kW", "₹45,000"],
+                  ["2 kW", "₹90,000"],
+                  ["3 kW to 10 kW+", "₹1,08,000"],
                 ]}
               />
 

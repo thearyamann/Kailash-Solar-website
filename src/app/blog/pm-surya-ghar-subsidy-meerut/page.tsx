@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'PM Surya Ghar Subsidy in Meerut 2025 | Up to ₹1,08,000 | Kailash Solar Guide',
-  description: 'Complete guide to PM Surya Ghar: Muft Bijli Yojana subsidy in Meerut, UP. Claim up to ₹1,08,000 (₹78,000 Central + ₹30,000 UPNEDA state subsidy) for your home rooftop solar. Step-by-step process, eligibility & PVVNL net metering explained.',
+  description: 'Complete guide to PM Surya Ghar: Muft Bijli Yojana subsidy in Meerut, UP. Claim up to ₹1,08,000 in total combined subsidy for your home rooftop solar. Step-by-step process, eligibility & PVVNL net metering explained.',
   keywords: 'PM Surya Ghar subsidy Meerut, PM Surya Ghar Muft Bijli Yojana UP, solar subsidy Meerut 2025, UPNEDA subsidy Meerut, rooftop solar subsidy UP, PM Surya Ghar apply online Meerut',
   alternates: {
     canonical: 'https://kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut'
@@ -36,7 +36,7 @@ const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "PM Surya Ghar: Muft Bijli Yojana | Complete Guide & Application Process",
-  "description": "Learn how to apply for the PM Surya Ghar: Muft Bijli Yojana in Uttar Pradesh and get up to ₹78,000 in government subsidies for your rooftop solar panel installation.",
+  "description": "Learn how to apply for the PM Surya Ghar: Muft Bijli Yojana in Uttar Pradesh and get up to ₹1,08,000 in total combined government subsidies for your rooftop solar panel installation.",
   "author": {
     "@type": "Organization",
     "name": "Kailash Solar",

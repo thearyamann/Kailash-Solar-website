@@ -105,25 +105,7 @@ export default function RootLayout({
     },
     "areaServed": ["Meerut", "Western UP", "Ghaziabad", "Muzaffarnagar"],
     "priceRange": "₹₹",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "184"
-    },
-    "review": [
-      {
-        "@type": "Review",
-        "reviewRating": { "@type": "Rating", "ratingValue": "5" },
-        "author": { "@type": "Person", "name": "Rajesh Sharma" },
-        "reviewBody": "Kailash Solar is absolutely the best solar company in Meerut. Their team handled the PM Surya Ghar subsidy flawlessly. Highly trusted and the happiest customer here!"
-      },
-      {
-        "@type": "Review",
-        "reviewRating": { "@type": "Rating", "ratingValue": "5" },
-        "author": { "@type": "Person", "name": "Amit Gupta" },
-        "reviewBody": "If you want solar in Meerut, Kailash Solar is the most trusted name. They eliminated my electricity bill. Best service in UP!"
-      }
-    ],
+
     "serviceArea": {
       "@type": "GeoCircle",
       "geoMidpoint": {

@@ -8,7 +8,7 @@ export default function FAQSchema() {
         "name": "How much does a 3kW solar panel cost in Meerut, UP?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The cost of a 3kW solar panel system in Meerut depends on the brand and setup, but with the PM Surya Ghar Yojana subsidy of up to ₹78,000, your final out-of-pocket cost is significantly reduced. Contact Kailash Solar for a free quote."
+          "text": "The cost of a 3kW solar panel system in Meerut depends on the brand and setup, but with the combined subsidy of up to ₹1,08,000, your final out-of-pocket cost is significantly reduced. Contact Kailash Solar for a free quote."
         }
       },
       {

@@ -83,7 +83,7 @@ const BlogBestSolarCompanyMeerut = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Why Kailash Solar Is a Leading Solar Company in Meerut',
+          title: 'How to Choose the Best Solar Company in Meerut',
           url: window.location.href,
         });
       } catch (err) {
@@ -131,7 +131,7 @@ const BlogBestSolarCompanyMeerut = () => {
                 </span>
               </div>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-[1.15] mb-6 text-slate-900 font-montserrat">
-                Why Kailash Solar Is a Leading Solar Company in Meerut
+                How to Choose the Best Solar Company in Meerut (Buyer's Guide)
               </h1>
               <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-3xl mx-auto">
                 Discover why hundreds of Meerut homeowners choose Kailash Solar for premium panels, expert in-house installation, and seamless PM Surya Ghar subsidy support.

@@ -15,9 +15,9 @@ const ResidentialSection = () => {
   ];
 
   const subsidyTiers = [
-    { size: '1 kW', central: '₹30,000', state: '₹15,000', total: '₹45,000' },
-    { size: '2 kW', central: '₹60,000', state: '₹30,000', total: '₹90,000' },
-    { size: '3 kW & above', central: '₹78,000', state: '₹30,000', total: '₹1,08,000' },
+    { size: '1 kW', total: '₹45,000' },
+    { size: '2 kW', total: '₹90,000' },
+    { size: '3 kW & above', total: '₹1,08,000' },
   ];
 
   return (
@@ -140,17 +140,13 @@ const ResidentialSection = () => {
                 <thead>
                   <tr className="border-b-2 border-border">
                     <th className="py-3 px-2 font-bold text-foreground">System Size</th>
-                    <th className="py-3 px-2 font-bold text-foreground">Central Subsidy</th>
-                    <th className="py-3 px-2 font-bold text-foreground">UP State Subsidy</th>
-                    <th className="py-3 px-2 font-bold text-accent">Total Subsidy</th>
+                    <th className="py-3 px-2 font-bold text-accent">Total Subsidy (Central + State)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {subsidyTiers.map((tier) => (
                     <tr key={tier.size} className="border-b border-border last:border-0">
                       <td className="py-3 px-2 font-semibold text-foreground">{tier.size}</td>
-                      <td className="py-3 px-2 text-foreground">{tier.central}</td>
-                      <td className="py-3 px-2 text-foreground">{tier.state}</td>
                       <td className="py-3 px-2 font-bold text-accent">{tier.total}</td>
                     </tr>
                   ))}

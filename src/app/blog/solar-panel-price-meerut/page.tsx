@@ -73,7 +73,7 @@ const faqSchema = {
       "name": "How much subsidy is available for solar panels in Meerut?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Homeowners in Meerut can get up to ₹1,08,000 in combined subsidies. This includes up to ₹78,000 from the central PM Surya Ghar Yojana and an additional ₹30,000 from the Uttar Pradesh state government."
+        "text": "Homeowners in Meerut can get up to ₹1,08,000 in total combined subsidies under the PM Surya Ghar Yojana and Uttar Pradesh state government schemes."
       }
     },
     {

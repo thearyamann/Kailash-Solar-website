@@ -54,18 +54,17 @@ const Footer = () => {
             <h4 className="text-lg font-bold mb-6">Our Services</h4>
             <ul className="space-y-3">
               {[
-                "Residential Solar (PM Surya Ghar)",
-                "Commercial & Industrial EPC",
-                "Rooftop Solar",
-                "Ground Mount Systems",
-                "Net Metering & Subsidy",
-                "Solar Financing",
-                "AMC Contracts",
+                { label: "Residential Solar", href: "/solar-company-meerut" },
+                { label: "Commercial & Industrial EPC", href: "/solar-company-meerut" },
+                { label: "PM Surya Ghar Subsidy", href: "/blog/pm-surya-ghar-subsidy-meerut" },
+                { label: "Rooftop Solar", href: "/solar-company-meerut" },
+                { label: "Net Metering", href: "/blog/pm-surya-ghar-subsidy-meerut" },
+                { label: "Solar Financing", href: "/quote" },
               ].map((service) => (
-                <li key={service}>
-                  <a href="#" className="text-primary-foreground/90 hover:text-accent transition-colors">
-                    {service}
-                  </a>
+                <li key={service.label}>
+                  <Link href={service.href} className="text-primary-foreground/90 hover:text-accent transition-colors">
+                    {service.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -75,11 +74,16 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-bold mb-6">Quick Links</h4>
             <ul className="space-y-3">
-              {["About Us", "Services", "Projects", "Solar Calculator", "Blog", "Contact"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-primary-foreground/90 hover:text-accent transition-colors">
-                    {link}
-                  </a>
+              {[
+                { label: "Solar Calculator", href: "/quote" },
+                { label: "Solar Guides", href: "/blog/pm-surya-ghar-subsidy-meerut" },
+                { label: "Book a Site Visit", href: "/book-visit" },
+                { label: "Contact Us", href: "/book-visit" }
+              ].map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="text-primary-foreground/90 hover:text-accent transition-colors">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -117,7 +117,6 @@ export default function QuotePage() {
 
     setStep("calculating");
 
-    setTimeout(() => {
       const bill = parseFloat(monthlyBill);
       const systemSize = Math.max(1, Math.ceil(bill / 1500));
       
@@ -130,7 +129,6 @@ export default function QuotePage() {
         newUrl.searchParams.set('kw', `${systemSize}kw`);
         window.history.replaceState({}, '', newUrl.toString());
       }
-    }, 2500); // 2.5s loading simulation
   };
 
   const formatCurrency = (value: number) => {
@@ -235,7 +233,7 @@ export default function QuotePage() {
                     <Calculator className="w-6 h-6 text-primary" />
                   </div>
                   <h1 className="text-[28px] md:text-[34px] leading-[1.2] font-bold font-montserrat text-foreground mb-3">
-                    Calculate Your <span className="text-primary">Solar Savings</span>
+                    Calculate Your Home Solar Requirement
                   </h1>
                   <p className="text-[15px] md:text-[16px] text-muted-foreground leading-relaxed">
                     Enter your details to instantly see how much you can save, your recommended system size, and eligible govt subsidies.

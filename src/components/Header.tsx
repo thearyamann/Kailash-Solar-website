@@ -4,6 +4,8 @@ import { Menu, X, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/kailash-logo.png";
 import { BookVisitModal } from "@/components/BookVisitModal";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Countdown = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
@@ -11,49 +13,52 @@ const Countdown = () => {
 
   useEffect(() => {
     setMounted(true);
-    // Setting target to March 31, 2027
-    const targetDate = new Date('2027-03-31T23:59:59').getTime();
-    
-    const interval = setInterval(() => {
+    const targetDate = new Date("2027-03-31T23:59:59").getTime();
+
+    const updateCountdown = () => {
       const now = new Date().getTime();
       const difference = targetDate - now;
+
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
           hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
           mins: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
-          secs: Math.floor((difference % (1000 * 60)) / 1000)
+          secs: Math.floor((difference % (1000 * 60)) / 1000),
         });
       }
-    }, 1000);
+    };
+
+    const interval = setInterval(updateCountdown, 1000);
+    updateCountdown();
     return () => clearInterval(interval);
   }, []);
 
   if (!mounted) return null;
 
-  const formatNum = (num: number) => num.toString().padStart(2, '0');
+  const formatNum = (num: number) => num.toString().padStart(2, "0");
 
   return (
     <>
-      {/* Desktop View: Fancy Boxes */}
-      <div className="hidden md:flex items-center gap-1 ml-3 lg:ml-5 shrink-0">
-        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
-          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#133B76]">{formatNum(timeLeft.days)}</span>
-          <span className="text-[6px] tracking-widest uppercase text-[#133B76]/70 -mt-[1px] font-bold">Days</span>
+      {/* Desktop View: Separated Digits with Elegant Labels */}
+      <div className="hidden md:flex items-center ml-2 bg-black/20 px-2 py-[2px] rounded-sm border border-white/10 shadow-inner">
+        <div className="flex flex-col items-center mx-[3px]">
+          <span className="text-accent font-black tracking-widest font-mono text-sm leading-none drop-shadow-sm">{formatNum(timeLeft.days)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-white/90 -mt-[1px] font-bold">Days</span>
         </div>
-        <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
-        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
-          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#133B76]">{formatNum(timeLeft.hours)}</span>
-          <span className="text-[6px] tracking-widest uppercase text-[#133B76]/70 -mt-[1px] font-bold">Hrs</span>
+        <span className="text-white/40 text-xs font-light mx-0.5 animate-pulse">:</span>
+        <div className="flex flex-col items-center mx-[3px]">
+          <span className="text-accent font-black tracking-widest font-mono text-sm leading-none drop-shadow-sm">{formatNum(timeLeft.hours)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-white/90 -mt-[1px] font-bold">Hrs</span>
         </div>
-        <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
-        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-white to-slate-100 rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
-          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-[#133B76]">{formatNum(timeLeft.mins)}</span>
-          <span className="text-[6px] tracking-widest uppercase text-[#133B76]/70 -mt-[1px] font-bold">Min</span>
+        <span className="text-white/40 text-xs font-light mx-0.5 animate-pulse">:</span>
+        <div className="flex flex-col items-center mx-[3px]">
+          <span className="text-accent font-black tracking-widest font-mono text-sm leading-none drop-shadow-sm">{formatNum(timeLeft.mins)}</span>
+          <span className="text-[6px] tracking-widest uppercase text-white/90 -mt-[1px] font-bold">Min</span>
         </div>
-        <span className="text-[12px] font-bold text-white/60 animate-pulse pb-1 drop-shadow-md">:</span>
-        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-[#FFAE00] to-[#E69D00] rounded-[4px] px-2 py-1 min-w-[36px] shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
-          <span className="text-[12px] font-black pt-[4px] font-mono leading-none tracking-widest text-white">{formatNum(timeLeft.secs)}</span>
+        <span className="text-white/40 text-xs font-light mx-0.5 animate-pulse">:</span>
+        <div className="flex flex-col items-center mx-[3px]">
+          <span className="text-accent font-black tracking-widest font-mono text-sm leading-none drop-shadow-sm">{formatNum(timeLeft.secs)}</span>
           <span className="text-[6px] tracking-widest uppercase text-white/90 -mt-[1px] font-bold">Sec</span>
         </div>
       </div>
@@ -76,6 +81,8 @@ const Countdown = () => {
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -83,14 +90,33 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   const navLinks = [
-    { href: "/#residential", label: "Home Solar" },
-    { href: "/#services", label: "Services" },
-    { href: "/#calculator", label: "Calculator" },
-    { href: "/blog/pm-surya-ghar-subsidy-meerut", label: "Blogs", external: true },
-    { href: "/#about", label: "About Us" },
-    { href: "/#contact", label: "Contact" },
+    { href: "/solar-company-meerut#home", label: "Home" },
+    { href: "/solar-company-meerut#services", label: "Services" },
+    { href: "/quote", label: "Calculator" },
+    { href: "/solar-company-meerut#blogs", label: "Blogs" },
+    { href: "/solar-company-meerut#about", label: "About Us" },
+    { href: "/solar-company-meerut#contact", label: "Contact" },
   ];
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("/solar-company-meerut#")) {
+      const targetId = href.replace("/solar-company-meerut#", "");
+      if (pathname === "/solar-company-meerut") {
+        const element = document.getElementById(targetId);
+        if (element) {
+          e.preventDefault();
+          element.scrollIntoView({ behavior: "smooth" });
+          setIsMobileMenuOpen(false);
+        }
+      } else {
+        setIsMobileMenuOpen(false);
+      }
+    } else {
+      setIsMobileMenuOpen(false);
+    }
+  };
   return (
     <>
       {/* Top Bar */}
@@ -160,22 +186,22 @@ const Header = () => {
         <div className="container-custom">
           <nav className={`flex items-center justify-between transition-all duration-500 ease-out ${isScrolled ? "h-14 md:h-16 lg:h-16" : "h-16 md:h-20"}`}>
             {/* Logo */}
-            <a href="/" className={`flex-shrink-0 transition-transform duration-500 ease-out origin-left ${isScrolled ? "scale-75 md:scale-90" : "scale-100"}`}>
+            <Link href="/solar-company-meerut" className={`flex-shrink-0 transition-transform duration-500 ease-out origin-left ${isScrolled ? "scale-75 md:scale-90" : "scale-100"}`}>
               <img src={logo.src} alt="Kailash Solar - Top Solar Panel Installers in Meerut UP" width={200} height={56} className="h-14 w-auto object-contain border-0" fetchPriority="high" decoding="async" />
-            </a>
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
-                  {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className="text-foreground/80 hover:text-primary font-medium transition-colors relative group"
                 >
                   {link.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full" />
-                </a>
+                </Link>
               ))}
             </div>
 
@@ -204,15 +230,14 @@ const Header = () => {
           <div className="lg:hidden bg-card border-t border-border animate-fade-in">
             <div className="container-custom py-4 space-y-4">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
-                  {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="block py-2 text-foreground/80 hover:text-primary font-medium transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => handleNavClick(e, link.href)}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <BookVisitModal>
                 <Button 

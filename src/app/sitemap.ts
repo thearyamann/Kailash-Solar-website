@@ -4,19 +4,19 @@ import { siteConfig } from '../config/site';
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: siteConfig.url,
+      url: `${siteConfig.url}/solar-company-meerut`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
-      url: `${siteConfig.url}/solar-company-meerut`,
+      url: `${siteConfig.url}/blog/best-solar-company-in-meerut`,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
+      changeFrequency: 'monthly',
+      priority: 0.8,
     },
     {
-      url: `${siteConfig.url}/blog/best-solar-company-in-meerut`,
+      url: `${siteConfig.url}/blog/3kw-vs-5kw-solar-system-meerut`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,

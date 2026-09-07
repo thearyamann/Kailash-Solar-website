@@ -46,15 +46,15 @@ const faqs = [
   },
   {
     q: 'Can I apply for subsidy for a system above 3 kW?',
-    a: 'Yes, but the central subsidy is capped at ₹78,000 for 3 kW and above. The UP state subsidy is capped at ₹30,000. You can still install a larger system — only the subsidy amount is fixed.',
+    a: 'Yes, but the total combined subsidy is capped at ₹1,08,000 for 3 kW and above. You can still install a larger system — only the subsidy amount is fixed.',
   },
   {
     q: 'Who is the DISCOM for Meerut?',
     a: 'Meerut falls under PVVNL — Paschimanchal Vidyut Vitaran Nigam Limited.',
   },
   {
-    q: 'What is the difference between central and UP state subsidy?',
-    a: 'The central subsidy (up to ₹78,000) is credited directly to your bank account via DBT through the PM Surya Ghar portal. The UP state subsidy (up to ₹30,000) is a separate reimbursement processed by UPNEDA after installation.',
+    q: 'How is the total combined subsidy paid out?',
+    a: 'The total combined subsidy (up to ₹1,08,000) is credited directly to your bank account via DBT after installation and commissioning.',
   },
 ];
 
@@ -248,15 +248,9 @@ const BlogPMSuryaGharMeerut = () => {
                 installed at a fraction of the cost — or sometimes almost free.
               </P>
               <P>
-                Under the <strong>PM Surya Ghar Muft Bijli Yojana</strong>, the central government
-                gives a direct cash subsidy of up to <strong>₹78,000</strong>. On top of that, the
-                Uttar Pradesh state government gives an additional <strong>₹15,000 per kW</strong>,
-                up to a maximum of <strong>₹30,000</strong> through UPNEDA.
-              </P>
-              <P>
-                Combined, Meerut homeowners can receive up to <strong>₹1,08,000</strong> in total
-                subsidy — credited directly to their bank account. This guide explains exactly how
-                to claim it, step by step.
+                Under the <strong>PM Surya Ghar Muft Bijli Yojana</strong>, the government
+                gives a direct cash subsidy to help you switch to solar. Combined with state schemes, 
+                Meerut homeowners can receive up to <strong>₹1,08,000</strong> in total combined subsidy — credited directly to their bank account. This guide explains exactly how to claim it, step by step.
               </P>
 
               <H2>What Is PM Surya Ghar Muft Bijli Yojana?</H2>
@@ -283,39 +277,14 @@ const BlogPMSuryaGharMeerut = () => {
               </div>
 
               <H2>Total Subsidy Available in Meerut, UP</H2>
-              <P>Meerut homeowners can benefit from two layers of subsidy — central and state:</P>
+              <P>Meerut homeowners can benefit from a combined subsidy of up to ₹1,08,000 depending on the system size installed:</P>
 
-              <H3>Central Government Subsidy (MNRE)</H3>
               <SubsidyTable
-                headers={['System Size', 'Central Subsidy']}
+                headers={['System Size', 'Total Combined Subsidy']}
                 rows={[
-                  ['1 kW', '₹30,000'],
-                  ['2 kW', '₹60,000'],
-                  ['3 kW and above', '₹78,000'],
-                ]}
-              />
-
-              <H3>UP State Government Subsidy (UPNEDA)</H3>
-              <P>
-                UPNEDA offers an additional state subsidy of ₹15,000 per kW, capped at ₹30,000 for
-                residential consumers.
-              </P>
-              <SubsidyTable
-                headers={['System Size', 'UP State Subsidy']}
-                rows={[
-                  ['1 kW', '₹15,000'],
-                  ['2 kW', '₹30,000'],
-                  ['3 kW and above', '₹30,000 (maximum)'],
-                ]}
-              />
-
-              <H3>Combined Subsidy — What You Actually Get</H3>
-              <SubsidyTable
-                headers={['System Size', 'Central', 'UP State', 'Total Subsidy']}
-                rows={[
-                  ['1 kW', '₹30,000', '₹15,000', '₹45,000'],
-                  ['2 kW', '₹60,000', '₹30,000', '₹90,000'],
-                  ['3 kW+', '₹78,000', '₹30,000', '₹1,08,000'],
+                  ['1 kW', '₹45,000'],
+                  ['2 kW', '₹90,000'],
+                  ['3 kW+', '₹1,08,000'],
                 ]}
               />
               <P>

@@ -30,6 +30,15 @@ const BlogSection = () => {
       readTime: '10 min read',
       href: '/blog/best-solar-company-in-meerut',
       image: { src: '/Happyfamily.png' },
+    },
+    {
+      title: '3kW vs 5kW Solar System in Meerut: Price, Subsidy & Guide',
+      excerpt:
+        'Deciding between a 3kW and 5kW solar system? Compare prices, PM Surya Ghar subsidy, generation, roof space, and find the right size based on your bill.',
+      category: 'System Sizing',
+      readTime: '12 min read',
+      href: '/blog/3kw-vs-5kw-solar-system-meerut',
+      image: { src: '/van.png' }, // placeholder image
     }
   ];
 
