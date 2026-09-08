@@ -83,7 +83,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
           retriggerTimer = setTimeout(() => {
             setIsOpen(true);
             sessionStorage.setItem("kailash_modal_retrigger_count", "2");
-          }, 40000); // Second re-trigger after 40 seconds
+          }, 50000); // Second re-trigger after 50 seconds
         }
         // Stop re-triggering after the second time
       }
