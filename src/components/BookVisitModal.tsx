@@ -63,21 +63,24 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     }
   }, [autoOpenDelay]);
 
-  // Handle re-triggering 12 seconds after the modal is closed
+  // Handle re-triggering 15 seconds after the modal is closed
   useEffect(() => {
     let retriggerTimer: NodeJS.Timeout;
     
-    // If the modal is closed, has been auto-opened before, and hasn't been submitted
-    if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !sessionStorage.getItem("kailash_modal_submitted")) {
-      retriggerTimer = setTimeout(() => {
-        setIsOpen(true);
-      }, 15000);
+    // Only run this logic for the main auto-opening instance to prevent multiple modals triggering
+    if (autoOpenDelay && autoOpenDelay > 0) {
+      // If the modal is closed, has been auto-opened before, and hasn't been submitted
+      if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !sessionStorage.getItem("kailash_modal_submitted")) {
+        retriggerTimer = setTimeout(() => {
+          setIsOpen(true);
+        }, 15000);
+      }
     }
     
     return () => {
       if (retriggerTimer) clearTimeout(retriggerTimer);
     };
-  }, [isOpen]);
+  }, [isOpen, autoOpenDelay]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
