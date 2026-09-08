@@ -2,9 +2,9 @@
 
 import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 
-export default function MetaPixel({ pixelId }: { pixelId: string }) {
+function PixelTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const hasMounted = useRef(false);
@@ -19,6 +19,10 @@ export default function MetaPixel({ pixelId }: { pixelId: string }) {
     }
   }, [pathname, searchParams]);
 
+  return null;
+}
+
+export default function MetaPixel({ pixelId }: { pixelId: string }) {
   if (!pixelId) return null;
 
   return (
@@ -46,6 +50,9 @@ export default function MetaPixel({ pixelId }: { pixelId: string }) {
           alt=""
         />
       </noscript>
+      <Suspense fallback={null}>
+        <PixelTracker />
+      </Suspense>
     </>
   );
 }
