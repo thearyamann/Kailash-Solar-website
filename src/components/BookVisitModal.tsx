@@ -63,6 +63,22 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     }
   }, [autoOpenDelay]);
 
+  // Handle re-triggering 12 seconds after the modal is closed
+  useEffect(() => {
+    let retriggerTimer: NodeJS.Timeout;
+    
+    // If the modal is closed, has been auto-opened before, and hasn't been submitted
+    if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !sessionStorage.getItem("kailash_modal_submitted")) {
+      retriggerTimer = setTimeout(() => {
+        setIsOpen(true);
+      }, 15000);
+    }
+    
+    return () => {
+      if (retriggerTimer) clearTimeout(retriggerTimer);
+    };
+  }, [isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -109,6 +125,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
         title: "Consultation Booked!",
         description: "Our engineering team will contact you shortly."
       });
+      sessionStorage.setItem("kailash_modal_submitted", "true");
       setIsOpen(false);
       setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
     } catch (error) {
