@@ -238,7 +238,7 @@ const SolarCompanyMeerut = () => {
               
               <ul className="space-y-5 lg:space-y-8">
                 {[
-                  { title: "Reduce Bills by 95%", desc: "Generate your own power and drastically reduce reliance on the PVVNL grid." },
+                  { title: <>Reduce Bills by 95%<sup>*</sup></>, desc: "Generate your own power and drastically reduce reliance on the PVVNL grid." },
                   { title: "Government Subsidy", desc: "Get direct bank transfers up to ₹1,08,000 under the PM Surya Ghar Yojana." },
                   { title: "High ROI & Payback", desc: "Recover your investment in 3-4 years and enjoy free electricity for 25+ years." },
                   { title: "Eco-Friendly Power", desc: "Reduce your carbon footprint and contribute to a greener, cleaner Meerut." },
