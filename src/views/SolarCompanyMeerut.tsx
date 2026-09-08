@@ -22,6 +22,8 @@ import project2 from '@/assets/solar-project-2.jpg';
 import project3 from '@/assets/solar-project-3.jpg';
 
 
+import Image from 'next/image';
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -95,10 +97,13 @@ const SolarCompanyMeerut = () => {
 
       <section id="home" className="relative min-h-[100dvh] md:min-h-[80vh] flex flex-col justify-between md:justify-center overflow-hidden pt-20 pb-0 md:pb-10">
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
-          <img
+          <Image
             src="/Happyfamily.png"
             alt="Happy family using solar power"
-            className="w-full h-full object-cover object-[center_80%] md:object-[100%_20%]"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[center_80%] md:object-[100%_20%]"
           />
           {/* Subtle dark overlay without blur to keep image sharp while text is readable */}
           <div className="absolute inset-0 bg-slate-900/50" />

@@ -117,6 +117,7 @@ export default function QuotePage() {
 
     setStep("calculating");
 
+    setTimeout(() => {
       const bill = parseFloat(monthlyBill);
       const systemSize = Math.max(1, Math.ceil(bill / 1500));
       
@@ -129,6 +130,7 @@ export default function QuotePage() {
         newUrl.searchParams.set('kw', `${systemSize}kw`);
         window.history.replaceState({}, '', newUrl.toString());
       }
+    }, 1500);
   };
 
   const formatCurrency = (value: number) => {
