@@ -89,6 +89,9 @@ export function SolarConsultationForm() {
           'form_name': 'inline_consultation',
           'lead_type': 'book_visit'
         });
+        if ((window as any).fbq) {
+          (window as any).fbq('track', 'Lead');
+        }
       }
 
       window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");

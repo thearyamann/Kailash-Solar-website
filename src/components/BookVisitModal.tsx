@@ -132,6 +132,9 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
           'form_name': 'book_visit',
           'lead_type': 'book_visit'
         });
+        if ((window as any).fbq) {
+          (window as any).fbq('track', 'Lead');
+        }
       }
 
       window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");

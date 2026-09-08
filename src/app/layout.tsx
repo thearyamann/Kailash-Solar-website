@@ -144,7 +144,7 @@ export default function RootLayout({
       <body>
         <NavigationLoader />
         <GoogleTagManager gtmId="GTM-WXGHXT7R" />
-        <MetaPixel pixelId="FB-XXXXXXXXX" />
+        <MetaPixel pixelId="1071029479055771" />
         <Providers>
           {children}
         </Providers>
