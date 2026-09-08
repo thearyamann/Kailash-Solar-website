@@ -63,7 +63,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     }
   }, [autoOpenDelay]);
 
-  // Handle re-triggering 15 seconds after the modal is closed
+  // Handle re-triggering 15s and 40s after the modal is closed
   useEffect(() => {
     let retriggerTimer: NodeJS.Timeout;
     
@@ -71,9 +71,21 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     if (autoOpenDelay && autoOpenDelay > 0) {
       // If the modal is closed, has been auto-opened before, and hasn't been submitted
       if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !sessionStorage.getItem("kailash_modal_submitted")) {
-        retriggerTimer = setTimeout(() => {
-          setIsOpen(true);
-        }, 15000);
+        
+        const retriggerCount = parseInt(sessionStorage.getItem("kailash_modal_retrigger_count") || "0", 10);
+        
+        if (retriggerCount === 0) {
+          retriggerTimer = setTimeout(() => {
+            setIsOpen(true);
+            sessionStorage.setItem("kailash_modal_retrigger_count", "1");
+          }, 15000); // First re-trigger after 15 seconds
+        } else if (retriggerCount === 1) {
+          retriggerTimer = setTimeout(() => {
+            setIsOpen(true);
+            sessionStorage.setItem("kailash_modal_retrigger_count", "2");
+          }, 40000); // Second re-trigger after 40 seconds
+        }
+        // Stop re-triggering after the second time
       }
     }
     
