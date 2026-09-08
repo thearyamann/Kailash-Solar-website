@@ -2,15 +2,20 @@
 
 import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function MetaPixel({ pixelId }: { pixelId: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const hasMounted = useRef(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).fbq) {
-      (window as any).fbq('track', 'PageView');
+    if (hasMounted.current) {
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'PageView');
+      }
+    } else {
+      hasMounted.current = true;
     }
   }, [pathname, searchParams]);
 
