@@ -140,11 +140,11 @@ export default function RootLayout({
         />
         <FAQSchema />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(calculatorSchema) }} />
+        <MetaPixel pixelId="1071029479055771" />
       </head>
       <body>
         <NavigationLoader />
         <GoogleTagManager gtmId="GTM-WXGHXT7R" />
-        <MetaPixel pixelId="1071029479055771" />
         <Providers>
           {children}
         </Providers>
