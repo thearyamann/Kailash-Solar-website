@@ -34,6 +34,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${siteConfig.url}/blog/how-to-choose-solar-panels-home-meerut`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
       url: `${siteConfig.url}/quote`,
       lastModified: new Date(),
       changeFrequency: 'monthly',

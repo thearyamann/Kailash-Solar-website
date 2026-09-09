@@ -39,6 +39,15 @@ const BlogSection = () => {
       readTime: '12 min read',
       href: '/blog/3kw-vs-5kw-solar-system-meerut',
       image: { src: '/van.png' }, // placeholder image
+    },
+    {
+      title: 'How to Choose the Right Solar Panel for Your Home in Meerut',
+      excerpt:
+        'A complete guide for Meerut homeowners on choosing the best solar panels. Learn about efficiency, warranty, types, and how to select a reliable installer.',
+      category: 'Buying Guide',
+      readTime: '10 min read',
+      href: '/blog/how-to-choose-solar-panels-home-meerut',
+      image: { src: '/priceflyer.png' }, // placeholder image
     }
   ];
 
