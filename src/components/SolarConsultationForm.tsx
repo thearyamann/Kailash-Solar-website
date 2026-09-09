@@ -83,6 +83,12 @@ export function SolarConsultationForm() {
       const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `PIN Code: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
       
       if (typeof window !== 'undefined') {
+        import('posthog-js').then((ph) => {
+          ph.default.capture('form_submitted', {
+            form_name: 'inline_consultation',
+            lead_type: 'book_visit'
+          });
+        });
         (window as any).dataLayer = (window as any).dataLayer || [];
         (window as any).dataLayer.push({
           'event': 'generate_lead',

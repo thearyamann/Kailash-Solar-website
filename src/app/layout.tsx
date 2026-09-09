@@ -5,6 +5,7 @@ import MetaPixel from "../components/MetaPixel";
 import { Providers } from '../components/providers';
 import { GoogleTagManager } from '@next/third-parties/google';
 import NavigationLoader from '../components/NavigationLoader';
+import { PostHogProvider } from './providers';
 import '../index.css'; // Use existing global styles
 
 export const viewport: Viewport = {
@@ -145,9 +146,11 @@ export default function RootLayout({
       <body>
         <NavigationLoader />
         <GoogleTagManager gtmId="GTM-WXGHXT7R" />
-        <Providers>
-          {children}
-        </Providers>
+        <PostHogProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </PostHogProvider>
       </body>
     </html>
   );

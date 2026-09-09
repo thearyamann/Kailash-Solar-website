@@ -126,6 +126,12 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `Address/PIN: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
       
       if (typeof window !== 'undefined') {
+        import('posthog-js').then((ph) => {
+          ph.default.capture('form_submitted', {
+            form_name: 'book_visit',
+            lead_type: 'book_visit'
+          });
+        });
         (window as any).dataLayer = (window as any).dataLayer || [];
         (window as any).dataLayer.push({
           'event': 'generate_lead',

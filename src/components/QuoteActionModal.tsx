@@ -105,6 +105,12 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
       );
       
       if (typeof window !== 'undefined') {
+        import('posthog-js').then((ph) => {
+          ph.default.capture('form_submitted', {
+            form_name: 'quote_booking',
+            lead_type: 'quote'
+          });
+        });
         (window as any).dataLayer = (window as any).dataLayer || [];
         (window as any).dataLayer.push({
           'event': 'generate_lead',

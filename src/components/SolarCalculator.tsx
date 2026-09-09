@@ -137,6 +137,12 @@ Calculate your savings: ${window.location.href}`;
 
   const handleProposalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    import('posthog-js').then((ph) => {
+      ph.default.capture('form_submitted', {
+        form_name: 'solar_calculator_proposal',
+        lead_type: 'proposal'
+      });
+    });
     toast({
       title: "Request Submitted!",
       description: "Our team will contact you within 24 hours with a detailed proposal.",
