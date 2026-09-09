@@ -388,12 +388,12 @@ export default function QuotePage() {
                       <span className="text-[13px] md:text-[15px] text-slate-600">Total System Cost</span>
                       <span className="font-semibold text-[13px] md:text-[15px] text-slate-900">{formatCurrency(results.totalCost)}</span>
                     </div>
-                    {results.subsidy > 0 && (
-                      <div className="flex justify-between items-center p-3 md:p-4 border-b border-slate-100 bg-emerald-50/30">
-                        <span className="text-[13px] md:text-[15px] text-emerald-700 font-medium">Govt Subsidy</span>
-                        <span className="font-bold text-[13px] md:text-[15px] text-emerald-600">-{formatCurrency(results.subsidy)}</span>
-                      </div>
-                    )}
+                    <div className="flex justify-between items-center p-3 md:p-4 border-b border-slate-100 bg-emerald-50/30">
+                      <span className="text-[13px] md:text-[15px] text-emerald-700 font-medium">Govt Subsidy</span>
+                      <span className="font-bold text-[13px] md:text-[15px] text-emerald-600">
+                        {results.subsidy > 0 ? `-${formatCurrency(results.subsidy)}` : "₹0 (Not Applicable)"}
+                      </span>
+                    </div>
                     <div className="flex justify-between items-center p-3 md:p-4 bg-slate-50/80">
                       <span className="text-[14px] md:text-[16px] font-bold text-slate-900">Your Net Investment</span>
                       <span className="font-bold text-[16px] md:text-[20px] text-primary">{formatCurrency(results.netCost)}</span>

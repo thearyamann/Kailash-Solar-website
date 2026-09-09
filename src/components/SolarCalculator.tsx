@@ -285,15 +285,15 @@ Calculate your savings: ${window.location.href}`;
 
                   {/* Detailed Stats */}
                   <div className="space-y-1 bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    {results.subsidy > 0 && (
-                      <div className="flex justify-between items-center py-3 border-b border-slate-200/60 last:border border-slate-200">
-                        <span className="text-slate-600 font-medium flex items-center gap-3">
-                          <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                          Available Subsidy
-                        </span>
-                        <span className="font-bold text-emerald-600">{formatCurrency(results.subsidy)}</span>
-                      </div>
-                    )}
+                    <div className="flex justify-between items-center py-3 border-b border-slate-200/60 last:border border-slate-200">
+                      <span className="text-slate-600 font-medium flex items-center gap-3">
+                        <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                        Available Subsidy
+                      </span>
+                      <span className="font-bold text-emerald-600">
+                        {results.subsidy > 0 ? formatCurrency(results.subsidy) : "₹0 (Not Applicable)"}
+                      </span>
+                    </div>
                     <div className="flex justify-between items-center py-3 border-b border-slate-200/60 last:border border-slate-200">
                       <span className="text-slate-600 font-medium flex items-center gap-3">
                         <BatteryCharging className="w-4 h-4 text-amber-500" />

@@ -294,12 +294,15 @@ const BlogHowToChooseSolarPanelsMeerut = () => {
                 <P>
                   Here are practical examples based on standard 540W to 550W panels:
                 </P>
-                <ul className="list-disc pl-5 mb-6 space-y-2 text-slate-700">
-                  <li><strong><Link href="/blog/3kw-vs-5kw-solar-system-meerut" className="text-primary font-medium hover:underline">3kW rooftop system</Link>:</strong> Approximately 5 to 6 panels.</li>
-                  <li><strong>5kW rooftop system:</strong> Approximately 9 to 10 panels.</li>
-                  <li><strong>7kW rooftop system:</strong> Approximately 13 to 14 panels.</li>
-                  <li><strong>10kW rooftop system:</strong> Approximately 18 to 19 panels.</li>
-                </ul>
+                <ChecklistTable 
+                  headers={['System Size', 'Approx. Panels (540W)', 'Total System Cost', 'PM Surya Ghar Subsidy', 'Net Price You Pay']}
+                  rows={[
+                    ['3kW Rooftop System', '5 to 6 panels', '₹1,80,000', '₹1,08,000', '₹72,000'],
+                    ['5kW Rooftop System', '9 to 10 panels', '₹3,00,000', '₹1,08,000', '₹1,92,000'],
+                    ['7kW Rooftop System', '13 to 14 panels', '₹4,20,000', '₹1,08,000', '₹3,12,000'],
+                    ['10kW Rooftop System', '18 to 19 panels', '₹6,00,000', '₹1,08,000', '₹4,92,000']
+                  ]}
+                />
                 <P>
                   Keep in mind that the final panel count and system design must be calculated based on the actual panel specifications and your site requirements. 
                 </P>
