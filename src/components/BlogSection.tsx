@@ -47,7 +47,7 @@ const BlogSection = () => {
       category: 'Buying Guide',
       readTime: '10 min read',
       href: '/blog/how-to-choose-solar-panels-home-meerut',
-      image: { src: '/priceflyer.png' }, // placeholder image
+      image: { src: '/solarpanel.png' },
     }
   ];
 
