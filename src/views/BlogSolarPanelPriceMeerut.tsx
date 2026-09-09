@@ -276,8 +276,12 @@ const BlogSolarPanelPriceMeerut = () => {
                 At <Link href="/" className="text-primary font-bold hover:underline">Kailash Solar</Link>, the leading <Link href="/solar-company-meerut" className="text-primary font-bold hover:underline">Solar Company in Meerut</Link>, our mission is to provide transparent, premium, and hassle-free solar EPC (Engineering, Procurement, and Construction) services. In this comprehensive guide, we will break down exactly what you can expect to pay for a solar system in Meerut in 2026, how the subsidy works, and how much money you will ultimately save.
               </P>
               
-              <div className="w-full aspect-[16/9] bg-slate-200 rounded-2xl flex items-center justify-center my-10 border border-slate-300">
-                <span className="text-slate-500 font-medium text-center px-4 text-sm md:text-base">[Image Placeholder: High-quality photo of a recent residential solar installation in Meerut by Kailash Solar]</span>
+              <div className="w-full rounded-2xl overflow-hidden my-10 border border-slate-200 shadow-md">
+                <img 
+                  src="/vaniimage.png" 
+                  alt="Recent residential solar installation in Meerut by Kailash Solar" 
+                  className="w-full h-auto object-cover" 
+                />
               </div>
 
               {/* Section 2 */}
