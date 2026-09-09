@@ -524,8 +524,12 @@ const BlogSolarPanelPriceMeerut = () => {
                 </li>
               </ol>
               
-              <div className="w-full aspect-[16/9] bg-slate-200 rounded-2xl flex items-center justify-center my-10 border border-slate-300">
-                <span className="text-slate-500 font-medium text-center px-4 text-sm md:text-base">[Image Placeholder: Infographic showing the timeline of a typical solar installation]</span>
+              <div className="w-full rounded-2xl overflow-hidden my-10 border border-slate-200 shadow-md">
+                <img 
+                  src="/installation.png" 
+                  alt="Timeline of a typical solar installation" 
+                  className="w-full h-auto object-cover" 
+                />
               </div>
 
               {/* Section 8 */}
