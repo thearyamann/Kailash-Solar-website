@@ -186,7 +186,7 @@ const BlogHowToChooseSolarPanelsMeerut = () => {
         <div className="absolute bottom-0 left-0 h-[2px] bg-primary/20 w-full">
           <div 
             className="h-full bg-primary transition-all duration-150 ease-out" 
-            style={{ width: \`\${scrollProgress}%\` }}
+            style={{ width: `${scrollProgress}%` }}
           />
         </div>
       </div>
@@ -369,7 +369,7 @@ const BlogHowToChooseSolarPanelsMeerut = () => {
               <H2>Frequently Asked Questions</H2>
               <Accordion type="single" collapsible className="w-full mb-12">
                 {faqs.map((faq, i) => (
-                  <AccordionItem key={i} value={\`item-\${i}\`}>
+                  <AccordionItem key={i} value={`item-${i}`}>
                     <AccordionTrigger className="text-left font-semibold text-lg">
                       {faq.q}
                     </AccordionTrigger>
