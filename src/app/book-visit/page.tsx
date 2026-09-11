@@ -161,7 +161,7 @@ export default function BookVisitPage() {
             </div>
 
             {/* App Bottom Action Bar */}
-            <div className="fixed sm:relative bottom-0 left-0 w-full p-4 pb-8 sm:p-0 bg-white sm:bg-transparent border-t border-slate-100 sm:border-0 z-[100] flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] sm:shadow-none">
+            <div className="fixed sm:relative bottom-0 left-0 w-full p-4 sm:p-0 bg-white sm:bg-transparent border-t border-slate-100 sm:border-0 z-[100] flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] sm:shadow-none">
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
