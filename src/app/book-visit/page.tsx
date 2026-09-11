@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, Send, X, Phone } from "lucide-react";
+import { ArrowLeft, Send, X, Phone, CheckCircle2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -14,6 +14,7 @@ export default function BookVisitPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -61,6 +62,7 @@ export default function BookVisitPage() {
     // Open WhatsApp instantly for the high intent lead
     window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
     
+    setIsSuccess(true);
     toast({
       title: "Consultation Booked!",
       description: "Redirecting to WhatsApp..."
@@ -109,77 +111,97 @@ export default function BookVisitPage() {
             </p>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-4 flex-grow flex flex-col">
-            <div className="space-y-4 flex-grow">
-              <div>
-                <Input 
-                  id="name" 
-                  placeholder="Full Name*" 
-                  required 
-                  value={formData.name} 
-                  onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                  className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
-                />
+          {isSuccess ? (
+            <div className="flex-grow flex flex-col items-center justify-center text-center py-12 animate-in fade-in zoom-in duration-500">
+              <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-6 relative">
+                <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-20"></div>
+                <CheckCircle2 className="w-12 h-12 text-green-600 relative z-10" />
               </div>
-              
-              <div>
-                <Input 
-                  id="address" 
-                  placeholder="PIN Code & Address*" 
-                  required 
-                  value={formData.address} 
-                  onChange={e => setFormData({ ...formData, address: e.target.value })} 
-                  className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
-                />
-              </div>
-              
-              <div>
-                <Input 
-                  id="phone" 
-                  type="tel" 
-                  placeholder="WhatsApp Number*" 
-                  required 
-                  value={formData.phone} 
-                  onChange={e => setFormData({ ...formData, phone: e.target.value })} 
-                  className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
-                />
-              </div>
-
-              <div>
-                <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
-                  <SelectTrigger className="w-full h-[56px] px-5 bg-slate-50 border border-slate-200 hover:border-primary/30 rounded-[16px] text-[15px] font-medium focus:ring-2 focus:ring-primary focus:bg-white text-slate-700 transition-all">
-                    <SelectValue placeholder="Monthly Electricity Bill*" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-[16px] z-[100] bg-white border-slate-200">
-                    <SelectItem value="< 1500" className="text-[15px] py-2.5">Less than ₹1,500</SelectItem>
-                    <SelectItem value="1500 - 2500" className="text-[15px] py-2.5">₹1,500 - ₹2,500</SelectItem>
-                    <SelectItem value="2500 - 5000" className="text-[15px] py-2.5">₹2,500 - ₹5,000</SelectItem>
-                    <SelectItem value="> 5000" className="text-[15px] py-2.5">More than ₹5,000</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* App Bottom Action Bar */}
-            <div className="fixed sm:relative bottom-0 left-0 w-full p-4 sm:p-0 bg-white sm:bg-transparent border-t border-slate-100 sm:border-0 z-[100] flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] sm:shadow-none">
+              <h2 className="text-[26px] font-bold text-slate-900 mb-3 font-montserrat">Request Received!</h2>
+              <p className="text-slate-500 mb-8 max-w-[280px] leading-relaxed">
+                Redirecting you to WhatsApp to confirm your details...
+              </p>
               <Button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="flex-grow h-[56px] rounded-[16px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-white transition-transform active:scale-[0.98]  "
+                onClick={() => window.location.href = `https://wa.me/918999999654?text=Hi`}
+                className="h-[52px] px-8 rounded-[16px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 flex items-center gap-2"
               >
-                {isSubmitting ? "Redirecting..." : "Book FREE Consultation"}
+                <MessageCircle className="w-5 h-5" />
+                Open WhatsApp Now
               </Button>
-              
-              <a 
-                href="tel:+918999999654"
-                className="flex-shrink-0 flex items-center justify-center w-[56px] h-[56px] rounded-[16px] bg-blue-600 text-white hover:bg-blue-700 transition-all active:scale-[0.98]"
-                title="Call Us Now"
-              >
-                <Phone className="w-[22px] h-[22px] fill-current" />
-              </a>
             </div>
-            
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4 flex-grow flex flex-col">
+              <div className="space-y-4 flex-grow">
+                <div>
+                  <Input 
+                    id="name" 
+                    placeholder="Full Name*" 
+                    required 
+                    value={formData.name} 
+                    onChange={e => setFormData({ ...formData, name: e.target.value })} 
+                    className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
+                  />
+                </div>
+                
+                <div>
+                  <Input 
+                    id="address" 
+                    placeholder="PIN Code & Address*" 
+                    required 
+                    value={formData.address} 
+                    onChange={e => setFormData({ ...formData, address: e.target.value })} 
+                    className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
+                  />
+                </div>
+                
+                <div>
+                  <Input 
+                    id="phone" 
+                    type="tel" 
+                    placeholder="WhatsApp Number*" 
+                    required 
+                    value={formData.phone} 
+                    onChange={e => setFormData({ ...formData, phone: e.target.value })} 
+                    className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
+                  />
+                </div>
+
+                <div>
+                  <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
+                    <SelectTrigger className="w-full h-[56px] px-5 bg-slate-50 border border-slate-200 hover:border-primary/30 rounded-[16px] text-[15px] font-medium focus:ring-2 focus:ring-primary focus:bg-white text-slate-700 transition-all">
+                      <SelectValue placeholder="Monthly Electricity Bill*" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-[16px] z-[100] bg-white border-slate-200">
+                      <SelectItem value="< 1500" className="text-[15px] py-2.5">Less than ₹1,500</SelectItem>
+                      <SelectItem value="1500 - 2500" className="text-[15px] py-2.5">₹1,500 - ₹2,500</SelectItem>
+                      <SelectItem value="2500 - 5000" className="text-[15px] py-2.5">₹2,500 - ₹5,000</SelectItem>
+                      <SelectItem value="> 5000" className="text-[15px] py-2.5">More than ₹5,000</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* App Bottom Action Bar */}
+              <div className="mt-4 sm:mt-auto w-full pt-4 flex gap-3">
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="flex-grow h-[56px] rounded-[16px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-white transition-transform active:scale-[0.98]  "
+                >
+                  {isSubmitting ? "Redirecting..." : "Book FREE Consultation"}
+                </Button>
+                
+                <a 
+                  href="tel:+918999999654"
+                  className="flex-shrink-0 flex items-center justify-center w-[56px] h-[56px] rounded-[16px] bg-blue-600 text-white hover:bg-blue-700 transition-all active:scale-[0.98]"
+                  title="Call Us Now"
+                >
+                  <Phone className="w-[22px] h-[22px] fill-current" />
+                </a>
+              </div>
+              
+            </form>
+          )}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Phone } from "lucide-react";
+import { Phone, CheckCircle2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,6 +13,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -140,12 +141,12 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
 
     window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
     
+    setIsSuccess(true);
     toast({
       title: "Request Sent!",
       description: "Redirecting to WhatsApp..."
     });
     sessionStorage.setItem("kailash_modal_submitted", "true");
-    setIsOpen(false);
     setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
     setIsSubmitting(false);
   };
@@ -172,102 +173,111 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
           </div>
 
           <div className="p-4 sm:p-6 flex-grow flex flex-col bg-card">
-            {/* Typography Section */}
-            <div className="mb-3.5">
-              <h2 className="text-[22px] sm:text-[24px] leading-[1.15] font-bold font-montserrat text-foreground mb-2">
-                Get Solar Panels at <span className="text-accent">Zero Initial Cost</span>
-              </h2>
-              <p className="text-[13px] sm:text-[14px] font-bold text-foreground">
-                Book a free site visit and claim your <span className="text-accent">₹1,08,000 subsidy before it ends!</span>
-              </p>
-            </div>
-            
-            {/* Form Section */}
-            <form onSubmit={handleSubmit} className="space-y-2.5">
-              {submitError && (
-                <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl flex items-start gap-3 mb-4 animate-in fade-in slide-in-from-top-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-                  <p className="text-[14px] font-medium leading-tight">{submitError}</p>
+            {isSuccess ? (
+              <div className="flex flex-col items-center justify-center text-center py-12 animate-in fade-in zoom-in duration-500 min-h-[350px]">
+                <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-5 relative">
+                  <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-20"></div>
+                  <CheckCircle2 className="w-10 h-10 text-green-600 relative z-10" />
                 </div>
-              )}
-
-              <div>
-                <Input 
-                  id="modal-name" 
-                  placeholder="Full Name*" 
-                  required 
-                  value={formData.name} 
-                  onChange={e => {
-                    setSubmitError("");
-                    setFormData({ ...formData, name: e.target.value });
-                  }} 
-                  className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary" 
-                />
-              </div>
-              
-              <div>
-                <Input 
-                  id="modal-address" 
-                  placeholder="PIN Code & Address*" 
-                  required 
-                  value={formData.address} 
-                  onChange={e => {
-                    setSubmitError("");
-                    setFormData({ ...formData, address: e.target.value });
-                  }} 
-                  className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary" 
-                />
-              </div>
-              
-              <div>
-                <Input 
-                  id="modal-phone" 
-                  type="tel" 
-                  placeholder="WhatsApp Number (10 digits)*" 
-                  required 
-                  maxLength={10}
-                  pattern="[0-9]{10}"
-                  title="Please enter a valid 10-digit mobile number"
-                  value={formData.phone} 
-                  onChange={e => {
-                    const val = e.target.value.replace(/\D/g, '');
-                    if (val.length <= 10) setFormData({ ...formData, phone: val });
-                  }} 
-                  className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary" 
-                />
-              </div>
-
-              <div>
-                <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
-                  <SelectTrigger className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] text-muted-foreground focus:ring-primary">
-                    <SelectValue placeholder="Monthly Electricity Bill*" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-[12px] z-[100]">
-                    <SelectItem value="< 1500">Less than ₹1,500</SelectItem>
-                    <SelectItem value="1500 - 2500">₹1,500 - ₹2,500</SelectItem>
-                    <SelectItem value="2500 - 5000">₹2,500 - ₹5,000</SelectItem>
-                    <SelectItem value="> 5000">More than ₹5,000</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="pt-2 flex gap-2 sm:gap-3">
+                <h2 className="text-[24px] font-bold text-slate-900 mb-2 font-montserrat">Request Received!</h2>
+                <p className="text-slate-500 mb-6 max-w-[280px] leading-relaxed text-sm">
+                  Redirecting you to WhatsApp to confirm your details...
+                </p>
                 <Button 
-                  type="submit" 
-                  disabled={isSubmitting} 
-                  className="flex-grow h-[48px] rounded-[10px] text-[16px] font-bold  hover: transition-all active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90"
+                  onClick={() => window.location.href = `https://wa.me/918999999654?text=Hi`}
+                  className="h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 flex items-center gap-2"
                 >
-                  {isSubmitting ? "Booking..." : "Book FREE Consultation"}
+                  <MessageCircle className="w-5 h-5" />
+                  Open WhatsApp Now
                 </Button>
-                <a 
-                  href="tel:+918999999654" 
-                  className="flex-shrink-0 flex items-center justify-center w-[48px] h-[48px] rounded-[10px] bg-primary text-white hover:bg-primary/90 transition-colors "
-                  title="Call Us Now"
-                >
-                  <Phone className="w-5 h-5" />
-                </a>
               </div>
-            </form>
+            ) : (
+              <>
+                {/* Typography Section */}
+                <div className="mb-3.5">
+                  <h2 className="text-[22px] sm:text-[24px] leading-[1.15] font-bold font-montserrat text-slate-900 mb-2">
+                    Get Solar Panels at <span className="text-primary">Zero Initial Cost</span>
+                  </h2>
+                  <p className="text-[13px] sm:text-[14px] font-bold text-foreground">
+                    Book a free site visit and claim your <span className="text-accent">₹1,08,000 subsidy before it ends!</span>
+                  </p>
+                </div>
+                
+                {/* Form Section */}
+                <form onSubmit={handleSubmit} className="space-y-2.5">
+                  {submitError && (
+                    <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl flex items-start gap-3 mb-4 animate-in fade-in slide-in-from-top-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                      <p className="text-[14px] font-medium leading-tight">{submitError}</p>
+                    </div>
+                  )}
+
+                  <div className="space-y-2.5">
+                    <div>
+                      <Input 
+                        placeholder="Full Name*" 
+                        required 
+                        value={formData.name} 
+                        onChange={e => setFormData({ ...formData, name: e.target.value })} 
+                        className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70" 
+                      />
+                    </div>
+                    
+                    <div>
+                      <Input 
+                        placeholder="PIN Code & Address*" 
+                        required 
+                        value={formData.address} 
+                        onChange={e => setFormData({ ...formData, address: e.target.value })} 
+                        className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70" 
+                      />
+                    </div>
+                    
+                    <div>
+                      <Input 
+                        type="tel" 
+                        placeholder="WhatsApp Number*" 
+                        required 
+                        value={formData.phone} 
+                        onChange={e => setFormData({ ...formData, phone: e.target.value })} 
+                        className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70" 
+                      />
+                    </div>
+
+                    <div>
+                      <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
+                        <SelectTrigger className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] text-muted-foreground focus:ring-primary">
+                          <SelectValue placeholder="Monthly Electricity Bill*" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-[12px] z-[100]">
+                          <SelectItem value="< 1500">Less than ₹1,500</SelectItem>
+                          <SelectItem value="1500 - 2500">₹1,500 - ₹2,500</SelectItem>
+                          <SelectItem value="2500 - 5000">₹2,500 - ₹5,000</SelectItem>
+                          <SelectItem value="> 5000">More than ₹5,000</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex gap-2 sm:gap-3">
+                    <Button 
+                      type="submit" 
+                      disabled={isSubmitting} 
+                      className="flex-grow h-[48px] rounded-[10px] text-[16px] font-bold transition-all active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                      {isSubmitting ? "Booking..." : "Book FREE Consultation"}
+                    </Button>
+                    <a 
+                      href="tel:+918999999654" 
+                      className="flex-shrink-0 flex items-center justify-center w-[48px] h-[48px] rounded-[10px] bg-primary text-white hover:bg-primary/90 transition-colors"
+                      title="Call Us Now"
+                    >
+                      <Phone className="w-5 h-5" />
+                    </a>
+                  </div>
+                </form>
+              </>
+            )}
           </div>
         </div>
       </DialogContent>
