@@ -99,7 +99,7 @@ export default function BookVisitPage() {
           
           <div className="mb-6 mt-1">
             <h1 className="text-[26px] sm:text-[28px] leading-[1.15] font-bold font-montserrat text-slate-900 mb-2">
-              Get Solar Panels at <span className="text-primary">Zero Initial Cost</span>
+              Get Solar Panels at <span className="text-accent">Zero Initial Cost</span>
             </h1>
             <p className="text-[14px] leading-relaxed text-slate-500 mb-3 font-normal">
               Govt. subsidy pays your down payment. Your electricity savings pay the EMIs.
@@ -167,7 +167,7 @@ export default function BookVisitPage() {
                 disabled={isSubmitting}
                 className="flex-grow h-[56px] rounded-[16px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-white transition-transform active:scale-[0.98]  "
               >
-                {isSubmitting ? "Redirecting..." : "Book Consultation"}
+                {isSubmitting ? "Redirecting..." : "Book FREE Consultation"}
               </Button>
               
               <a 

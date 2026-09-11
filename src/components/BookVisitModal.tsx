@@ -175,7 +175,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
             {/* Typography Section */}
             <div className="mb-3.5">
               <h2 className="text-[22px] sm:text-[24px] leading-[1.15] font-bold font-montserrat text-foreground mb-2">
-                Get Solar Panels at <span className="text-primary">Zero Initial Cost</span>
+                Get Solar Panels at <span className="text-accent">Zero Initial Cost</span>
               </h2>
               <p className="text-[13px] sm:text-[14px] font-bold text-foreground">
                 Book a free site visit and claim your <span className="text-accent">₹1,08,000 subsidy before it ends!</span>
@@ -257,7 +257,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                   disabled={isSubmitting} 
                   className="flex-grow h-[48px] rounded-[10px] text-[16px] font-bold  hover: transition-all active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  {isSubmitting ? "Booking..." : "Book a FREE Consultation"}
+                  {isSubmitting ? "Booking..." : "Book FREE Consultation"}
                 </Button>
                 <a 
                   href="tel:+918999999654" 
