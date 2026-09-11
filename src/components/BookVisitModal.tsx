@@ -98,69 +98,56 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError("");
+
+    // Formulate WhatsApp message first
+    const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `Address/PIN: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
+    
+    if (typeof window !== 'undefined') {
+      import('posthog-js').then((ph) => {
+        ph.default.capture('form_submitted', {
+          form_name: 'book_visit',
+          lead_type: 'book_visit'
+        });
+      });
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      (window as any).dataLayer.push({
+        'event': 'generate_lead',
+        'form_name': 'book_visit',
+        'lead_type': 'book_visit'
+      });
+      if ((window as any).fbq) {
+        (window as any).fbq('track', 'Lead');
+      }
+    }
+
     try {
-      // Send to supabase edge function using fetch for better error transparency
+      // Send to supabase edge function using fetch in background without blocking
       const { data: { session } } = await supabase.auth.getSession();
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tjikswdntqctoqqrnjkq.supabase.co';
       
-      const response = await fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
+      fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify(formData)
-      });
-      
-      if (!response.ok) {
-        let errorMsg = "Failed to submit inquiry";
-        try {
-          const errorData = await response.json();
-          errorMsg = errorData.error || errorMsg;
-        } catch (e) {
-          errorMsg = `Server error: ${response.status} ${response.statusText}`;
-        }
-        throw new Error(errorMsg);
-      }
+      }).catch(e => console.error("Background sync error:", e));
 
-      const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `Address/PIN: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
-      
-      if (typeof window !== 'undefined') {
-        import('posthog-js').then((ph) => {
-          ph.default.capture('form_submitted', {
-            form_name: 'book_visit',
-            lead_type: 'book_visit'
-          });
-        });
-        (window as any).dataLayer = (window as any).dataLayer || [];
-        (window as any).dataLayer.push({
-          'event': 'generate_lead',
-          'form_name': 'book_visit',
-          'lead_type': 'book_visit'
-        });
-        if ((window as any).fbq) {
-          (window as any).fbq('track', 'Lead');
-        }
-      }
-
-      window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");
-      
-      toast({
-        title: "Consultation Booked!",
-        description: "Our engineering team will contact you shortly."
-      });
-      sessionStorage.setItem("kailash_modal_submitted", "true");
-      setIsOpen(false);
-      setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to submit request. Please try again or contact us directly.";
-      if (process.env.NODE_ENV !== 'production') {
-        console.error("Submission error:", error);
-      }
-      setSubmitError(errorMessage);
-    } finally {
-      setIsSubmitting(false);
+      console.error(error);
     }
+
+    window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+    
+    toast({
+      title: "Request Sent!",
+      description: "Redirecting to WhatsApp..."
+    });
+    sessionStorage.setItem("kailash_modal_submitted", "true");
+    setIsOpen(false);
+    setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
+    setIsSubmitting(false);
   };
 
   return (

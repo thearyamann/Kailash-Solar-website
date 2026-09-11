@@ -122,7 +122,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
         }
       }
 
-      window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");
+      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
       
       toast({
         title: "Request Sent!",

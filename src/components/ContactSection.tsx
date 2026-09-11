@@ -54,7 +54,7 @@ const ContactSection = () => {
         });
       }
 
-      window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");
+      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
       
       toast({
         title: "Inquiry Submitted!",
@@ -85,7 +85,7 @@ const ContactSection = () => {
 
   const openWhatsApp = () => {
     const message = encodeURIComponent("Hi, I'm interested in solar installation for my business. Please share more details.");
-    window.open(`https://wa.me/918999999654?text=${message}`, "_blank");
+    window.location.href = `https://wa.me/918999999654?text=${message}`;
   };
 
   return (

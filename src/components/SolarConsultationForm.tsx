@@ -56,63 +56,52 @@ export function SolarConsultationForm() {
     e.preventDefault();
     setSubmitError("");
     setIsSubmitting(true);
+    // Formulate WhatsApp message first
+    const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `PIN Code: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
+    
+    if (typeof window !== 'undefined') {
+      import('posthog-js').then((ph) => {
+        ph.default.capture('form_submitted', {
+          form_name: 'inline_consultation',
+          lead_type: 'book_visit'
+        });
+      });
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      (window as any).dataLayer.push({
+        'event': 'generate_lead',
+        'form_name': 'inline_consultation',
+        'lead_type': 'book_visit'
+      });
+      if ((window as any).fbq) {
+        (window as any).fbq('track', 'Lead');
+      }
+    }
+
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tjikswdntqctoqqrnjkq.supabase.co';
       
-      const response = await fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
+      fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify(formData)
-      });
-      
-      if (!response.ok) {
-        let errorMsg = "Failed to submit inquiry";
-        try {
-          const errorData = await response.json();
-          errorMsg = errorData.error || errorMsg;
-        } catch (e) {
-          errorMsg = `Server error: ${response.status} ${response.statusText}`;
-        }
-        throw new Error(errorMsg);
-      }
+      }).catch(e => console.error("Background sync error:", e));
 
-      const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `PIN Code: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
-      
-      if (typeof window !== 'undefined') {
-        import('posthog-js').then((ph) => {
-          ph.default.capture('form_submitted', {
-            form_name: 'inline_consultation',
-            lead_type: 'book_visit'
-          });
-        });
-        (window as any).dataLayer = (window as any).dataLayer || [];
-        (window as any).dataLayer.push({
-          'event': 'generate_lead',
-          'form_name': 'inline_consultation',
-          'lead_type': 'book_visit'
-        });
-        if ((window as any).fbq) {
-          (window as any).fbq('track', 'Lead');
-        }
-      }
-
-      window.open(`https://wa.me/918999999654?text=${whatsappMessage}`, "_blank");
-      
-      toast({
-        title: "Consultation Booked!",
-        description: "Our engineering team will contact you shortly."
-      });
-      setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to submit request.";
-      setSubmitError(errorMessage);
-    } finally {
-      setIsSubmitting(false);
-    }
+      console.error(error);
+    } 
+    
+    window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+    
+    toast({
+      title: "Consultation Booked!",
+      description: "Redirecting to WhatsApp..."
+    });
+    setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
+    setIsSubmitting(false);
   };
 
   return (
