@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, Send, X } from "lucide-react";
+import { ArrowLeft, Send, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -71,45 +71,46 @@ export default function BookVisitPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-background sm:bg-muted flex flex-col items-center justify-start sm:py-8">
+    <div className="min-h-[100dvh] bg-slate-50 sm:bg-muted flex flex-col items-center justify-start sm:py-8">
       
-      <div className="w-full max-w-[400px] bg-card sm:rounded-xl sm:shadow-2xl overflow-hidden relative flex flex-col min-h-[100dvh] sm:min-h-0">
+      <div className="w-full max-w-[400px] bg-white sm:rounded-3xl sm:shadow-2xl overflow-hidden relative flex flex-col min-h-[100dvh] sm:min-h-0">
         
-        {/* Native App Header (Mobile Only) */}
-        <div className="sm:hidden sticky top-0 z-50 bg-card border-b border-border/40 px-4 h-14 flex items-center shadow-sm">
-          <Link href="/" className="flex items-center text-foreground hover:text-primary transition-colors">
-            <ArrowLeft className="w-5 h-5 mr-3" />
-            <span className="font-bold text-[15px]">Book Site Visit</span>
+        {/* Floating Native App Header */}
+        <div className="absolute top-0 w-full z-50 px-4 h-16 flex items-center justify-between">
+          <Link href="/" className="w-10 h-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-white active:scale-90 transition-transform">
+            <ArrowLeft className="w-5 h-5" />
           </Link>
         </div>
 
         {/* Top Image Banner */}
-        <div className="relative h-[180px] w-full bg-slate-200 shrink-0">
+        <div className="relative h-[240px] w-full bg-slate-200 shrink-0">
           <img 
             src="/Happyfamily.png" 
             alt="Happy family with solar" 
             className="w-full h-full object-cover object-[55%_10%]"
           />
-          <Link href="/" className="hidden sm:flex absolute top-4 right-4 w-8 h-8 bg-black/40 backdrop-blur-md rounded-full items-center justify-center text-white hover:bg-black/60 transition-colors">
-            <X className="w-5 h-5" />
-          </Link>
+          {/* Subtle gradient overlay for header readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent pointer-events-none" />
         </div>
 
-        <div className="p-5 sm:p-7 flex-grow flex flex-col bg-card">
-          <div className="mb-5">
-            <h1 className="text-[26px] sm:text-[28px] leading-[1.1] font-bold font-montserrat text-foreground mb-3">
-              Go Solar at <span className="text-accent">₹0 Upfront Cost</span>
+        {/* Form Container (Bottom Sheet Effect) */}
+        <div className="px-5 pt-8 pb-32 sm:pb-8 flex-grow flex flex-col bg-white rounded-t-[32px] -mt-8 relative z-10 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
+          <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2" />
+          
+          <div className="mb-6 mt-1">
+            <h1 className="text-[26px] sm:text-[28px] leading-[1.15] font-bold font-montserrat text-slate-900 mb-2">
+              Get Solar Panels at <br/><span className="text-accent">Zero Initial Cost</span>
             </h1>
-            <p className="text-[14px] leading-relaxed text-muted-foreground mb-4">
+            <p className="text-[14px] leading-relaxed text-slate-500 mb-3 font-medium">
               Govt. subsidy pays your down payment. Your electricity savings pay the EMIs.
             </p>
-            <p className="text-[14px] font-bold text-foreground">
-              Book a free site visit and claim your <span className="text-primary">₹1,08,000 subsidy before it ends!</span>
+            <p className="text-[14px] font-bold text-slate-800">
+              Book a free site visit and claim your <span className="text-accent">₹1,08,000 subsidy before it ends!</span>
             </p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-4 flex-grow flex flex-col">
-            <div className="space-y-3.5 pb-6 sm:pb-0 flex-grow">
+            <div className="space-y-4 flex-grow">
               <div>
                 <Input 
                   id="name" 
@@ -117,7 +118,7 @@ export default function BookVisitPage() {
                   required 
                   value={formData.name} 
                   onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                  className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
+                  className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
                 />
               </div>
               
@@ -128,7 +129,7 @@ export default function BookVisitPage() {
                   required 
                   value={formData.address} 
                   onChange={e => setFormData({ ...formData, address: e.target.value })} 
-                  className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
+                  className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
                 />
               </div>
               
@@ -140,35 +141,42 @@ export default function BookVisitPage() {
                   required 
                   value={formData.phone} 
                   onChange={e => setFormData({ ...formData, phone: e.target.value })} 
-                  className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
+                  className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
                 />
               </div>
 
               <div>
-                <select
-                  className="w-full h-[52px] px-4 bg-background border border-border rounded-[12px] text-[15px] focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary text-foreground disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
-                  value={formData.monthlyBill}
-                  onChange={(e) => setFormData(prev => ({...prev, monthlyBill: e.target.value}))}
-                  required
-                  style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
-                >
-                  <option value="" disabled className="text-muted-foreground">Monthly Electricity Bill*</option>
-                  <option value="< 1500">Less than ₹1,500</option>
-                  <option value="1500 - 2500">₹1,500 - ₹2,500</option>
-                  <option value="2500 - 5000">₹2,500 - ₹5,000</option>
-                  <option value="> 5000">More than ₹5,000</option>
-                </select>
+                <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
+                  <SelectTrigger className="w-full h-[56px] px-5 bg-slate-50 border border-slate-200 hover:border-primary/30 rounded-[16px] text-[15px] font-medium focus:ring-2 focus:ring-primary focus:bg-white text-slate-700 transition-all">
+                    <SelectValue placeholder="Monthly Electricity Bill*" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-[16px] z-[100] bg-white border-slate-200">
+                    <SelectItem value="< 1500" className="text-[15px] py-2.5">Less than ₹1,500</SelectItem>
+                    <SelectItem value="1500 - 2500" className="text-[15px] py-2.5">₹1,500 - ₹2,500</SelectItem>
+                    <SelectItem value="2500 - 5000" className="text-[15px] py-2.5">₹2,500 - ₹5,000</SelectItem>
+                    <SelectItem value="> 5000" className="text-[15px] py-2.5">More than ₹5,000</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
-            <div className="relative mt-2 sm:mt-auto z-10 w-full">
+            {/* App Bottom Action Bar */}
+            <div className="fixed sm:relative bottom-0 left-0 w-full p-4 pb-6 sm:p-0 bg-white sm:bg-transparent border-t border-slate-100 sm:border-0 z-50 sm:mt-auto flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] sm:shadow-none">
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="w-full h-[56px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-lg shadow-primary/20"
+                className="flex-grow h-[56px] rounded-[16px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-white transition-transform active:scale-[0.98]  "
               >
-                {isSubmitting ? "Redirecting..." : "Book a FREE Consultation"}
+                {isSubmitting ? "Redirecting..." : "Book Consultation"}
               </Button>
+              
+              <a 
+                href="tel:+918999999654"
+                className="flex-shrink-0 flex items-center justify-center w-[56px] h-[56px] rounded-[16px] bg-blue-600 text-white hover:bg-blue-700 transition-all active:scale-[0.98]"
+                title="Call Us Now"
+              >
+                <Phone className="w-[22px] h-[22px] fill-current" />
+              </a>
             </div>
             
           </form>

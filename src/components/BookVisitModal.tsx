@@ -174,14 +174,11 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
           <div className="p-4 sm:p-6 flex-grow flex flex-col bg-card">
             {/* Typography Section */}
             <div className="mb-3.5">
-              <h1 className="text-[22px] sm:text-[28px] leading-[1.1] font-bold font-montserrat text-foreground mb-1.5">
-                Go Solar at <span className="text-accent">₹0 Upfront Cost</span>
-              </h1>
-              <p className="text-[13px] sm:text-[14px] leading-relaxed text-muted-foreground mb-1.5">
-                Govt. subsidy pays your down payment. Your electricity savings pay the EMIs.
-              </p>
+              <h2 className="text-[22px] sm:text-[24px] leading-[1.15] font-bold font-montserrat text-foreground mb-2">
+                Get Solar Panels at <span className="text-accent">Zero Initial Cost</span>
+              </h2>
               <p className="text-[13px] sm:text-[14px] font-bold text-foreground">
-                Book a free site visit and claim your <span className="text-primary">₹1,08,000 subsidy before it ends!</span>
+                Book a free site visit and claim your <span className="text-accent">₹1,08,000 subsidy before it ends!</span>
               </p>
             </div>
             
@@ -258,13 +255,13 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                 <Button 
                   type="submit" 
                   disabled={isSubmitting} 
-                  className="flex-grow h-[48px] rounded-[10px] text-[16px] font-bold shadow-md hover:shadow-lg transition-all active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="flex-grow h-[48px] rounded-[10px] text-[16px] font-bold  hover: transition-all active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   {isSubmitting ? "Booking..." : "Book a FREE Consultation"}
                 </Button>
                 <a 
                   href="tel:+918999999654" 
-                  className="flex-shrink-0 flex items-center justify-center w-[48px] h-[48px] rounded-[10px] bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm"
+                  className="flex-shrink-0 flex items-center justify-center w-[48px] h-[48px] rounded-[10px] bg-primary text-white hover:bg-primary/90 transition-colors "
                   title="Call Us Now"
                 >
                   <Phone className="w-5 h-5" />

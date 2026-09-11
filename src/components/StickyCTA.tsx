@@ -49,7 +49,7 @@ const StickyCTA = () => {
         {/* WhatsApp */}
         <button
           onClick={openWhatsApp}
-          className="w-14 h-14 rounded-full bg-[#25D366] flex items-center justify-center hover:bg-[#128C7E] transition-colors animate-float shadow-xl shadow-[#25D366]/20"
+          className="w-14 h-14 rounded-full bg-[#25D366] flex items-center justify-center hover:bg-[#128C7E] transition-colors animate-float  "
           aria-label="Chat on WhatsApp"
         >
           <MessageCircle className="w-7 h-7 text-white" />
@@ -65,35 +65,40 @@ const StickyCTA = () => {
       >
         <div className="bg-white border border-slate-200/60 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] rounded-[2rem] p-1.5 flex items-center justify-between">
           
-          <div className="flex items-center gap-5 sm:gap-6 px-3">
-            <button onClick={scrollToTop} className="flex items-center justify-center w-10 h-10 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all active:scale-90">
-              <Home className="w-[22px] h-[22px]" />
+          <div className="flex items-center gap-4 sm:gap-5 px-2">
+            <button onClick={scrollToTop} className="flex items-center justify-center w-11 h-11 rounded-full bg-slate-100/80 text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-all active:scale-90 ">
+              <Home className="w-[20px] h-[20px]" strokeWidth={2.5} />
             </button>
 
-            <Link href="/quote" className="flex items-center justify-center w-10 h-10 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all active:scale-90">
-              <Calculator className="w-[22px] h-[22px]" />
+            <Link href="/quote" className="flex items-center justify-center w-11 h-11 rounded-full bg-slate-100/80 text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-all active:scale-90 ">
+              <Calculator className="w-[20px] h-[20px]" strokeWidth={2.5} />
             </Link>
 
-            <button onClick={openWhatsApp} className="flex items-center justify-center w-10 h-10 rounded-full text-[#1da851] hover:text-[#20bd5a] hover:bg-green-50 transition-all active:scale-90 relative">
-              <MessageCircle className="w-[22px] h-[22px]" />
+            <button onClick={openWhatsApp} className="flex items-center justify-center w-11 h-11 rounded-full bg-[#25D366]/15 text-[#25D366] hover:bg-[#25D366]/25 transition-all active:scale-90  relative">
+              <MessageCircle className="w-[20px] h-[20px]" strokeWidth={2.5} />
             </button>
           </div>
 
-          <Link 
-            href="/book-visit"
-            className="h-[46px] bg-[#133B76] hover:bg-[#0f3060] text-white rounded-[1.5rem] px-4 sm:px-6 flex items-center whitespace-nowrap flex-shrink-0 justify-center gap-2 font-bold text-sm transition-transform active:scale-95"
-            aria-label="Book a Site Visit"
+          <a 
+            href="tel:+918999999654"
+            className="h-[52px] bg-blue-600 hover:bg-blue-700 text-white rounded-[1.8rem] px-6 sm:px-8 flex items-center whitespace-nowrap flex-shrink-0 justify-center gap-2 font-bold text-[15px] transition-transform active:scale-95"
+            aria-label="Call Us Now"
             onClick={() => {
               if (typeof window !== 'undefined') {
                 (window as any).dataLayer = (window as any).dataLayer || [];
                 (window as any).dataLayer.push({
-                  event: 'sticky_book_visit_click'
+                  event: 'phone_call_click'
                 });
+              }
+              // Meta Pixel Conversion Tracking
+              if (typeof window !== 'undefined' && (window as any).fbq) {
+                (window as any).fbq('track', 'Contact');
               }
             }}
           >
-            Book Visit
-          </Link>
+            <Phone className="w-[18px] h-[18px] fill-white" />
+            Call Now
+          </a>
           
         </div>
       </div>

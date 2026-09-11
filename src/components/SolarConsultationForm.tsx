@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Info, Check, Calculator, Zap, IndianRupee, ArrowRight, Phone } from "lucide-react";
 import Link from "next/link";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function SolarConsultationForm() {
   const { toast } = useToast();
@@ -161,30 +162,28 @@ export function SolarConsultationForm() {
         </div>
 
         <div>
-          <select
-            className="w-full h-[52px] px-4 bg-background border border-border rounded-[12px] text-[15px] focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary text-foreground disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
-            value={formData.monthlyBill}
-            onChange={(e) => setFormData(prev => ({...prev, monthlyBill: e.target.value}))}
-            required
-            style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
-          >
-            <option value="" disabled className="text-muted-foreground">Monthly Electricity Bill*</option>
-            <option value="< 1500">Less than ₹1,500</option>
-            <option value="1500 - 2500">₹1,500 - ₹2,500</option>
-            <option value="2500 - 5000">₹2,500 - ₹5,000</option>
-            <option value="> 5000">More than ₹5,000</option>
-          </select>
+          <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
+            <SelectTrigger className="w-full h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary text-foreground disabled:cursor-not-allowed">
+              <SelectValue placeholder="Monthly Electricity Bill*" />
+            </SelectTrigger>
+            <SelectContent className="rounded-[12px]">
+              <SelectItem value="< 1500" className="text-[15px] py-2">Less than ₹1,500</SelectItem>
+              <SelectItem value="1500 - 2500" className="text-[15px] py-2">₹1,500 - ₹2,500</SelectItem>
+              <SelectItem value="2500 - 5000" className="text-[15px] py-2">₹2,500 - ₹5,000</SelectItem>
+              <SelectItem value="> 5000" className="text-[15px] py-2">More than ₹5,000</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="pt-2 flex gap-3">
           <Button 
             type="submit" 
             disabled={isSubmitting}
-            className="flex-grow h-[56px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-lg shadow-primary/20 active:scale-[0.98]"
+            className="flex-grow h-[56px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all   active:scale-[0.98]"
           >
             {isSubmitting ? "Booking..." : "Book a FREE Consultation"}
           </Button>
-          <a href="tel:+918999999654" className="flex items-center justify-center w-[56px] h-[56px] shrink-0 bg-blue-600 border border-blue-700 rounded-[14px] text-white hover:bg-blue-700 transition-all shadow-sm active:scale-[0.98]">
+          <a href="tel:+918999999654" className="flex items-center justify-center w-[56px] h-[56px] shrink-0 bg-blue-600 border border-blue-700 rounded-[14px] text-white hover:bg-blue-700 transition-all  active:scale-[0.98]">
             <Phone className="w-[22px] h-[22px] fill-current" />
           </a>
         </div>
