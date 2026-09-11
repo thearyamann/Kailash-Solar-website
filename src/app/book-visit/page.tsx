@@ -73,7 +73,7 @@ export default function BookVisitPage() {
   return (
     <div className="min-h-[100dvh] bg-slate-50 sm:bg-muted flex flex-col items-center justify-start sm:py-8">
       
-      <div className="w-full max-w-[400px] bg-white sm:rounded-3xl sm:shadow-2xl overflow-hidden relative flex flex-col min-h-[100dvh] sm:min-h-0">
+      <div className="w-full max-w-[400px] bg-white sm:rounded-3xl sm:shadow-2xl relative flex flex-col min-h-[100dvh] sm:min-h-0">
         
         {/* Floating Native App Header */}
         <div className="absolute top-0 w-full z-50 px-4 h-16 flex items-center justify-between">
@@ -161,7 +161,7 @@ export default function BookVisitPage() {
             </div>
 
             {/* App Bottom Action Bar */}
-            <div className="fixed sm:relative bottom-0 left-0 w-full p-4 pb-6 sm:p-0 bg-white sm:bg-transparent border-t border-slate-100 sm:border-0 z-50 sm:mt-auto flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] sm:shadow-none">
+            <div className="mt-4 sm:mt-auto w-full pt-4 flex gap-3">
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
