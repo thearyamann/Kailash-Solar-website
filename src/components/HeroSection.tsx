@@ -21,7 +21,7 @@ const HeroSection = () => {
   return (
     <section id="hero" className="relative min-h-[100vh] lg:min-h-[85vh] flex flex-col justify-center overflow-hidden pb-12 lg:pb-0">
       {/* Auto-opening modal timer for page visit */}
-      <BookVisitModal autoOpenDelay={3500} />
+      <BookVisitModal autoOpenDelay={7000} />
 
       {/* Background Image */}
       <div className="absolute inset-0 z-0">

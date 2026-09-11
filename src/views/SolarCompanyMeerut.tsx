@@ -91,7 +91,7 @@ const SolarCompanyMeerut = () => {
       </head>
 
       {/* Auto-opening popup modal (same as homepage) */}
-      <BookVisitModal autoOpenDelay={3500} />
+      <BookVisitModal autoOpenDelay={7000} />
 
       <Header />
 
