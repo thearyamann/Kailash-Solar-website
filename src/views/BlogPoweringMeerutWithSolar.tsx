@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import Link from 'next/link';
 import { ArrowLeft, Share2, ArrowRight, CheckCircle2, MapPin, Zap, TrendingUp, Phone } from 'lucide-react';
 import Header from '@/components/Header';
@@ -69,8 +70,6 @@ const CTAButton = ({ text, className = '' }: { text: string, className?: string 
     <DialogTrigger asChild>
       <Button className={`font-bold transition-transform active:scale-95 ${className}`}>
         {text}
-      </Button>
-    </DialogTrigger>
   );
 };
 
