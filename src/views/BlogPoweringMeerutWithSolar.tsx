@@ -128,11 +128,11 @@ const BlogPoweringMeerutWithSolar = () => {
           </div>
           <div className="max-w-4xl mx-auto relative z-10">
             <Link 
-              href="/blog" 
+              href="/" 
               className="inline-flex items-center text-primary-400 hover:text-primary-300 transition-colors mb-8 font-medium text-white/70"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Blog
+              Back to Home
             </Link>
             
             <div className="flex flex-wrap items-center gap-3 mb-6">

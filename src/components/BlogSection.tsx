@@ -41,6 +41,15 @@ const BlogSection = () => {
       image: { src: '/van.png' }, // placeholder image
     },
     {
+      title: 'Powering Meerut with Solar: How Kailash Solar Is Helping Homes Save',
+      excerpt:
+        'See how Kailash Solar is helping homes in Meerut switch to rooftop solar, reduce electricity bills, and make solar installation simple with easy options.',
+      category: 'Solar Guide',
+      readTime: '8 min read',
+      href: '/blog/powering-meerut-with-solar-kailash-solar',
+      image: { src: '/Happyfamily.png' },
+    },
+    {
       title: 'How to Choose the Right Solar Panel for Your Home in Meerut',
       excerpt:
         'A complete guide for Meerut homeowners on choosing the best solar panels. Learn about efficiency, warranty, types, and how to select a reliable installer.',
