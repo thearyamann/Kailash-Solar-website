@@ -154,47 +154,37 @@ const BlogPoweringMeerutWithSolar = () => {
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-primary/20">
       <Header />
       
-      <main className="pb-16 sm:pb-24">
-        {/* Hero Section */}
-        <div className="bg-slate-900 pt-32 pb-16 md:pt-40 md:pb-24 px-4 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-          </div>
-          <div className="max-w-4xl mx-auto relative z-10">
-            <Link 
-              href="/" 
-              className="inline-flex items-center text-primary-400 hover:text-primary-300 transition-colors mb-8 font-medium text-white/70"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Link>
-            
-            <div className="flex flex-wrap items-center gap-3 mb-6">
-              <span className="px-3 py-1 rounded-full bg-primary/20 text-primary-200 text-sm font-medium border border-primary/30 text-white">
-                Solar Guide
-              </span>
-              <span className="text-slate-400 text-sm">Updated 2026</span>
-            </div>
-
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.15] font-montserrat tracking-tight">
-              Powering Meerut with Solar: How Kailash Solar Is Helping Homes Save on Electricity Bills
-            </h1>
-            
-            <p className="text-lg md:text-xl text-slate-300 max-w-2xl leading-relaxed mb-8">
-              See how Kailash Solar is helping homes in Meerut switch to rooftop solar, reduce electricity bills, and make solar installation simple with easy options.
-            </p>
-
-            <div className="flex items-center gap-4 text-slate-400">
-              <button 
-                onClick={handleShare}
-                className="flex items-center gap-2 hover:text-white transition-colors"
-              >
-                <Share2 className="w-4 h-4" />
-                Share Article
-              </button>
+      <main className="pt-0">
+        {/* Hero Area */}
+        <section className="bg-slate-50 pt-12 pb-12 md:pt-16 md:pb-16 border-b border-slate-200 mt-24">
+          <div className="container-custom">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 rounded-full px-4 py-1.5 mb-6">
+                <span className="text-accent text-sm font-bold uppercase tracking-wider">
+                  Solar Guide • Updated 2026
+                </span>
+              </div>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-[1.15] mb-6 text-slate-900 font-montserrat tracking-tight">
+                Powering Meerut with Solar: How Kailash Solar Is Helping Homes Save on Electricity Bills
+              </h1>
+              <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+                See how Kailash Solar is helping homes in Meerut switch to rooftop solar, reduce electricity bills, and make solar installation simple with easy options.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Dialog>
+                  <CTAButton className="w-full sm:w-auto h-14 px-8 text-lg rounded-full text-white bg-accent hover:bg-accent/90" text="Book a Free Consultation" />
+                  <BookVisitModal />
+                </Dialog>
+                <Link href="/quote" className="w-full sm:w-auto">
+                  <Button className="w-full sm:w-auto h-14 px-8 rounded-full text-lg font-bold bg-white text-primary border-2 border-primary hover:bg-slate-50 transition-colors">
+                    Solar Price Calculator <TrendingUp className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Content Container */}
         <article className="max-w-6xl mx-auto px-4 mt-8 md:mt-12">
