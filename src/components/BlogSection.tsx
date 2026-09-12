@@ -47,7 +47,7 @@ const BlogSection = () => {
       category: 'Solar Guide',
       readTime: '8 min read',
       href: '/blog/powering-meerut-with-solar-kailash-solar',
-      image: { src: '/Happyfamily.png' },
+      image: { src: '/vaniimage.png' },
     },
     {
       title: 'How to Choose the Right Solar Panel for Your Home in Meerut',

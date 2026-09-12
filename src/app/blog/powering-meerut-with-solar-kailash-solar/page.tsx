@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: 'Kailash Solar',
     images: [
       {
-        url: 'https://kailashsolar.com/og-image.jpg',
+        url: 'https://kailashsolar.com/vaniimage.png',
         width: 1200,
         height: 630,
         alt: 'rooftop solar panels on a home in Meerut — Kailash Solar',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Powering Meerut with Solar: How Kailash Solar Is Helping Homes Save',
     description: 'See how Kailash Solar is helping homes in Meerut switch to rooftop solar, reduce electricity bills, and make solar installation simple with easy options.',
-    images: ['https://kailashsolar.com/og-image.jpg'],
+    images: ['https://kailashsolar.com/vaniimage.png'],
   }
 };
 
