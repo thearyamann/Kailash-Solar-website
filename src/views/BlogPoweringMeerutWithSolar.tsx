@@ -187,7 +187,7 @@ const BlogPoweringMeerutWithSolar = () => {
         </section>
 
         {/* Content Container */}
-        <article className="max-w-6xl mx-auto px-4 mt-8 md:mt-12">
+        <article className="max-w-6xl mx-auto px-4 py-12 md:py-20">
           <div className="grid lg:grid-cols-[1fr_320px] gap-12">
             
             {/* Main Content */}
