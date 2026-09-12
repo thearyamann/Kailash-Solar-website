@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import Link from 'next/link';
 import { ArrowLeft, Share2, ArrowRight, CheckCircle2, MapPin, Zap, TrendingUp, Phone } from 'lucide-react';
 import Header from '@/components/Header';
@@ -9,6 +8,7 @@ import Footer from '@/components/Footer';
 import StickyCTA from '@/components/StickyCTA';
 import { Button } from '@/components/ui/button';
 import { BookVisitModal } from '@/components/BookVisitModal';
+import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import {
   Accordion,
   AccordionItem,
@@ -62,14 +62,13 @@ const faqs = [
   }
 ];
 
-// We wrap with Dialog outside
-import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
-
 const CTAButton = ({ text, className = '' }: { text: string, className?: string }) => {
   return (
     <DialogTrigger asChild>
       <Button className={`font-bold transition-transform active:scale-95 ${className}`}>
         {text}
+      </Button>
+    </DialogTrigger>
   );
 };
 
@@ -317,22 +316,22 @@ const BlogPoweringMeerutWithSolar = () => {
               <P>We first understand your current electricity consumption by reviewing your recent bill.</P>
 
               <H3>2. Understand Your Home's Requirement</H3>
-              <P>We check your rooftop, available space, and other important requirements.</p>
+              <P>We check your rooftop, available space, and other important requirements.</P>
 
               <H3>3. Get a Suitable Solar System Recommendation</H3>
-              <P>We recommend a residential solar system based on your actual requirement rather than simply selling the biggest system possible.</p>
+              <P>We recommend a residential solar system based on your actual requirement rather than simply selling the biggest system possible.</P>
 
               <H3>4. Understand the Cost and Savings</H3>
-              <P>You can understand the estimated system cost, generation, expected savings, and applicable options (like subsidies or EMIs).</p>
+              <P>You can understand the estimated system cost, generation, expected savings, and applicable options (like subsidies or EMIs).</P>
 
               <H3>5. Solar Installation</H3>
-              <P>Our professional technical team installs the solar panels at your property safely.</p>
+              <P>Our professional technical team installs the solar panels at your property safely.</P>
 
               <H3>6. Testing and Commissioning</H3>
-              <P>The system is thoroughly checked to make sure everything is working properly before it goes live.</p>
+              <P>The system is thoroughly checked to make sure everything is working properly before it goes live.</P>
 
               <H3>7. After-Sales Support</H3>
-              <P>Solar is a long-term investment, so proper service and technical support are also important to keep it running smoothly.</p>
+              <P>Solar is a long-term investment, so proper service and technical support are also important to keep it running smoothly.</P>
 
               <H2 id="why-kailash-doing-this">Why We Are Doing This</H2>
               <div className="bg-primary/5 rounded-2xl p-6 border border-primary/20 my-8 shadow-sm">
