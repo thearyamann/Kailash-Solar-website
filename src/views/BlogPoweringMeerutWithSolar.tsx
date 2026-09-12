@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Share2, ArrowRight, CheckCircle2, MapPin, Zap, TrendingUp, Phone } from 'lucide-react';
+import { ArrowLeft, Share2, ArrowRight, CheckCircle2, MapPin, Zap, TrendingUp, Phone,  BookOpen } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCTA from '@/components/StickyCTA';
@@ -90,6 +90,40 @@ const P = ({ children }: { children: React.ReactNode }) => (
   </p>
 );
 
+
+const ChecklistTable = ({
+  headers,
+  rows,
+}: {
+  headers: string[];
+  rows: (string | React.ReactNode)[][];
+}) => (
+  <div className="my-8 rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+    <Table className="w-full">
+      <TableHeader className="bg-slate-50">
+        <TableRow>
+          {headers.map((h, i) => (
+            <TableHead key={i} className="font-bold text-slate-900 h-12">
+              {h}
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.map((row, rowIndex) => (
+          <TableRow key={rowIndex}>
+            {row.map((cell, cellIndex) => (
+              <TableCell key={cellIndex} className="text-slate-700 py-4">
+                {cellIndex === 0 ? <strong>{cell}</strong> : cell}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
+);
+
 const BlogPoweringMeerutWithSolar = () => {
   const [mounted, setMounted] = useState(false);
 
@@ -169,6 +203,20 @@ const BlogPoweringMeerutWithSolar = () => {
             {/* Main Content */}
             <div className="bg-white p-6 md:p-12 rounded-3xl shadow-sm border border-slate-200">
               
+                            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-10 shadow-sm mt-8">
+                <h3 className="text-lg font-bold text-slate-900 mb-4 font-montserrat flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" /> Table of Contents
+                </h3>
+                <ul className="space-y-3">
+                  <li><a href="#why-solar-meerut" className="text-primary font-medium hover:underline flex items-center gap-2"><ArrowRight className="w-4 h-4" /> Why Are More Homes Looking at Solar?</a></li>
+                  <li><a href="#how-solar-helps" className="text-primary font-medium hover:underline flex items-center gap-2"><ArrowRight className="w-4 h-4" /> How Solar Helps Reduce Electricity Bills</a></li>
+                  <li><a href="#easier-in-meerut" className="text-primary font-medium hover:underline flex items-center gap-2"><ArrowRight className="w-4 h-4" /> Why Solar is Becoming Easier</a></li>
+                  <li><a href="#show-the-numbers" className="text-primary font-medium hover:underline flex items-center gap-2"><ArrowRight className="w-4 h-4" /> We Show the Numbers, Not Just Panels</a></li>
+                  <li><a href="#from-enquiry-to-installation" className="text-primary font-medium hover:underline flex items-center gap-2"><ArrowRight className="w-4 h-4" /> From First Question to Installation</a></li>
+                  <li><a href="#why-choose-us" className="text-primary font-medium hover:underline flex items-center gap-2"><ArrowRight className="w-4 h-4" /> Why Choose Kailash Solar?</a></li>
+                </ul>
+              </div>
+
               <H2 id="why-solar-meerut">Why Are More Homes in Meerut Looking at Solar?</H2>
               <P>
                 Electricity is something every home needs. Fans, ACs, refrigerators, TVs, water pumps, lights and other appliances all add to monthly electricity consumption.
@@ -259,50 +307,19 @@ const BlogPoweringMeerutWithSolar = () => {
                 This is one of the most important parts of our approach. Before choosing a solar panel for home, customers should understand the numbers. For example, we check:
               </P>
               
-              <div className="overflow-x-auto my-8">
-                <Table className="border border-slate-200 shadow-sm rounded-xl overflow-hidden min-w-[600px]">
-                  <TableHeader className="bg-slate-50">
-                    <TableRow>
-                      <TableHead className="font-bold text-slate-900 w-[200px]">What we check</TableHead>
-                      <TableHead className="font-bold text-slate-900">Why it matters</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium text-slate-700">Monthly electricity bill</TableCell>
-                      <TableCell className="text-slate-600">Understand current spending</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium text-slate-700">Electricity consumption</TableCell>
-                      <TableCell className="text-slate-600">Decide suitable system size</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium text-slate-700">Rooftop space</TableCell>
-                      <TableCell className="text-slate-600">Check installation feasibility</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium text-slate-700">Solar generation</TableCell>
-                      <TableCell className="text-slate-600">Estimate expected energy production</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium text-slate-700">System cost</TableCell>
-                      <TableCell className="text-slate-600">Understand the investment required</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium text-slate-700">Available subsidy</TableCell>
-                      <TableCell className="text-slate-600">Understand applicable support</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium text-slate-700">Financing/EMI options</TableCell>
-                      <TableCell className="text-slate-600">Understand upfront payment</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium text-slate-700">Expected savings</TableCell>
-                      <TableCell className="text-slate-600">Compare solar with current electricity cost</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+              <ChecklistTable 
+                headers={['What we check', 'Why it matters']}
+                rows={[
+                  ['Monthly electricity bill', 'Understand current spending'],
+                  ['Electricity consumption', 'Decide suitable system size'],
+                  ['Rooftop space', 'Check installation feasibility'],
+                  ['Solar generation', 'Estimate expected energy production'],
+                  ['System cost', 'Understand the investment required'],
+                  ['Available subsidy', 'Understand applicable support'],
+                  ['Financing/EMI options', 'Understand upfront payment'],
+                  ['Expected savings', 'Compare solar with current electricity cost'],
+                ]}
+              />
               <P>
                 This gives homeowners a much clearer picture of what they are actually getting.
               </P>
