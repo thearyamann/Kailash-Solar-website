@@ -193,7 +193,15 @@ const BlogPoweringMeerutWithSolar = () => {
             {/* Main Content */}
             <div className="bg-white p-6 md:p-12 rounded-3xl shadow-sm border border-slate-200">
               
-                            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-10 shadow-sm mt-8">
+              <div className="w-full rounded-2xl overflow-hidden mb-10 border border-slate-200 shadow-sm mt-4">
+                <img 
+                  src="/vaniimage.png" 
+                  alt="Rooftop solar installation in Meerut by Kailash Solar" 
+                  className="w-full h-auto object-cover" 
+                />
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-10 shadow-sm">
                 <h3 className="text-lg font-bold text-slate-900 mb-4 font-montserrat flex items-center gap-2">
                   <BookOpen className="w-5 h-5 text-primary" /> Table of Contents
                 </h3>
