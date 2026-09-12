@@ -512,7 +512,7 @@ const SolarCompanyMeerut = () => {
                 </Button>
               </Link>
             </div>
-            <p className="pt-4 text-white/80 font-medium">Or speak with a solar expert immediately at <a href="tel:+918999999654" className="font-bold underline text-white hover:text-white/80 transition-colors">89999 99654</a></p>
+            <p className="pt-4 text-white/80 font-medium">Or speak with a solar expert immediately at <a href="tel:+918999999654" className="font-bold underline text-white hover:text-white/80 transition-colors">8-999-999-654</a></p>
           </div>
         </div>
       </section>

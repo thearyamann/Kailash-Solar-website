@@ -421,7 +421,7 @@ const BlogHowToChooseSolarPanelsMeerut = () => {
                   </p>
                   <a href="tel:+918999999654" className="block w-full">
                     <Button className="w-full font-bold bg-accent hover:bg-accent/90 text-white shadow-md">
-                      Call 89999 99654
+                      Call 8-999-999-654
                     </Button>
                   </a>
                 </div>

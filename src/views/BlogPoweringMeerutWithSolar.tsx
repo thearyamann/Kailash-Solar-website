@@ -438,7 +438,7 @@ const BlogPoweringMeerutWithSolar = () => {
                 <p className="text-slate-700 text-sm mb-6">Speak directly to a solar expert in Meerut for immediate guidance on pricing and subsidies.</p>
                 <a href="tel:+918999999654">
                   <Button className="w-full font-bold bg-white text-accent border border-accent hover:bg-accent hover:text-white transition-colors">
-                    <Phone className="w-4 h-4 mr-2" /> 89999 99654
+                    <Phone className="w-4 h-4 mr-2" /> 8-999-999-654
                   </Button>
                 </a>
               </div>

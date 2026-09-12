@@ -28,7 +28,7 @@ const faqs = [
   { q: "How should I choose a solar company in Meerut?", a: "Look beyond the lowest price. Always check if the company uses Tier-1 panels, provides a Hot-Dipped Galvanized structure, uses in-house installers, and handles the PVVNL net metering paperwork for you." },
   { q: "Is it better to choose a local solar company?", a: "Yes. A local company based in Meerut offers faster site surveys, better understanding of local DISCOM procedures, and quicker after-sales service compared to national brands operating from distant cities." },
   { q: "Does Kailash Solar provide a free site survey?", a: "Yes, our engineers provide a completely free, no-obligation physical roof assessment for homeowners in Meerut to recommend the perfect system size." },
-  { q: "Can I send my electricity bill for a solar estimate?", a: "Absolutely. Send your latest PVVNL electricity bill to us on WhatsApp (89999 99654), and we will provide a free estimate of your required system size and potential savings." },
+  { q: "Can I send my electricity bill for a solar estimate?", a: "Absolutely. Send your latest PVVNL electricity bill to us on WhatsApp (8-999-999-654), and we will provide a free estimate of your required system size and potential savings." },
   { q: "Does Kailash Solar help with PM Surya Ghar subsidy?", a: "Yes, as an empanelled vendor, we assist our customers through the entire PM Surya Ghar process, from national portal registration to final documentation." },
   { q: "Does Kailash Solar help with net metering?", a: "Yes. We handle the complete PVVNL net metering coordination, including application submission and joint inspections, so you don't have to visit government offices." },
   { q: "What panels does Kailash Solar use?", a: "We prioritize premium Tier-1 ALMM-approved panels, including advanced Adani N-Type TOPCon bifacial modules for maximum efficiency and longevity." },
@@ -425,7 +425,7 @@ const BlogBestSolarCompanyMeerut = () => {
                   </p>
                   <a href="tel:+918999999654" className="block w-full">
                     <Button className="w-full font-bold bg-accent hover:bg-accent/90 text-white shadow-md">
-                      Call 89999 99654
+                      Call 8-999-999-654
                     </Button>
                   </a>
                 </div>
