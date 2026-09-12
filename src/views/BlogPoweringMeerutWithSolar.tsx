@@ -187,11 +187,11 @@ const BlogPoweringMeerutWithSolar = () => {
         </section>
 
         {/* Content Container */}
-        <article className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+        <article className="container-custom py-12 md:py-20">
           <div className="grid lg:grid-cols-[1fr_320px] gap-12">
             
             {/* Main Content */}
-            <div className="bg-white p-6 md:p-12 rounded-3xl shadow-sm border border-slate-200">
+            <div className="bg-white p-6 md:p-12 rounded-3xl shadow-sm border border-slate-200 w-full min-w-0">
               
               <div className="w-full rounded-2xl overflow-hidden mb-10 border border-slate-200 shadow-sm mt-4">
                 <img 
