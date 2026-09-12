@@ -98,8 +98,8 @@ const ChecklistTable = ({
   headers: string[];
   rows: (string | React.ReactNode)[][];
 }) => (
-  <div className="my-8 rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-    <Table className="w-full">
+  <div className="my-8 rounded-2xl border border-slate-200 overflow-x-auto shadow-sm">
+    <Table className="w-full min-w-[500px]">
       <TableHeader className="bg-slate-50">
         <TableRow>
           {headers.map((h, i) => (
