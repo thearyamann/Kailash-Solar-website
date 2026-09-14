@@ -128,6 +128,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
         title: "Request Sent!",
         description: "Our engineering team will contact you shortly."
       });
+      localStorage.setItem("kailash_modal_submitted", "true");
       setIsOpen(false);
       setFormData({ name: "", phone: "", pincode: "" });
     } catch (error) {

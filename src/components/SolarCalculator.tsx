@@ -193,7 +193,7 @@ Calculate your savings: ${window.location.href}`;
               onFocusCapture={() => {
                 if (typeof window !== 'undefined') {
                   sessionStorage.setItem("kailash_modal_auto_opened", "true");
-                  sessionStorage.setItem("kailash_modal_submitted", "true");
+                  localStorage.setItem("kailash_modal_submitted", "true");
                 }
               }}
             >

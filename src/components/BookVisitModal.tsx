@@ -53,8 +53,9 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     if (autoOpenDelay && autoOpenDelay > 0) {
       // Check if we've already auto-opened it in this session
       const hasAutoOpened = sessionStorage.getItem("kailash_modal_auto_opened");
+      const hasSubmitted = localStorage.getItem("kailash_modal_submitted");
       
-      if (!hasAutoOpened) {
+      if (!hasAutoOpened && !hasSubmitted) {
         const timer = setTimeout(() => {
           if (!document.querySelector('[role="dialog"]')) {
             setIsOpen(true);
@@ -73,7 +74,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     // Only run this logic for the main auto-opening instance to prevent multiple modals triggering
     if (autoOpenDelay && autoOpenDelay > 0) {
       // If the modal is closed, has been auto-opened before, and hasn't been submitted
-      if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !sessionStorage.getItem("kailash_modal_submitted")) {
+      if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !localStorage.getItem("kailash_modal_submitted")) {
         
         const retriggerCount = parseInt(sessionStorage.getItem("kailash_modal_retrigger_count") || "0", 10);
         
@@ -154,7 +155,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       title: "Request Sent!",
       description: "Redirecting to WhatsApp..."
     });
-    sessionStorage.setItem("kailash_modal_submitted", "true");
+    localStorage.setItem("kailash_modal_submitted", "true");
     setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
     setIsSubmitting(false);
   };
