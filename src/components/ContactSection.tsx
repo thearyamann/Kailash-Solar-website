@@ -174,7 +174,16 @@ const ContactSection = () => {
               </h3>
             </div>
             
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form 
+              onSubmit={handleSubmit} 
+              className="space-y-6"
+              onFocusCapture={() => {
+                if (typeof window !== 'undefined') {
+                  sessionStorage.setItem("kailash_modal_auto_opened", "true");
+                  sessionStorage.setItem("kailash_modal_submitted", "true");
+                }
+              }}
+            >
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-foreground font-bold text-sm">Full Name</Label>

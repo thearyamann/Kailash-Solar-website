@@ -188,7 +188,15 @@ Calculate your savings: ${window.location.href}`;
                 Enter Your Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-8 space-y-8">
+            <CardContent 
+              className="p-8 space-y-8"
+              onFocusCapture={() => {
+                if (typeof window !== 'undefined') {
+                  sessionStorage.setItem("kailash_modal_auto_opened", "true");
+                  sessionStorage.setItem("kailash_modal_submitted", "true");
+                }
+              }}
+            >
               <div className="space-y-3">
                 <Label htmlFor="monthlyBill" className="text-slate-700 font-semibold text-sm">Average Monthly Electricity Bill (₹)</Label>
                 <div className="relative">

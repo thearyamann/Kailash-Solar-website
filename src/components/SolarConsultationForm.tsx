@@ -151,7 +151,16 @@ export function SolarConsultationForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-3.5 relative z-10">
+          <form 
+            onSubmit={handleSubmit} 
+            className="space-y-3.5 relative z-10"
+            onFocusCapture={() => {
+              if (typeof window !== 'undefined') {
+                sessionStorage.setItem("kailash_modal_auto_opened", "true");
+                sessionStorage.setItem("kailash_modal_submitted", "true");
+              }
+            }}
+          >
             <div>
               <Input 
                 placeholder="Full Name*" 
