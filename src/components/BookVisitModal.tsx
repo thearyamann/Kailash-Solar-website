@@ -56,8 +56,10 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       
       if (!hasAutoOpened) {
         const timer = setTimeout(() => {
-          setIsOpen(true);
-          sessionStorage.setItem("kailash_modal_auto_opened", "true");
+          if (!document.querySelector('[role="dialog"]')) {
+            setIsOpen(true);
+            sessionStorage.setItem("kailash_modal_auto_opened", "true");
+          }
         }, autoOpenDelay);
         return () => clearTimeout(timer);
       }
@@ -75,15 +77,21 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
         
         const retriggerCount = parseInt(sessionStorage.getItem("kailash_modal_retrigger_count") || "0", 10);
         
+        const handleRetrigger = (nextCount: string) => {
+          if (!document.querySelector('[role="dialog"]')) {
+            setIsOpen(true);
+          }
+          // We increment the count regardless to avoid being stuck in a trigger loop forever
+          sessionStorage.setItem("kailash_modal_retrigger_count", nextCount);
+        };
+
         if (retriggerCount === 0) {
           retriggerTimer = setTimeout(() => {
-            setIsOpen(true);
-            sessionStorage.setItem("kailash_modal_retrigger_count", "1");
+            handleRetrigger("1");
           }, 15000); // First re-trigger after 15 seconds
         } else if (retriggerCount === 1) {
           retriggerTimer = setTimeout(() => {
-            setIsOpen(true);
-            sessionStorage.setItem("kailash_modal_retrigger_count", "2");
+            handleRetrigger("2");
           }, 50000); // Second re-trigger after 50 seconds
         }
         // Stop re-triggering after the second time
