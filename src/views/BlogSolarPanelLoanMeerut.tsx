@@ -60,8 +60,8 @@ const H3 = ({ children, className = "" }: { children: React.ReactNode; className
   </h3>
 );
 
-const P = ({ children }: { children: React.ReactNode }) => (
-  <p className="text-slate-700 leading-relaxed mb-6 text-[17px]">{children}</p>
+const P = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <p className={`text-slate-700 leading-relaxed mb-6 text-[17px] ${className || ''}`}>{children}</p>
 );
 
 const BlogSolarPanelLoanMeerut = () => {
@@ -228,9 +228,9 @@ const BlogSolarPanelLoanMeerut = () => {
                   <br/>• UP additional subsidy: ₹30,000
                   <br/><strong>Total potential benefit: ₹1,08,000</strong>
                 </P>
-                <P className="text-sm text-slate-500 italic">
+                <p className="text-sm text-slate-500 italic mb-6">
                   *Note: Eligibility conditions apply. This is exclusively for residential consumers. Subsidy rules can change, and this subsidy is not a guaranteed upfront discount from a vendor's quotation. Commercial and industrial systems do not receive this residential subsidy.
-                </P>
+                </p>
                 
                 <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 my-8">
                   <h4 className="font-bold text-slate-900 text-lg mb-2">Important: Don't Misunderstand the ₹1,08,000 Subsidy</h4>
@@ -337,9 +337,9 @@ const BlogSolarPanelLoanMeerut = () => {
                     </div>
                   </div>
                 </div>
-                <P className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 mb-6">
                   <em>Illustrative EMI — actual EMI depends on sanctioned loan amount, interest rate, tenure, margin, and bank charges.</em>
-                </P>
+                </p>
 
                 <H2 id="emi-4kw">4kW Solar System EMI Example</H2>
                 <P>
