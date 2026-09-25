@@ -112,37 +112,41 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     // Formulate WhatsApp message first
     const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `Address/PIN: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
     
-    if (typeof window !== 'undefined') {
-      import('posthog-js').then((ph) => {
-        ph.default.capture('form_submitted', {
-          form_name: 'book_visit',
-          lead_type: 'book_visit'
-        });
-      });
-      (window as any).dataLayer = (window as any).dataLayer || [];
-      (window as any).dataLayer.push({
-        'event': 'generate_lead',
-        'form_name': 'book_visit',
-        'lead_type': 'book_visit'
-      });
-      if ((window as any).fbq) {
-        (window as any).fbq('track', 'Lead');
-      }
-    }
-
     try {
       // Send to supabase edge function using fetch in background without blocking
       const { data: { session } } = await supabase.auth.getSession();
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tjikswdntqctoqqrnjkq.supabase.co';
       
-      fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
+      const response = await fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify(formData)
-      }).catch(e => console.error("Background sync error:", e));
+      });
+
+      if (!response.ok) {
+        throw new Error("Supabase request failed");
+      }
+
+      if (typeof window !== 'undefined') {
+        import('posthog-js').then((ph) => {
+          ph.default.capture('form_submitted', {
+            form_name: 'book_visit',
+            lead_type: 'book_visit'
+          });
+        });
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).dataLayer.push({
+          'event': 'generate_lead',
+          'form_name': 'book_visit',
+          'lead_type': 'book_visit'
+        });
+        if ((window as any).fbq) {
+          (window as any).fbq('track', 'Lead');
+        }
+      }
 
     } catch (error) {
       console.error(error);

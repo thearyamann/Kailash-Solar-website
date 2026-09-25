@@ -57,6 +57,15 @@ const BlogSection = () => {
       readTime: '10 min read',
       href: '/blog/how-to-choose-solar-panels-home-meerut',
       image: { src: '/solarpanelbest.png' },
+    },
+    {
+      title: 'Solar Panel Loan in Meerut: EMI, SBI & PNB Loan Options',
+      excerpt:
+        'Learn how to finance a 3kW, 4kW, or 5kW solar system in Meerut. Compare bank loans, calculate EMI, and understand how the PM Surya Ghar subsidy works.',
+      category: 'Financing',
+      readTime: '15 min read',
+      href: '/blog/solar-panel-loan-meerut',
+      image: { src: '/loansolar.png' },
     }
   ];
 

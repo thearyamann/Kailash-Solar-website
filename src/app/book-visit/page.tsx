@@ -30,31 +30,34 @@ export default function BookVisitPage() {
     // Formulate WhatsApp message first
     const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `Address/PIN: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
     
-    // Always trigger tracking
-    if (typeof window !== 'undefined') {
-      import('posthog-js').then((ph) => {
-        ph.default.capture('form_submitted', {
-          form_name: 'book_visit_page',
-          lead_type: 'book_visit'
-        });
-      });
-      (window as any).dataLayer = (window as any).dataLayer || [];
-      (window as any).dataLayer.push({
-        'event': 'generate_lead',
-        'form_name': 'book_visit',
-        'lead_type': 'book_visit'
-      });
-      if ((window as any).fbq) {
-        (window as any).fbq('track', 'Lead');
-      }
-    }
-
-    // Attempt to send to Supabase but don't block the user if it fails
     try {
-      await supabase.functions.invoke(
+      const { data, error } = await supabase.functions.invoke(
         "send-inquiry-email",
         { body: formData }
-      ).catch(e => console.error("Background sync error:", e));
+      );
+
+      if (error) {
+        throw error;
+      }
+
+      if (typeof window !== 'undefined') {
+        import('posthog-js').then((ph) => {
+          ph.default.capture('form_submitted', {
+            form_name: 'book_visit_page',
+            lead_type: 'book_visit'
+          });
+        });
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).dataLayer.push({
+          'event': 'generate_lead',
+          'form_name': 'book_visit_page',
+          'lead_type': 'book_visit'
+        });
+        if ((window as any).fbq) {
+          (window as any).fbq('track', 'Lead');
+        }
+      }
+
     } catch (e) {
       console.error(e);
     }
