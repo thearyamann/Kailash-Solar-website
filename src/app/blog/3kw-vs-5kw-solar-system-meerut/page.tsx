@@ -32,6 +32,39 @@ export const metadata: Metadata = {
   }
 };
 
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "3kW vs 5kW Solar System in Meerut: Price, Subsidy & Guide",
+  "description": "Deciding between a 3kW and 5kW solar system for your Meerut home? Compare prices, PM Surya Ghar subsidy, generation, roof space, and find the right size based on your electricity bill.",
+  "image": "https://kailashsolar.com/og-image.jpg",
+  "author": {
+    "@type": "Organization",
+    "name": "Kailash Solar",
+    "url": "https://kailashsolar.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Kailash Solar",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://kailashsolar.com/favicon.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://kailashsolar.com/blog/3kw-vs-5kw-solar-system-meerut"
+  }
+};
+
 export default function BlogPage() {
-  return <Blog3kwVs5kwSolarSystemMeerut />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <Blog3kwVs5kwSolarSystemMeerut />
+    </>
+  );
 }
