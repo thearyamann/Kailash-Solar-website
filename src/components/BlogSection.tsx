@@ -5,6 +5,15 @@ import pmSuryaGharHero from '@/assets/pm-surya-ghar-meerut-hero.webp';
 const BlogSection = () => {
   const posts = [
     {
+      title: 'Solar Panel Loan in Meerut: EMI, SBI & PNB Loan Options',
+      excerpt:
+        'Learn how to finance a 3kW, 4kW, or 5kW solar system in Meerut. Compare bank loans, calculate EMI, and understand how the PM Surya Ghar subsidy works.',
+      category: 'Financing',
+      readTime: '15 min read',
+      href: '/blog/solar-panel-loan-meerut',
+      image: { src: '/loansolar.png' },
+    },
+    {
       title: 'How to Get PM Surya Ghar Subsidy in Meerut (Step-by-Step Guide 2025)',
       excerpt:
         'Claim up to ₹1,08,000 in combined central + UP state subsidy. Eligibility, documents, PVVNL net metering, and the full step-by-step process for Meerut homeowners.',
@@ -57,15 +66,6 @@ const BlogSection = () => {
       readTime: '10 min read',
       href: '/blog/how-to-choose-solar-panels-home-meerut',
       image: { src: '/solarpanelbest.png' },
-    },
-    {
-      title: 'Solar Panel Loan in Meerut: EMI, SBI & PNB Loan Options',
-      excerpt:
-        'Learn how to finance a 3kW, 4kW, or 5kW solar system in Meerut. Compare bank loans, calculate EMI, and understand how the PM Surya Ghar subsidy works.',
-      category: 'Financing',
-      readTime: '15 min read',
-      href: '/blog/solar-panel-loan-meerut',
-      image: { src: '/loansolar.png' },
     }
   ];
 
