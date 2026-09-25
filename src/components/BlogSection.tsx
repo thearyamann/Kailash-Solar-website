@@ -97,13 +97,13 @@ const BlogSection = () => {
         </div>
 
         {/* Scalable Grid Layout */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
           {posts.map((post, index) => (
             <a key={index} href={post.href} target="_blank" rel="noopener noreferrer" className="block focus:outline-none group h-full">
-              <div className="h-full flex flex-col bg-card border border-border rounded-3xl overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
+              <div className="h-full flex flex-col bg-card border border-border rounded-2xl md:rounded-3xl overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
                 
                 {/* Image Area with Floating Badges */}
-                <div className="relative h-60 overflow-hidden bg-muted flex-shrink-0">
+                <div className="relative h-32 md:h-60 overflow-hidden bg-muted flex-shrink-0">
                   {(post as any).isVideo ? (
                     <video
                       src={post.image.src}
@@ -122,8 +122,8 @@ const BlogSection = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                   )}
-                  <div className="absolute top-5 left-5 flex gap-2 z-10">
-                    <span className="bg-background/90 backdrop-blur-sm text-foreground font-bold text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg border border-border shadow-sm">
+                  <div className="absolute top-3 left-3 md:top-5 md:left-5 flex gap-2 z-10">
+                    <span className="bg-background/90 backdrop-blur-sm text-foreground font-bold text-[8px] md:text-[10px] uppercase tracking-widest px-2 py-1 md:px-3 md:py-1.5 rounded-md md:rounded-lg border border-border shadow-sm">
                       {post.category}
                     </span>
                   </div>
@@ -131,27 +131,27 @@ const BlogSection = () => {
                 </div>
 
                 {/* Content Area */}
-                <div className="p-8 flex-grow flex flex-col bg-card group-hover:bg-primary/5 transition-colors duration-500">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-bold uppercase tracking-widest">
-                      <Clock className="w-3.5 h-3.5 text-accent" />
+                <div className="p-4 md:p-8 flex-grow flex flex-col bg-card group-hover:bg-primary/5 transition-colors duration-500">
+                  <div className="flex items-center gap-2 md:gap-4 mb-2 md:mb-4">
+                    <span className="text-[9px] md:text-xs text-muted-foreground flex items-center gap-1 md:gap-1.5 font-bold uppercase tracking-widest">
+                      <Clock className="w-3 h-3 md:w-3.5 md:h-3.5 text-accent" />
                       {post.readTime}
                     </span>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-foreground mb-4 font-montserrat leading-tight group-hover:text-primary transition-colors duration-300">
+                  <h3 className="text-[13px] leading-snug md:text-xl font-bold text-foreground mb-2 md:mb-4 font-montserrat md:leading-tight group-hover:text-primary transition-colors duration-300 line-clamp-3 md:line-clamp-none">
                     {post.title}
                   </h3>
                   
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-grow">
+                  <p className="hidden md:block text-muted-foreground text-sm leading-relaxed mb-8 flex-grow">
                     {post.excerpt}
                   </p>
                   
-                  <div className="inline-flex items-center gap-2 text-primary font-bold text-sm group-hover:translate-x-2 transition-transform duration-300 mt-auto">
+                  <div className="inline-flex items-center gap-1 md:gap-2 text-primary font-bold text-[11px] md:text-sm group-hover:translate-x-2 transition-transform duration-300 mt-auto">
                     <span className="border-b-2 border-transparent group-hover:border-primary pb-0.5 transition-colors">
-                      Read Guide
+                      Read
                     </span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
                   </div>
                 </div>
 
