@@ -107,7 +107,7 @@ const SolarCompanyMeerut = () => {
           {/* Lighter dark overlay to keep text readable but show more video */}
           <div className="absolute inset-0 bg-slate-900/30" />
           {/* Bottom shadow for logos */}
-          <div className="absolute inset-x-0 bottom-0 h-[80%] md:h-[70%] bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-[80%] md:h-[70%] bg-gradient-to-t from-black md:from-black/80 via-black/90 md:via-black/50 to-transparent pointer-events-none" />
         </div>
         
         <div className="container relative z-10 mx-auto px-0 sm:px-6 flex flex-col flex-grow h-full md:grid md:grid-cols-12 md:gap-8 lg:gap-12 md:items-center">
