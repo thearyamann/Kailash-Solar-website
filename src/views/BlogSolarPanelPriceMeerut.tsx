@@ -29,7 +29,7 @@ const SLUG = '/blog/solar-panel-price-meerut';
 const faqs = [
   {
     q: 'What is the price of a 3kW solar system in Meerut?',
-    a: 'A high-quality 3kW solar system with Tier-1 panels typically costs between ₹1,60,000 and ₹1,80,000 before subsidy. After the central and UP state subsidy (up to ₹1,08,000 combined), your out-of-pocket cost is significantly lower.',
+    a: 'A high-quality 3kW solar system with Tier-1 panels typically costs around ₹2,00,000 before subsidy. After the central and UP state subsidy (up to ₹1,08,000 combined), your out-of-pocket cost is significantly lower.',
   },
   {
     q: 'How much subsidy is available in Uttar Pradesh?',
@@ -304,11 +304,11 @@ const BlogSolarPanelPriceMeerut = () => {
               <ComparisonTable 
                 headers={["System Size", "Approx. Cost (Before Subsidy)", "Avg. Monthly Generation", "Suitable For Monthly Bill", "Space Required"]}
                 rows={[
-                  ["2kW System", "₹1,10,000 - ₹1,30,000", "240 - 260 Units", "₹1,500 - ₹2,500", "150 - 200 sq.ft"],
-                  ["3kW System", "₹1,60,000 - ₹1,80,000", "360 - 400 Units", "₹2,500 - ₹3,500", "250 - 300 sq.ft"],
-                  ["5kW System", "₹2,60,000 - ₹2,90,000", "600 - 650 Units", "₹4,000 - ₹6,000", "450 - 500 sq.ft"],
-                  ["7kW System", "₹3,50,000 - ₹3,90,000", "840 - 900 Units", "₹7,000 - ₹9,000", "650 - 700 sq.ft"],
-                  ["10kW System", "₹4,80,000 - ₹5,50,000", "1200 - 1300 Units", "₹10,000+", "900 - 1000 sq.ft"],
+                  ["2kW System", "₹1,50,000", "240 - 260 Units", "₹1,500 - ₹2,500", "150 - 200 sq.ft"],
+                  ["3kW System", "₹2,00,000", "360 - 400 Units", "₹2,500 - ₹3,500", "250 - 300 sq.ft"],
+                  ["5kW System", "₹3,00,000", "600 - 650 Units", "₹4,000 - ₹6,000", "450 - 500 sq.ft"],
+                  ["7kW System", "₹4,00,000", "840 - 900 Units", "₹7,000 - ₹9,000", "650 - 700 sq.ft"],
+                  ["10kW System", "₹5,50,000", "1200 - 1300 Units", "₹10,000+", "900 - 1000 sq.ft"],
                 ]}
               />
 

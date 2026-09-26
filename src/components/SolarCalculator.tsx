@@ -75,8 +75,9 @@ const SolarCalculator = () => {
 
     const bill = parseFloat(monthlyBill);
     const systemSize = Math.ceil(bill / 1500);
-    const capexPerKw = customerType === 'residential' ? CAPEX_PER_KW_RESIDENTIAL : CAPEX_PER_KW_COMMERCIAL;
-    const totalCost = systemSize * capexPerKw;
+    const totalCost = customerType === 'residential' 
+      ? (50000 + systemSize * 50000) 
+      : (systemSize * CAPEX_PER_KW_COMMERCIAL);
     const subsidy = calculateSubsidy(systemSize);
     const netCost = totalCost - subsidy;
     

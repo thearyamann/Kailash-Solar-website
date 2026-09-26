@@ -65,7 +65,7 @@ const faqSchema = {
       "name": "What is the price of a 3kW solar system in Meerut?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A premium 3kW solar system in Meerut typically costs between ₹1,60,000 and ₹1,80,000 before subsidy. After applying the PM Surya Ghar central and UP state subsidy (up to ₹1,08,000 combined), your net effective cost drops significantly."
+        "text": "A premium 3kW solar system in Meerut typically costs around ₹2,00,000 before subsidy. After applying the PM Surya Ghar central and UP state subsidy (up to ₹1,08,000 combined), your net effective cost drops significantly."
       }
     },
     {

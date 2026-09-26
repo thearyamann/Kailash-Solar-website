@@ -122,7 +122,7 @@ export function SolarConsultationForm() {
           Book a FREE Consultation
         </h2>
         <p className="text-[14px] sm:text-[15px] text-muted-foreground font-medium mb-3">
-          Claim your <span className="font-bold text-foreground">₹1,08,000 subsidy</span> today.
+          Claim your <span className="font-extrabold text-accent">₹1,08,000 subsidy</span> today.
         </p>
         <div className="md:hidden inline-flex items-center gap-1.5 text-accent font-bold text-xs bg-accent/10 px-2.5 py-1 rounded-md">
           <Zap className="w-3.5 h-3.5 fill-accent" /> &quot;Fastest Subsidy Approval in UP&quot;

@@ -310,13 +310,13 @@ const BlogSolarPanelLoanMeerut = () => {
                   <h4 className="font-bold text-emerald-900 text-lg mb-4 font-montserrat">3kW Cost Breakdown</h4>
                   <ul className="space-y-3 text-emerald-950 text-base md:text-lg mb-6">
                     <li className="flex justify-between items-center pb-3 border-b border-emerald-200/60">
-                      <span>Illustrative System Price</span> <strong>₹1,80,000</strong>
+                      <span>Illustrative System Price</span> <strong>₹2,00,000</strong>
                     </li>
                     <li className="flex justify-between items-center pb-3 border-b border-emerald-200/60">
                       <span className="text-emerald-700">Eligible Subsidy (Max)</span> <strong className="text-emerald-600">-₹1,08,000</strong>
                     </li>
                     <li className="flex justify-between items-center pt-2">
-                      <span className="font-bold">Net Loan Amount</span> <strong className="text-2xl text-primary font-bold">₹72,000</strong>
+                      <span className="font-bold">Net Loan Amount</span> <strong className="text-2xl text-primary font-bold">₹92,000</strong>
                     </li>
                   </ul>
                   
@@ -326,13 +326,13 @@ const BlogSolarPanelLoanMeerut = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
                         <span className="block text-xs font-bold text-slate-500 mb-1 uppercase">Step 1: Initial EMI</span>
-                        <span className="block text-xs text-slate-500 mb-2">(Calculated on full ₹1,80,000 for 5 yrs)</span>
-                        <strong className="text-2xl text-slate-400 line-through">₹3,458<span className="text-sm font-normal text-slate-400">/mo</span></strong>
+                        <span className="block text-xs text-slate-500 mb-2">(Calculated on full ₹2,00,000 for 5 yrs)</span>
+                        <strong className="text-2xl text-slate-400 line-through">₹3,842<span className="text-sm font-normal text-slate-400">/mo</span></strong>
                       </div>
                       <div className="bg-emerald-50 p-4 rounded-lg border-2 border-emerald-200 relative overflow-hidden">
                         <span className="block text-xs font-bold text-emerald-700 mb-1 uppercase">Step 2: Revised EMI</span>
                         <span className="block text-xs text-emerald-600 mb-2">(After ₹1,08,000 subsidy drops in)</span>
-                        <strong className="text-3xl text-emerald-700">₹1,383<span className="text-base font-normal text-emerald-600">/mo</span></strong>
+                        <strong className="text-3xl text-emerald-700">₹1,767<span className="text-base font-normal text-emerald-600">/mo</span></strong>
                       </div>
                     </div>
                   </div>
@@ -350,13 +350,13 @@ const BlogSolarPanelLoanMeerut = () => {
                   <h4 className="font-bold text-blue-900 text-lg mb-4 font-montserrat">4kW Cost Breakdown</h4>
                   <ul className="space-y-3 text-blue-950 text-base md:text-lg mb-6">
                     <li className="flex justify-between items-center pb-3 border-b border-blue-200/60">
-                      <span>Illustrative System Price</span> <strong>₹2,40,000</strong>
+                      <span>Illustrative System Price</span> <strong>₹2,50,000</strong>
                     </li>
                     <li className="flex justify-between items-center pb-3 border-b border-blue-200/60">
                       <span className="text-blue-700">Eligible Subsidy (Max)</span> <strong className="text-emerald-600">-₹1,08,000</strong>
                     </li>
                     <li className="flex justify-between items-center pt-2">
-                      <span className="font-bold">Net Loan Amount</span> <strong className="text-2xl text-primary font-bold">₹1,32,000</strong>
+                      <span className="font-bold">Net Loan Amount</span> <strong className="text-2xl text-primary font-bold">₹1,42,000</strong>
                     </li>
                   </ul>
                   
@@ -365,13 +365,13 @@ const BlogSolarPanelLoanMeerut = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
                         <span className="block text-xs font-bold text-slate-500 mb-1 uppercase">Step 1: Initial EMI</span>
-                        <span className="block text-xs text-slate-500 mb-2">(Calculated on full ₹2,40,000 for 5 yrs)</span>
-                        <strong className="text-2xl text-slate-400 line-through">₹4,611<span className="text-sm font-normal text-slate-400">/mo</span></strong>
+                        <span className="block text-xs text-slate-500 mb-2">(Calculated on full ₹2,50,000 for 5 yrs)</span>
+                        <strong className="text-2xl text-slate-400 line-through">₹4,803<span className="text-sm font-normal text-slate-400">/mo</span></strong>
                       </div>
                       <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200 relative overflow-hidden">
                         <span className="block text-xs font-bold text-blue-700 mb-1 uppercase">Step 2: Revised EMI</span>
                         <span className="block text-xs text-blue-600 mb-2">(After ₹1,08,000 subsidy drops in)</span>
-                        <strong className="text-3xl text-blue-700">₹2,535<span className="text-base font-normal text-blue-600">/mo</span></strong>
+                        <strong className="text-3xl text-blue-700">₹2,728<span className="text-base font-normal text-blue-600">/mo</span></strong>
                       </div>
                     </div>
                   </div>

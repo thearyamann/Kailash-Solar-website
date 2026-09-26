@@ -83,30 +83,31 @@ const jsonLd = {
 const SolarCompanyMeerut = () => {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
-      <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
 
       {/* Auto-opening popup modal (same as homepage) */}
       <BookVisitModal autoOpenDelay={7000} />
 
       <Header />
 
-      <section id="home" className="relative min-h-[100dvh] md:min-h-[80vh] flex flex-col justify-between md:justify-center overflow-hidden pt-20 pb-0 md:pb-10">
+      <section id="home" className="relative min-h-[75dvh] md:min-h-[80vh] flex flex-col justify-between md:justify-center overflow-hidden pt-20 pb-0 md:pb-10">
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
-          <Image
-            src="/Happyfamily.png"
-            alt="Happy family using solar power"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[center_80%] md:object-[100%_20%]"
+          <video
+            src="/herosection_loop.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="w-full h-full object-cover object-[92%_0%] md:object-[50%_0%] scale-x-[-1]"
           />
-          {/* Subtle dark overlay without blur to keep image sharp while text is readable */}
-          <div className="absolute inset-0 bg-slate-900/50" />
+          {/* Lighter dark overlay to keep text readable but show more video */}
+          <div className="absolute inset-0 bg-slate-900/30" />
+          {/* Bottom shadow for logos */}
+          <div className="absolute inset-x-0 bottom-0 h-[80%] md:h-[70%] bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none" />
         </div>
         
         <div className="container relative z-10 mx-auto px-0 sm:px-6 flex flex-col flex-grow h-full md:grid md:grid-cols-12 md:gap-8 lg:gap-12 md:items-center">
@@ -115,12 +116,14 @@ const SolarCompanyMeerut = () => {
           <div className="px-4 md:px-0 flex-grow flex flex-col justify-center md:col-span-7 space-y-4 md:space-y-5 pt-6 md:pt-0">
 
             <h1 className="text-[38px] leading-[1.1] md:text-5xl lg:text-6xl font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
-              <span className="block animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both">Meerut's No.1 Choice for</span> 
-              <span className="block text-accent drop-shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 fill-mode-both mt-1 md:mt-2">Home Solar Panels</span>
+              <span className="block animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both">
+                Meerut's No.1 Choice <br className="hidden md:block" /> for Home
+              </span> 
+              <span className="block text-accent drop-shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 fill-mode-both mt-1 md:mt-2">Solar Panels</span>
             </h1>
             
-            <p className="text-[16px] md:text-xl text-white/90 font-medium leading-snug max-w-xl pb-4 md:pb-0 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-500 fill-mode-both">
-              Install rooftop solar and claim up to ₹1,08,000 PM Surya Ghar subsidy — with easy EMIs and a free site visit.
+            <p className="text-[16px] md:text-xl text-white/90 font-medium leading-snug max-w-xl pb-20 md:pb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-500 fill-mode-both">
+              Install rooftop solar and claim up to <span className="text-accent md:text-white font-extrabold">₹1,08,000 PM Surya Ghar subsidy</span> — with easy EMIs and a free site visit.
             </p>
             
             <div className="grid grid-cols-3 gap-2 md:flex md:items-center md:gap-6 pt-1 md:pt-2 text-sm font-semibold text-white animate-in fade-in slide-in-from-bottom-6 duration-700 delay-700 fill-mode-both">
@@ -440,7 +443,7 @@ const SolarCompanyMeerut = () => {
             {[
               {
                 q: "What is the cost of solar panels in Meerut?",
-                a: "The cost depends on the system size. A standard 3kW system in Meerut costs approximately ₹1,60,000 to ₹1,80,000 before subsidy. With the combined subsidy of up to ₹1,08,000, your effective cost becomes highly affordable."
+                a: "The cost depends on the system size. A standard 3kW system in Meerut costs approximately ₹2,00,000 before subsidy. With the combined subsidy of up to ₹1,08,000, your effective cost becomes highly affordable."
               },
               {
                 q: "Do you help with the PM Surya Ghar Subsidy?",

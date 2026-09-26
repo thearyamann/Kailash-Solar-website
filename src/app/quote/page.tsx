@@ -31,9 +31,8 @@ export default function QuotePage() {
   
   const generateResults = (systemSize: number, type: string): CalculatorResults => {
     const ELECTRICITY_COST = 7.5;
-    const CAPEX_PER_KW = type === 'residential' ? 60000 : 45000;
     
-    const totalCost = systemSize * CAPEX_PER_KW;
+    const totalCost = type === 'residential' ? (50000 + systemSize * 50000) : (systemSize * 45000);
     const subsidy = type === 'residential' ? (systemSize >= 3 ? 108000 : systemSize * 30000 + 15000) : 0;
     const netCost = totalCost - subsidy;
     

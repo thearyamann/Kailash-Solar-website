@@ -297,10 +297,10 @@ const BlogHowToChooseSolarPanelsMeerut = () => {
                 <ChecklistTable 
                   headers={['System Size', 'Approx. Panels (540W)', 'Total System Cost', 'PM Surya Ghar Subsidy', 'Net Price You Pay']}
                   rows={[
-                    ['3kW Rooftop System', '5 to 6 panels', '₹1,80,000', '₹1,08,000', '₹72,000'],
+                    ['3kW Rooftop System', '5 to 6 panels', '₹2,00,000', '₹1,08,000', '₹92,000'],
                     ['5kW Rooftop System', '9 to 10 panels', '₹3,00,000', '₹1,08,000', '₹1,92,000'],
-                    ['7kW Rooftop System', '13 to 14 panels', '₹4,20,000', '₹1,08,000', '₹3,12,000'],
-                    ['10kW Rooftop System', '18 to 19 panels', '₹6,00,000', '₹1,08,000', '₹4,92,000']
+                    ['7kW Rooftop System', '13 to 14 panels', '₹4,00,000', '₹1,08,000', '₹2,92,000'],
+                    ['10kW Rooftop System', '18 to 19 panels', '₹5,50,000', '₹1,08,000', '₹4,42,000']
                   ]}
                 />
                 <P>
