@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, FileText, Calculator, Home, User, Sun, Zap, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BookVisitModal } from '@/components/BookVisitModal';
@@ -9,6 +9,21 @@ import { useRouter } from 'next/navigation';
 const HeroSection = () => {
   const [isNavigatingToQuote, setIsNavigatingToQuote] = useState(false);
   const router = useRouter();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.setAttribute('muted', 'true');
+      videoRef.current.setAttribute('playsinline', 'true');
+      videoRef.current.setAttribute('autoplay', 'true');
+      videoRef.current.play().catch((e) => {
+        console.error("Video autoplay failed:", e);
+      });
+    }
+  }, []);
+
   
   const handleQuoteClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -26,12 +41,18 @@ const HeroSection = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <video
+          ref={videoRef}
           src="/herosection.mp4"
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
+          onEnded={() => {
+            if (videoRef.current) {
+              videoRef.current.play().catch(e => console.error("Video loop failed:", e));
+            }
+          }}
           className="w-full h-full object-cover object-[90%_top] lg:object-top"
         />
         <div className="absolute inset-0 bg-solar-gradient-hero" />
