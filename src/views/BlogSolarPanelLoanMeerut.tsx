@@ -159,7 +159,7 @@ const BlogSolarPanelLoanMeerut = () => {
 
               <div className="mb-10 rounded-3xl overflow-hidden shadow-xl border border-slate-200">
                 <img 
-                  src="/loansolar.png" 
+                  src="/solarloan.png" 
                   alt="Solar Panel Loan and EMI Options in Meerut" 
                   className="w-full h-auto object-cover max-h-[450px]" 
                 />

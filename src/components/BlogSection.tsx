@@ -11,7 +11,7 @@ const BlogSection = () => {
       category: 'Financing',
       readTime: '15 min read',
       href: '/blog/solar-panel-loan-meerut',
-      image: { src: '/loansolar.png' },
+      image: { src: '/solarloan.png' },
     },
     {
       title: 'How to Get PM Surya Ghar Subsidy in Meerut (Step-by-Step Guide 2025)',

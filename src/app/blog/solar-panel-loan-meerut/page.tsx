@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: "Kailash Solar",
     images: [
       {
-        url: "https://kailashsolar.com/loansolar.png",
+        url: "https://kailashsolar.com/solarloan.png",
         width: 1200,
         height: 630,
         alt: "Solar panel financing in Meerut",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Solar Panel Loan in Meerut: EMI, SBI & PNB Loan Options",
     description: "Finance a 3kW, 4kW, or 5kW solar system in Meerut. Compare bank loans and calculate EMIs.",
-    images: ["https://kailashsolar.com/loansolar.png"],
+    images: ["https://kailashsolar.com/solarloan.png"],
   }
 };
 
@@ -36,7 +36,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Solar Panel Loan in Meerut: EMI, SBI & PNB Loan Options, Subsidy & Costs",
-  "image": "https://kailashsolar.com/loansolar.png",
+  "image": "https://kailashsolar.com/solarloan.png",
   "author": {
     "@type": "Organization",
     "name": "Kailash Solar",
