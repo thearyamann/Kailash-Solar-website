@@ -138,6 +138,17 @@ Calculate your savings: ${window.location.href}`;
 
   const handleProposalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!/^[A-Za-z\s]+$/.test(proposalForm.name)) {
+      toast({ title: "Invalid Name", description: "Name should contain only letters and spaces.", variant: "destructive" });
+      return;
+    }
+    
+    if (!/^\d{10}$/.test(proposalForm.phone)) {
+      toast({ title: "Invalid Phone", description: "Phone number must be exactly 10 digits.", variant: "destructive" });
+      return;
+    }
+
     import('posthog-js').then((ph) => {
       ph.default.capture('form_submitted', {
         form_name: 'solar_calculator_proposal',

@@ -59,8 +59,19 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitError("");
+    
+    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+      setSubmitError("Name should contain only letters and spaces.");
+      return;
+    }
+    
+    if (!/^\d{10}$/.test(formData.phone)) {
+      setSubmitError("Phone number must be exactly 10 digits.");
+      return;
+    }
+    
+    setIsSubmitting(true);
     try {
       // Send to supabase edge function using fetch for better error transparency
       const { data: { session } } = await supabase.auth.getSession();

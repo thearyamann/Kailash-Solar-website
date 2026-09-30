@@ -171,6 +171,16 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    const whatsappText = `New Solar Lead Received!
+Name: ${name}
+Phone: ${phone}
+Address: ${address}
+Monthly Bill: ₹${monthlyBill || "Not specified"}
+Customer Type: ${customerType || "Not specified"}
+Message: ${message || "No additional message"}`;
+
+    const whatsappUrl = `https://wa.me/918999999654?text=${encodeURIComponent(whatsappText)}`;
+
     await resend.emails.send({
       from: "Kailash Solar <onboarding@resend.dev>",
       to: ["sales@kailashsolar.com"],
@@ -185,6 +195,11 @@ const handler = async (req: Request): Promise<Response> => {
           <tr><td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Customer Type</td><td style="padding: 10px; border: 1px solid #ddd;">${escapeHtml(customerType) || "Not specified"}</td></tr>
           <tr><td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Message</td><td style="padding: 10px; border: 1px solid #ddd;">${escapeHtml(message) || "No additional message"}</td></tr>
         </table>
+        <div style="margin-top: 30px;">
+          <a href="${whatsappUrl}" style="background-color: #25D366; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+            Forward Lead to Team WhatsApp
+          </a>
+        </div>
         <p style="margin-top: 20px; color: #666;">This inquiry was submitted via the Kailash Solar website.</p>
       `,
     });

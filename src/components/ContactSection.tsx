@@ -23,6 +23,22 @@ const ContactSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+      toast({ title: "Invalid Name", description: "Name should contain only letters and spaces.", variant: "destructive" });
+      return;
+    }
+    
+    if (!/^\d{10}$/.test(formData.phone)) {
+      toast({ title: "Invalid Phone", description: "Phone number must be exactly 10 digits.", variant: "destructive" });
+      return;
+    }
+
+    if (!formData.monthlyBill) {
+      toast({ title: "Required Field", description: "Please enter your average monthly bill.", variant: "destructive" });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { error: fnError } = await supabase.functions.invoke(

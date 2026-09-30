@@ -106,8 +106,24 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitError("");
+
+    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+      setSubmitError("Name should contain only letters and spaces.");
+      return;
+    }
+    
+    if (!/^\d{10}$/.test(formData.phone)) {
+      setSubmitError("Phone number must be exactly 10 digits.");
+      return;
+    }
+
+    if (!formData.monthlyBill) {
+      setSubmitError("Please select your monthly electricity bill.");
+      return;
+    }
+
+    setIsSubmitting(true);
 
     // Formulate WhatsApp message first
     const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `Address/PIN: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
