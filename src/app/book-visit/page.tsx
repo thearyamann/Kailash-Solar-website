@@ -176,8 +176,6 @@ export default function BookVisitPage() {
                     className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
                   />
                 </div>
-                
-                <div>
                 <div className="relative flex items-center">
                   <div className="absolute left-0 h-[56px] flex items-center justify-center px-4 text-slate-600 font-bold bg-slate-100 border border-r-0 border-slate-200 rounded-l-[16px] z-10 pointer-events-none">
                     +91
