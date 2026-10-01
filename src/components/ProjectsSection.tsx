@@ -8,6 +8,7 @@ import project3 from '@/assets/solar-project-3.jpg';
 import residential1 from '@/assets/residential-1.webp';
 import residential2 from '@/assets/residential-2.webp';
 import residential3 from '@/assets/residential-3.jpg';
+import { BookVisitModal } from '@/components/BookVisitModal';
 
 type Category = 'all' | 'residential' | 'ci';
 
@@ -138,69 +139,71 @@ const ProjectsSection = () => {
         {/* Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filtered.map((project, index) => (
-            <div key={index} className="flex flex-col bg-card border border-border rounded-[2rem] overflow-hidden group hover:border-primary/50 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5">
-              
-              {/* Project Image */}
-              <div className="relative h-60 overflow-hidden bg-muted flex-shrink-0">
-                <img 
-                  src={project.image.src} 
-                  alt={project.title} 
-                  loading="lazy" 
-                  decoding="async" 
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
-                />
-                <div className="absolute top-5 right-5 bg-accent text-accent-foreground px-4 py-1.5 rounded-xl text-sm font-bold shadow-lg">
-                  {project.capacity}
-                </div>
-                <div className="absolute top-5 left-5 bg-background/90 backdrop-blur-sm text-foreground px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider border border-border/50">
-                  {project.category === 'residential' ? 'Residential' : 'C&I'}
-                </div>
-              </div>
-
-              {/* Project Info */}
-              <div className="p-8 flex-grow flex flex-col">
-                <h3 className="text-xl font-bold text-foreground mb-2 font-montserrat leading-tight group-hover:text-primary transition-colors">
-                  {project.title}
-                </h3>
-                <div className="flex items-center text-muted-foreground text-sm mb-6 font-medium">
-                  <MapPin className="w-4 h-4 mr-1 text-primary/70" />
-                  {project.location}
-                </div>
-
-                {/* Stats */}
-                <div className="grid grid-cols-2 gap-4 mb-8 p-5 bg-primary/5 border border-primary/10 rounded-2xl">
-                  <div>
-                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Savings</div>
-                    <div className="text-lg font-bold text-accent">{project.annualSavings}</div>
+            <BookVisitModal key={index}>
+              <div className="flex flex-col bg-card border border-border rounded-[2rem] overflow-hidden group hover:border-primary/50 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 cursor-pointer text-left h-full">
+                
+                {/* Project Image */}
+                <div className="relative h-60 overflow-hidden bg-muted flex-shrink-0">
+                  <img 
+                    src={project.image.src} 
+                    alt={project.title} 
+                    loading="lazy" 
+                    decoding="async" 
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
+                  />
+                  <div className="absolute top-5 right-5 bg-accent text-accent-foreground px-4 py-1.5 rounded-xl text-sm font-bold shadow-lg">
+                    {project.capacity}
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Payback</div>
-                    <div className="text-lg font-bold text-primary">{project.payback}</div>
+                  <div className="absolute top-5 left-5 bg-background/90 backdrop-blur-sm text-foreground px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider border border-border/50">
+                    {project.category === 'residential' ? 'Residential' : 'C&I'}
                   </div>
                 </div>
 
-                {/* Testimonial */}
-                <div className="relative flex-grow flex flex-col justify-between mt-auto">
-                  <Quote className="absolute -top-3 -left-2 w-8 h-8 text-primary/10 -z-10" />
-                  <p className="text-muted-foreground text-sm italic leading-relaxed mb-6 z-10 relative">
-                    "{project.testimonial}"
-                  </p>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-primary font-bold text-sm font-montserrat">
-                        {project.clientName.split(' ').map(n => n[0]).join('')}
-                      </span>
+                {/* Project Info */}
+                <div className="p-8 flex-grow flex flex-col">
+                  <h3 className="text-xl font-bold text-foreground mb-2 font-montserrat leading-tight group-hover:text-primary transition-colors">
+                    {project.title}
+                  </h3>
+                  <div className="flex items-center text-muted-foreground text-sm mb-6 font-medium">
+                    <MapPin className="w-4 h-4 mr-1 text-primary/70" />
+                    {project.location}
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-2 gap-4 mb-8 p-5 bg-primary/5 border border-primary/10 rounded-2xl">
+                    <div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Savings</div>
+                      <div className="text-lg font-bold text-accent">{project.annualSavings}</div>
                     </div>
                     <div>
-                      <div className="font-bold text-foreground text-sm font-montserrat">{project.clientName}</div>
-                      <div className="text-xs text-muted-foreground font-medium">{project.clientRole}</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Payback</div>
+                      <div className="text-lg font-bold text-primary">{project.payback}</div>
+                    </div>
+                  </div>
+
+                  {/* Testimonial */}
+                  <div className="relative flex-grow flex flex-col justify-between mt-auto">
+                    <Quote className="absolute -top-3 -left-2 w-8 h-8 text-primary/10 -z-10" />
+                    <p className="text-muted-foreground text-sm italic leading-relaxed mb-6 z-10 relative">
+                      "{project.testimonial}"
+                    </p>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-primary font-bold text-sm font-montserrat">
+                          {project.clientName.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      </div>
+                      <div>
+                        <div className="font-bold text-foreground text-sm font-montserrat">{project.clientName}</div>
+                        <div className="text-xs text-muted-foreground font-medium">{project.clientRole}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-            </div>
+              </div>
+            </BookVisitModal>
           ))}
         </div>
         

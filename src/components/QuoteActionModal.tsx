@@ -133,7 +133,10 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
         }
       }
 
-      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+      // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
+      setTimeout(() => {
+        window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+      }, 800);
       
       toast({
         title: "Request Sent!",
@@ -207,7 +210,10 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
                 />
               </div>
               
-              <div>
+              <div className="relative flex items-center">
+                <div className="absolute left-0 h-[48px] flex items-center justify-center px-3 text-muted-foreground font-bold bg-muted/50 border border-r-0 border-border rounded-l-[12px] z-10 pointer-events-none">
+                  +91
+                </div>
                 <Input 
                   type="tel" 
                   placeholder="WhatsApp Number (10 digits)*" 
@@ -221,7 +227,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
                     const val = e.target.value.replace(/\D/g, '');
                     if (val.length <= 10) setFormData({ ...formData, phone: val });
                   }} 
-                  className="h-[48px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
+                  className="h-[48px] pl-[60px] pr-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary w-full relative" 
                 />
               </div>
 

@@ -130,21 +130,21 @@ const SolarCompanyMeerut = () => {
               
               {/* Block 1: PM Surya Ghar Vendor */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-2 md:gap-3 text-center md:text-left">
-                <img src="/pmsurya.webp" alt="PM Surya Ghar Vendor" className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
+                <Image src="/pmsurya.webp" alt="PM Surya Ghar Vendor" width={150} height={50} priority className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
                 <div className="hidden md:block w-[1px] h-10 bg-white/30" />
                 <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">PM Surya Ghar<br/>Vendor</h4>
               </div>
 
               {/* Block 2: MNRE */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-2 md:gap-3 text-center md:text-left">
-                <img src="/mnre-logo.svg" alt="MNRE" className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
+                <Image src="/mnre-logo.svg" alt="MNRE" width={150} height={50} priority className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
                 <div className="hidden md:block w-[1px] h-10 bg-white/30" />
                 <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">MNRE<br/>Approved</h4>
               </div>
 
               {/* Block 3: UPNEDA */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-1 md:gap-3 text-center md:text-left">
-                <img src="/upneda-white.png" alt="UPNEDA Approved" className="h-12 md:h-14 w-auto object-contain brightness-0 invert flex-shrink-0 -mb-1 md:mb-0 drop-shadow-lg" />
+                <Image src="/upneda-white.png" alt="UPNEDA Approved" width={100} height={100} priority className="h-12 md:h-14 w-auto object-contain brightness-0 invert flex-shrink-0 -mb-1 md:mb-0 drop-shadow-lg" />
                 <div className="hidden md:block w-[1px] h-10 bg-white/30" />
                 <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">UPNEDA<br/>Approved</h4>
               </div>
@@ -211,7 +211,7 @@ const SolarCompanyMeerut = () => {
             ].map((feature, i) => (
               <div key={i} className="flex flex-col items-center text-center group">
                 <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 md:mb-8 shadow-sm transition-all duration-500 ">
-                  <img src={feature.img} alt={feature.title} className="w-full h-full object-cover transition-transform duration-700 " />
+                  <img src={feature.img} alt={feature.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 " />
                 </div>
                 <h3 className="text-[14px] sm:text-base md:text-2xl font-bold mb-1.5 md:mb-3 text-slate-900 leading-tight">{feature.title}</h3>
                 <p className="text-[11px] sm:text-sm md:text-base text-slate-600 leading-snug md:leading-relaxed max-w-sm line-clamp-3 md:line-clamp-none mt-1">{feature.desc}</p>
@@ -228,7 +228,7 @@ const SolarCompanyMeerut = () => {
             
             <div className="w-full lg:w-1/2 relative group">
               <div className="hidden lg:block absolute inset-0 bg-accent/20 rounded-[2rem] transform rotate-3 transition-transform duration-500 group-hover:rotate-6" />
-              <img src="/van.png" alt="Benefits of solar panels in Meerut" className="relative rounded-2xl lg:rounded-[2rem] shadow-md lg:shadow-lg w-full object-cover z-10" />
+              <img src="/van.png" alt="Benefits of solar panels in Meerut" loading="lazy" className="relative rounded-2xl lg:rounded-[2rem] shadow-md lg:shadow-lg w-full object-cover z-10" />
             </div>
 
             <div className="w-full lg:w-1/2 space-y-6 lg:space-y-8">
@@ -279,35 +279,39 @@ const SolarCompanyMeerut = () => {
               { name: "Happy Customer", location: "Jagriti Vihar, Meerut", img: "/happycostumer6.jpeg" },
               { name: "Happy Family", location: "Ganga Nagar, Meerut", img: "/ganganagar.jpeg" },
             ].map((customer, i) => (
-              <div key={i} className="group">
-                <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] mb-3 md:mb-5 bg-slate-200">
-                  <img src={customer.img} alt={`Happy Customer in ${customer.location}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-                <div className="px-1 md:px-2">
-                  <h3 className="text-slate-900 font-bold text-[14px] md:text-xl mb-1 leading-tight">{customer.name}</h3>
-                  <div className="flex items-center text-slate-500 font-medium text-[11px] md:text-[15px]">
-                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0 text-slate-400" /> <span className="truncate">{customer.location}</span>
+              <BookVisitModal key={i}>
+                <div className="group cursor-pointer text-left">
+                  <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] mb-3 md:mb-5 bg-slate-200">
+                    <img src={customer.img} alt={`Happy Customer in ${customer.location}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  </div>
+                  <div className="px-1 md:px-2">
+                    <h3 className="text-slate-900 font-bold text-[14px] md:text-xl mb-1 leading-tight">{customer.name}</h3>
+                    <div className="flex items-center text-slate-500 font-medium text-[11px] md:text-[15px]">
+                      <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 shrink-0 text-slate-400" /> <span className="truncate">{customer.location}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </BookVisitModal>
             ))}
             
             {/* 500+ More Customers Card */}
-            <div className="col-span-2 relative flex flex-col items-center justify-center rounded-2xl md:rounded-[2rem] p-8 md:p-16 overflow-hidden">
-              <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('/Happyfamily.png')` }}
-              ></div>
-              <div className="absolute inset-0 bg-slate-900/60"></div>
-              
-              <div className="relative z-10 flex flex-col items-center">
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-accent text-white rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-lg">
-                  <Users className="w-8 h-8 md:w-10 md:h-10" />
+            <BookVisitModal>
+              <div className="col-span-2 relative flex flex-col items-center justify-center rounded-2xl md:rounded-[2rem] p-8 md:p-16 overflow-hidden cursor-pointer group hover:scale-[1.02] transition-transform duration-500 shadow-sm hover:shadow-xl">
+                <div 
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{ backgroundImage: `url('/Happyfamily.png')` }}
+                ></div>
+                <div className="absolute inset-0 bg-slate-900/60 group-hover:bg-slate-900/50 transition-colors duration-500"></div>
+                
+                <div className="relative z-10 flex flex-col items-center">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-accent text-white rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-lg transform group-hover:scale-110 transition-transform duration-500">
+                    <Users className="w-8 h-8 md:w-10 md:h-10" />
+                  </div>
+                  <h3 className="text-white font-bold text-3xl md:text-5xl mb-2 text-center">500+</h3>
+                  <p className="text-white/90 font-medium text-[16px] md:text-xl text-center">More Happy Customers</p>
                 </div>
-                <h3 className="text-white font-bold text-3xl md:text-5xl mb-2 text-center">500+</h3>
-                <p className="text-white/90 font-medium text-[16px] md:text-xl text-center">More Happy Customers</p>
               </div>
-            </div>
+            </BookVisitModal>
           </div>
         </div>
       </section>

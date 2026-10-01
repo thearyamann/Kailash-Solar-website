@@ -5,6 +5,7 @@ import { ArrowRight, FileText, Calculator, Home, User, Sun, Zap, Loader2 } from 
 import { Button } from '@/components/ui/button';
 import { BookVisitModal } from '@/components/BookVisitModal';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const HeroSection = () => {
   const [isNavigatingToQuote, setIsNavigatingToQuote] = useState(false);
@@ -39,10 +40,11 @@ const HeroSection = () => {
       <BookVisitModal autoOpenDelay={7000} />
 
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-black/10">
         <video
           ref={videoRef}
           src="/herosection.mp4"
+          poster="/herosection-poster.jpg"
           autoPlay
           loop
           muted
@@ -129,7 +131,7 @@ const HeroSection = () => {
             {/* Block 1: PM Surya Ghar Vendor */}
             <div className="flex flex-col md:flex-row items-center justify-end md:justify-start gap-1.5 md:gap-4 text-center md:text-left w-full md:w-auto h-full">
               <div className="h-14 md:h-auto flex items-end justify-center">
-                <img src="/pmsurya.webp" alt="PM Surya Ghar Vendor" className="h-9 md:h-8 lg:h-10 w-auto object-contain brightness-0 invert flex-shrink-0" />
+                <Image src="/pmsurya.webp" alt="PM Surya Ghar Vendor" width={150} height={50} priority className="h-9 md:h-8 lg:h-10 w-auto object-contain brightness-0 invert flex-shrink-0" />
               </div>
               <div className="hidden md:block w-[1px] h-8 lg:h-10 bg-white/20" />
               <div className="flex flex-col justify-center">
@@ -140,7 +142,7 @@ const HeroSection = () => {
             {/* Block 2: MNRE */}
             <div className="flex flex-col md:flex-row items-center justify-end md:justify-start gap-1.5 md:gap-4 text-center md:text-left w-full md:w-auto h-full">
               <div className="h-14 md:h-auto flex items-end justify-center">
-                <img src="/mnre-logo.svg" alt="MNRE" className="h-9 md:h-8 lg:h-10 w-auto object-contain brightness-0 invert flex-shrink-0" />
+                <Image src="/mnre-logo.svg" alt="MNRE" width={150} height={50} priority className="h-9 md:h-8 lg:h-10 w-auto object-contain brightness-0 invert flex-shrink-0" />
               </div>
               <div className="hidden md:block w-[1px] h-8 lg:h-10 bg-white/20" />
               <div className="flex flex-col justify-center">
@@ -151,7 +153,7 @@ const HeroSection = () => {
             {/* Block 3: UPNEDA */}
             <div className="flex flex-col md:flex-row items-center justify-end md:justify-start gap-0 md:gap-4 text-center md:text-left w-full md:w-auto h-full">
               <div className="h-14 md:h-auto flex items-end justify-center">
-                <img src="/upneda-white.png" alt="UPNEDA Approved" className="h-14 md:h-14 lg:h-20 w-auto object-contain flex-shrink-0 -mb-2 md:mb-0" />
+                <Image src="/upneda-white.png" alt="UPNEDA Approved" width={100} height={100} priority className="h-14 md:h-14 lg:h-20 w-auto object-contain flex-shrink-0 -mb-2 md:mb-0" />
               </div>
               <div className="hidden md:block w-[1px] h-8 lg:h-10 bg-white/20" />
               <div className="flex flex-col justify-center">
@@ -162,38 +164,40 @@ const HeroSection = () => {
           </div>
 
           {/* Right Side: Trust Card */}
-          <div className="flex flex-col bg-black/50 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)] rounded-2xl p-5 lg:p-6 w-full sm:max-w-[320px] transition-all duration-300 group">
-            
-            {/* Top Row: Stat */}
-            <div className="flex items-center gap-6 lg:gap-8">
+          <BookVisitModal>
+            <div className="flex flex-col bg-black/50 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)] rounded-2xl p-5 lg:p-6 w-full sm:max-w-[320px] transition-all duration-300 group cursor-pointer hover:bg-black/60 hover:scale-[1.02] text-left">
               
-              {/* Overlapping Icons */}
-              <div className="flex items-center -space-x-3">
-                <img src="/avatar1.jpg" alt="Customer" className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-white/10 object-cover z-30 shadow-lg" />
-                <img src="/avatar2.jpg" alt="Customer" className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-white/10 object-cover z-20 shadow-lg" />
-                <img src="/avatar3.jpg" alt="Customer" className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-white/10 object-cover z-10 shadow-lg" />
+              {/* Top Row: Stat */}
+              <div className="flex items-center gap-6 lg:gap-8">
+                
+                {/* Overlapping Icons */}
+                <div className="flex items-center -space-x-3">
+                  <Image src="/avatar1.jpg" alt="Customer" width={44} height={44} priority className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-white/10 object-cover z-30 shadow-lg" />
+                  <Image src="/avatar2.jpg" alt="Customer" width={44} height={44} priority className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-white/10 object-cover z-20 shadow-lg" />
+                  <Image src="/avatar3.jpg" alt="Customer" width={44} height={44} priority className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-white/10 object-cover z-10 shadow-lg" />
+                </div>
+
+                <div>
+                  <div className="text-2xl lg:text-3xl font-bold font-montserrat text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 leading-none mb-1">
+                    500+
+                  </div>
+                  <div className="text-accent text-[10px] tracking-[0.2em] uppercase font-bold">
+                    Homes & factories powered
+                  </div>
+                </div>
+
               </div>
 
-              <div>
-                <div className="text-2xl lg:text-3xl font-bold font-montserrat text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 leading-none mb-1">
-                  500+
-                </div>
-                <div className="text-accent text-[10px] tracking-[0.2em] uppercase font-bold">
-                  Homes & factories powered
-                </div>
+              {/* Divider - Highly Visible */}
+              <div className="w-full h-[1px] bg-white/20 my-4 lg:my-5" />
+
+              {/* Bottom Text */}
+              <div className="text-white/90 text-xs lg:text-sm font-medium leading-relaxed">
+                Join thousands reducing their electricity bills by up to <span className="text-white font-bold">95%</span> with Kailash Solar.
               </div>
 
             </div>
-
-            {/* Divider - Highly Visible */}
-            <div className="w-full h-[1px] bg-white/20 my-4 lg:my-5" />
-
-            {/* Bottom Text */}
-            <div className="text-white/90 text-xs lg:text-sm font-medium leading-relaxed">
-              Join thousands reducing their electricity bills by up to <span className="text-white font-bold">95%</span> with Kailash Solar.
-            </div>
-
-          </div>
+          </BookVisitModal>
 
         </div>
       </div>

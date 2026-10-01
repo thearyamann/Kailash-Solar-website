@@ -410,14 +410,22 @@ Calculate your savings: ${window.location.href}`;
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="phone">Phone Number</Label>
-                            <Input
-                              id="phone"
-                              type="tel"
-                              required
-                              value={proposalForm.phone}
-                              onChange={(e) => setProposalForm({ ...proposalForm, phone: e.target.value })}
-                              className="h-12 rounded-xl bg-slate-50"
-                            />
+                            <div className="relative flex items-center">
+                              <div className="absolute left-0 h-12 flex items-center justify-center px-4 text-slate-600 font-bold bg-slate-100 border border-r-0 border-slate-200 rounded-l-xl z-10 pointer-events-none">
+                                +91
+                              </div>
+                              <Input
+                                id="phone"
+                                type="tel"
+                                required
+                                value={proposalForm.phone}
+                                onChange={(e) => {
+                                  const val = e.target.value.replace(/\D/g, '');
+                                  setProposalForm({ ...proposalForm, phone: val.length <= 10 ? val : val.slice(0, 10) });
+                                }}
+                                className="h-12 pl-[68px] pr-4 rounded-xl bg-slate-50 relative w-full"
+                              />
+                            </div>
                           </div>
                           <Button type="submit" className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-lg mt-2">
                             Request Proposal

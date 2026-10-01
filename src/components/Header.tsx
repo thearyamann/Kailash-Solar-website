@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import logo from "@/assets/kailash-logo.png";
 import { BookVisitModal } from "@/components/BookVisitModal";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const Countdown = () => {
@@ -187,7 +188,7 @@ const Header = () => {
           <nav className={`flex items-center justify-between transition-all duration-500 ease-out ${isScrolled ? "h-14 md:h-16 lg:h-16" : "h-16 md:h-20"}`}>
             {/* Logo */}
             <Link href="/solar-company-meerut" className={`flex-shrink-0 transition-transform duration-500 ease-out origin-left ${isScrolled ? "scale-75 md:scale-90" : "scale-100"}`}>
-              <img src={logo.src} alt="Kailash Solar - Top Solar Panel Installers in Meerut UP" width={200} height={56} className="h-14 w-auto object-contain border-0" fetchPriority="high" decoding="async" />
+              <Image src={logo} alt="Kailash Solar - Top Solar Panel Installers in Meerut UP" width={200} height={56} priority className="h-14 w-auto object-contain border-0" />
             </Link>
 
             {/* Desktop Navigation */}

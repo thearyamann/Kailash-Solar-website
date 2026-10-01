@@ -168,7 +168,10 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       console.error(error);
     }
 
-    window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+    // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
+    setTimeout(() => {
+      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+    }, 800);
     
     setIsSuccess(true);
     toast({
@@ -212,13 +215,15 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                 <p className="text-slate-500 mb-6 max-w-[280px] leading-relaxed text-sm">
                   Redirecting you to WhatsApp to confirm your details...
                 </p>
-                <Button 
-                  onClick={() => window.location.href = `https://wa.me/918999999654?text=Hi`}
-                  className="h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 flex items-center gap-2"
+                <a 
+                  href={`https://wa.me/918999999654?text=Hi`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 items-center gap-2"
                 >
                   <MessageCircle className="w-5 h-5" />
                   Open WhatsApp Now
-                </Button>
+                </a>
               </div>
             ) : (
               <>
@@ -262,14 +267,20 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                       />
                     </div>
                     
-                    <div>
+                    <div className="relative flex items-center">
+                      <div className="absolute left-0 h-[42px] flex items-center justify-center px-3 text-muted-foreground font-bold bg-muted/50 border border-r-0 border-border rounded-l-[10px] z-10 pointer-events-none">
+                        +91
+                      </div>
                       <Input 
                         type="tel" 
                         placeholder="WhatsApp Number*" 
                         required 
                         value={formData.phone} 
-                        onChange={e => setFormData({ ...formData, phone: e.target.value })} 
-                        className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70" 
+                        onChange={e => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) })
+                        }} 
+                        className="h-[42px] pl-[60px] pr-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70 w-full relative" 
                       />
                     </div>
 

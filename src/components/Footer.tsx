@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
           <div className="lg:col-span-1">
-            <img src={logo.src} alt="Kailash Solar - Top Solar Panel Installers in Meerut UP" className="h-16 w-auto mb-6 bg-primary-foreground rounded-lg p-2" />
+            <img src={logo.src} alt="Kailash Solar - Top Solar Panel Installers in Meerut UP" loading="lazy" className="h-16 w-auto mb-6 bg-primary-foreground rounded-lg p-2" />
             <p className="text-primary-foreground/90 mb-4 leading-relaxed">
               Solar EPC for homes, businesses, and industries. Serving Meerut and Western UP — PM Surya Ghar & UPNEDA empanelled vendor.
             </p>

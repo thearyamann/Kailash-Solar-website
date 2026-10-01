@@ -70,7 +70,10 @@ const ContactSection = () => {
         });
       }
 
-      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+      // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
+      setTimeout(() => {
+        window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+      }, 800);
       
       toast({
         title: "Inquiry Submitted!",
@@ -101,7 +104,7 @@ const ContactSection = () => {
 
   const openWhatsApp = () => {
     const message = encodeURIComponent("Hi, I'm interested in solar installation for my business. Please share more details.");
-    window.location.href = `https://wa.me/918999999654?text=${message}`;
+    window.open(`https://wa.me/918999999654?text=${message}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -218,16 +221,21 @@ const ContactSection = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-foreground font-bold text-sm">Phone Number</Label>
-                  <div className="relative group">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[#133B76] transition-colors" />
+                  <div className="relative flex items-center">
+                    <div className="absolute left-0 h-14 flex items-center justify-center px-4 text-muted-foreground font-bold bg-muted border border-r-0 border-border rounded-l-xl z-10 pointer-events-none">
+                      +91
+                    </div>
                     <Input 
                       id="phone" 
                       type="tel" 
-                      placeholder="+91 XXXXX XXXXX" 
+                      placeholder="WhatsApp Number*" 
                       required 
                       value={formData.phone} 
-                      onChange={e => setFormData({ ...formData, phone: e.target.value })} 
-                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76]" 
+                      onChange={e => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) })
+                      }} 
+                      className="h-14 pl-[72px] pr-4 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76] w-full relative" 
                     />
                   </div>
                 </div>

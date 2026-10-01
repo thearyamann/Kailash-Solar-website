@@ -78,9 +78,10 @@ export default function BookVisitPage() {
       console.error(e);
     }
 
-    // Open WhatsApp instantly for the high intent lead
-    window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
-    
+    // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
+    setTimeout(() => {
+      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
+    }, 800);
     setIsSuccess(true);
     toast({
       title: "Consultation Booked!",
@@ -108,6 +109,7 @@ export default function BookVisitPage() {
           <img 
             src="/Happyfamily.png" 
             alt="Happy family with solar" 
+            fetchPriority="high"
             className="w-full h-full object-cover object-[55%_10%]"
           />
           {/* Subtle gradient overlay for header readability */}
@@ -140,13 +142,15 @@ export default function BookVisitPage() {
               <p className="text-slate-500 mb-8 max-w-[280px] leading-relaxed">
                 Redirecting you to WhatsApp to confirm your details...
               </p>
-              <Button 
-                onClick={() => window.location.href = `https://wa.me/918999999654?text=Hi`}
-                className="h-[52px] px-8 rounded-[16px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 flex items-center gap-2"
+              <a 
+                href={`https://wa.me/918999999654?text=Hi`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-[52px] px-8 rounded-[16px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 items-center gap-2"
               >
                 <MessageCircle className="w-5 h-5" />
                 Open WhatsApp Now
-              </Button>
+              </a>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4 flex-grow flex flex-col">
@@ -174,14 +178,21 @@ export default function BookVisitPage() {
                 </div>
                 
                 <div>
+                <div className="relative flex items-center">
+                  <div className="absolute left-0 h-[56px] flex items-center justify-center px-4 text-slate-600 font-bold bg-slate-100 border border-r-0 border-slate-200 rounded-l-[16px] z-10 pointer-events-none">
+                    +91
+                  </div>
                   <Input 
                     id="phone" 
                     type="tel" 
                     placeholder="WhatsApp Number*" 
                     required 
                     value={formData.phone} 
-                    onChange={e => setFormData({ ...formData, phone: e.target.value })} 
-                    className="h-[56px] px-5 bg-slate-50 border border-slate-200  hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
+                    onChange={e => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) })
+                    }} 
+                    className="h-[56px] pl-[68px] pr-5 bg-slate-50 border border-slate-200 hover:border-primary/30 rounded-[16px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all w-full relative" 
                   />
                 </div>
 
