@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Phone, Mail, MapPin, MessageCircle, Send, Building2, User, IndianRupee } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle, Send, Building2, User, IndianRupee, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { 
+  validatePincode, 
+  isServiceablePincode, 
+  getPincodeRegion, 
+  OUTSIDE_REGION_ERROR 
+} from "@/lib/pincode";
+import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
 
 const ContactSection = () => {
   const { toast } = useToast();
@@ -15,11 +22,13 @@ const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    address: "",
+    pincode: "",
     monthlyBill: "",
     customerType: "",
     message: ""
   });
+
+  const pincodeVerifier = usePincodeVerifier(formData.pincode);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,16 +43,25 @@ const ContactSection = () => {
       return;
     }
 
+    const trimmedPin = formData.pincode.trim();
+    const pinCheck = validatePincode(trimmedPin);
+    if (!pinCheck.isValid) {
+      toast({ title: "Region Not Serviceable", description: pinCheck.error!, variant: "destructive" });
+      return;
+    }
+
     if (!formData.monthlyBill) {
       toast({ title: "Required Field", description: "Please enter your average monthly bill.", variant: "destructive" });
       return;
     }
 
     setIsSubmitting(true);
+    const fullAddress = `${trimmedPin} (${pinCheck.region})`;
+
     try {
       const { error: fnError } = await supabase.functions.invoke(
         "send-inquiry-email",
-        { body: formData }
+        { body: { ...formData, address: fullAddress } }
       );
       
       if (fnError) {
@@ -53,20 +71,31 @@ const ContactSection = () => {
         throw new Error("Failed to submit inquiry");
       }
 
-      const whatsappMessage = encodeURIComponent(`Hi, I'm interested in solar installation.\n\n` + `Name: ${formData.name}\n` + `Phone: ${formData.phone}\n` + `Address: ${formData.address}\n` + `Monthly Bill: ₹${formData.monthlyBill || 'Not specified'}\n` + `Customer Type: ${formData.customerType || 'Not specified'}\n` + `Message: ${formData.message || 'No additional message'}`);
+      const whatsappMessage = encodeURIComponent(
+        `Hi, I'm interested in solar installation.\n\n` +
+        `Name: ${formData.name}\n` +
+        `Phone: ${formData.phone}\n` +
+        `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
+        `Monthly Bill: ₹${formData.monthlyBill || 'Not specified'}\n` +
+        `Customer Type: ${formData.customerType || 'Not specified'}\n` +
+        `Message: ${formData.message || 'No additional message'}`
+      );
       
       if (typeof window !== 'undefined') {
         import('posthog-js').then((ph) => {
           ph.default.capture('form_submitted', {
             form_name: 'contact_us',
-            lead_type: 'contact_us'
+            lead_type: 'contact_us',
+            pincode: trimmedPin,
+            region: pinCheck.region
           });
         });
         (window as any).dataLayer = (window as any).dataLayer || [];
         (window as any).dataLayer.push({
           'event': 'generate_lead',
           'form_name': 'contact_us',
-          'lead_type': 'contact_us'
+          'lead_type': 'contact_us',
+          'pincode': trimmedPin
         });
       }
 
@@ -83,7 +112,7 @@ const ContactSection = () => {
       setFormData({
         name: "",
         phone: "",
-        address: "",
+        pincode: "",
         monthlyBill: "",
         customerType: "",
         message: ""
@@ -242,18 +271,46 @@ const ContactSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-foreground font-bold text-sm">Address / Location</Label>
+                <Label htmlFor="pincode" className="text-foreground font-bold text-sm">PIN Code (6 digits)*</Label>
                 <div className="relative group">
-                  <MapPin className="absolute left-4 top-4 w-5 h-5 text-muted-foreground group-focus-within:text-[#133B76] transition-colors" />
-                  <Textarea 
-                    id="address" 
-                    placeholder="Your complete address" 
+                  <Input 
+                    id="pincode" 
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="e.g. 250001" 
                     required 
-                    value={formData.address} 
-                    onChange={e => setFormData({ ...formData, address: e.target.value })} 
-                    className="pl-12 py-4 min-h-[120px] bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76] resize-y" 
+                    value={formData.pincode} 
+                    onChange={e => {
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                      setFormData({ ...formData, pincode: val });
+                    }} 
+                    className={`h-14 pl-4 pr-12 bg-muted/50 border rounded-xl text-base focus-visible:ring-[#133B76] transition-all ${
+                      pincodeVerifier.isValid
+                        ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                        : pincodeVerifier.isInvalid
+                        ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
+                        : "border-border"
+                    }`}
                   />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
+                    {pincodeVerifier.isChecking && (
+                      <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                    )}
+                    {pincodeVerifier.isValid && (
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 animate-in fade-in zoom-in-75 duration-200" />
+                    )}
+                    {pincodeVerifier.isInvalid && (
+                      <AlertCircle className="w-5 h-5 text-destructive animate-in fade-in zoom-in-75 duration-200" />
+                    )}
+                  </div>
                 </div>
+                {pincodeVerifier.isInvalid && (
+                  <div className="mt-1.5 px-3.5 py-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-start gap-2 shadow-sm animate-in fade-in slide-in-from-top-1">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>{OUTSIDE_REGION_ERROR}</span>
+                  </div>
+                )}
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
@@ -303,7 +360,7 @@ const ContactSection = () => {
 
               <Button 
                 type="submit" 
-                disabled={isSubmitting}
+                disabled={isSubmitting || pincodeVerifier.isBlocked}
                 className="w-full h-14 rounded-xl text-lg font-bold bg-[#133B76] hover:bg-[#133B76]/90 text-white transition-all duration-300 mt-4 shadow-none"
               >
                 <Send className="w-5 h-5 mr-2" />

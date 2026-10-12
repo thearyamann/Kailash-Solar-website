@@ -4,8 +4,16 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { 
+  validatePincode, 
+  isServiceablePincode, 
+  getPincodeRegion, 
+  OUTSIDE_REGION_ERROR 
+} from "@/lib/pincode";
+import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
 
 interface QuoteData {
   systemSize: number;
@@ -30,6 +38,8 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
     phone: "",
     pincode: "",
   });
+
+  const pincodeVerifier = usePincodeVerifier(formData.pincode);
 
   // Load from local storage
   useEffect(() => {
@@ -70,6 +80,12 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
       setSubmitError("Phone number must be exactly 10 digits.");
       return;
     }
+
+    const pinCheck = validatePincode(formData.pincode);
+    if (!pinCheck.isValid) {
+      setSubmitError(pinCheck.error!);
+      return;
+    }
     
     setIsSubmitting(true);
     try {
@@ -86,7 +102,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
         body: JSON.stringify({
           name: formData.name,
           phone: formData.phone,
-          address: formData.pincode,
+          address: `${formData.pincode.trim()} (${pinCheck.region})`,
           monthlyBill: `${quoteData.systemSize}kW System`,
           customerType: "residential"
         })
@@ -108,7 +124,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
         `Hi, I want to book my installation.\n\n` +
         `Name: ${formData.name}\n` +
         `WhatsApp: ${formData.phone}\n` +
-        `Pincode: ${formData.pincode}\n` +
+        `PIN Code: ${formData.pincode.trim()} [${pinCheck.region}]\n` +
         `---\n` +
         `*Quote Details*\n` +
         `System: ${quoteData.systemSize} kW\n` +
@@ -119,14 +135,17 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
         import('posthog-js').then((ph) => {
           ph.default.capture('form_submitted', {
             form_name: 'quote_booking',
-            lead_type: 'quote'
+            lead_type: 'quote',
+            pincode: formData.pincode.trim(),
+            region: pinCheck.region
           });
         });
         (window as any).dataLayer = (window as any).dataLayer || [];
         (window as any).dataLayer.push({
           'event': 'generate_lead',
           'form_name': 'quote_booking',
-          'lead_type': 'quote'
+          'lead_type': 'quote',
+          'pincode': formData.pincode.trim()
         });
         if ((window as any).fbq) {
           (window as any).fbq('track', 'Lead');
@@ -232,28 +251,53 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
               </div>
 
               <div>
-                <Input 
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="PIN Code (6 digits)*" 
-                  required 
-                  maxLength={6}
-                  pattern="[0-9]{6}"
-                  title="Please enter a valid 6-digit PIN code"
-                  value={formData.pincode} 
-                  onChange={e => {
-                    setSubmitError("");
-                    const val = e.target.value.replace(/\D/g, '');
-                    if (val.length <= 6) setFormData({ ...formData, pincode: val });
-                  }} 
-                  className="h-[48px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
-                />
+                <div className="relative">
+                  <Input 
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="PIN Code (6 digits)*" 
+                    required 
+                    maxLength={6}
+                    pattern="[0-9]{6}"
+                    title="Please enter a valid 6-digit PIN code"
+                    value={formData.pincode} 
+                    onChange={e => {
+                      setSubmitError("");
+                      const val = e.target.value.replace(/\D/g, '');
+                      if (val.length <= 6) setFormData({ ...formData, pincode: val });
+                    }} 
+                    className={`h-[48px] pl-4 pr-10 bg-background border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary transition-all ${
+                      pincodeVerifier.isValid
+                        ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                        : pincodeVerifier.isInvalid
+                        ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
+                        : "border-border"
+                    }`}
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
+                    {pincodeVerifier.isChecking && (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />
+                    )}
+                    {pincodeVerifier.isValid && (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 animate-in fade-in zoom-in-75 duration-200" />
+                    )}
+                    {pincodeVerifier.isInvalid && (
+                      <AlertCircle className="w-3.5 h-3.5 text-destructive animate-in fade-in zoom-in-75 duration-200" />
+                    )}
+                  </div>
+                </div>
+                {pincodeVerifier.isInvalid && (
+                  <div className="mt-1.5 px-3 py-1.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-start gap-1.5 shadow-sm animate-in fade-in slide-in-from-top-1">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                    <span>{OUTSIDE_REGION_ERROR}</span>
+                  </div>
+                )}
               </div>
 
               <div className="pt-2">
                 <Button 
                   type="submit" 
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || pincodeVerifier.isBlocked}
                   className="w-full h-[52px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
                 >
                   {isSubmitting ? "Submitting..." : "Book Solar Installation"}

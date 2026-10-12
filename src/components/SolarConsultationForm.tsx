@@ -5,22 +5,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Info, Check, Calculator, Zap, IndianRupee, ArrowRight, Phone, CheckCircle2, MessageCircle } from "lucide-react";
+import { Info, Check, Calculator, Zap, IndianRupee, ArrowRight, Phone, CheckCircle2, MessageCircle, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  validatePincode, 
+  isServiceablePincode, 
+  getPincodeRegion, 
+  OUTSIDE_REGION_ERROR 
+} from "@/lib/pincode";
+import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
 
 export function SolarConsultationForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [submittedWhatsappMsg, setSubmittedWhatsappMsg] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    address: "",
+    pincode: "",
     monthlyBill: "",
     customerType: "residential",
   });
+
+  const pincodeVerifier = usePincodeVerifier(formData.pincode);
 
   const billOptions = [
     "Less than ₹1500",
@@ -39,7 +49,7 @@ export function SolarConsultationForm() {
           ...prev,
           name: parsed.name || prev.name,
           phone: parsed.phone || prev.phone,
-          address: parsed.address || parsed.pincode || prev.address,
+          pincode: parsed.pincode || "",
         }));
       } catch (e) {}
     }
@@ -68,14 +78,31 @@ export function SolarConsultationForm() {
       return;
     }
 
+    const trimmedPin = formData.pincode.trim();
+    const pinCheck = validatePincode(trimmedPin);
+    if (!pinCheck.isValid) {
+      setSubmitError(pinCheck.error!);
+      return;
+    }
+
     if (!formData.monthlyBill) {
       setSubmitError("Please select your monthly electricity bill.");
       return;
     }
 
     setIsSubmitting(true);
+
+    const fullAddress = `${trimmedPin} (${pinCheck.region})`;
+
     // Formulate WhatsApp message first
-    const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `PIN Code: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
+    const whatsappMessage = encodeURIComponent(
+      `Hi, I want to book a FREE consultation.\n\n` +
+      `Name: ${formData.name}\n` +
+      `WhatsApp: ${formData.phone}\n` +
+      `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
+      `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`
+    );
+    setSubmittedWhatsappMsg(whatsappMessage);
     
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -87,7 +114,10 @@ export function SolarConsultationForm() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          address: fullAddress,
+        })
       });
 
       if (!response.ok) {
@@ -98,14 +128,17 @@ export function SolarConsultationForm() {
         import('posthog-js').then((ph) => {
           ph.default.capture('form_submitted', {
             form_name: 'inline_consultation',
-            lead_type: 'book_visit'
+            lead_type: 'book_visit',
+            pincode: trimmedPin,
+            region: pinCheck.region
           });
         });
         (window as any).dataLayer = (window as any).dataLayer || [];
         (window as any).dataLayer.push({
           'event': 'generate_lead',
           'form_name': 'inline_consultation',
-          'lead_type': 'book_visit'
+          'lead_type': 'book_visit',
+          'pincode': trimmedPin
         });
         if ((window as any).fbq) {
           (window as any).fbq('track', 'Lead');
@@ -126,7 +159,7 @@ export function SolarConsultationForm() {
       title: "Consultation Booked!",
       description: "Redirecting to WhatsApp..."
     });
-    setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
+    setFormData({ name: "", phone: "", pincode: "", monthlyBill: "", customerType: "residential" });
     setIsSubmitting(false);
   };
 
@@ -159,7 +192,7 @@ export function SolarConsultationForm() {
             Redirecting you to WhatsApp to confirm your details...
           </p>
           <a 
-            href={`https://wa.me/918999999654?text=Hi`}
+            href={`https://wa.me/918999999654?text=${submittedWhatsappMsg || 'Hi'}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 items-center gap-2"
@@ -171,8 +204,9 @@ export function SolarConsultationForm() {
       ) : (
         <>
           {submitError && (
-            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-[12px] text-sm font-medium">
-              {submitError}
+            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-[12px] text-sm font-medium flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{submitError}</span>
             </div>
           )}
 
@@ -197,13 +231,45 @@ export function SolarConsultationForm() {
             </div>
 
             <div>
-              <Input 
-                placeholder="PIN Code & Address*" 
-                className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70"
-                value={formData.address}
-                onChange={(e) => setFormData(prev => ({...prev, address: e.target.value}))}
-                required
-              />
+              <div className="relative">
+                <Input 
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="PIN Code (6 digits)*" 
+                  className={`h-[52px] pl-4 pr-11 bg-background border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70 transition-all ${
+                    pincodeVerifier.isValid
+                      ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                      : pincodeVerifier.isInvalid
+                      ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
+                      : "border-border"
+                  }`}
+                  value={formData.pincode}
+                  onChange={(e) => {
+                    setSubmitError("");
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                    setFormData(prev => ({...prev, pincode: val}));
+                  }}
+                  required
+                />
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
+                  {pincodeVerifier.isChecking && (
+                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                  )}
+                  {pincodeVerifier.isValid && (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 animate-in fade-in zoom-in-75 duration-200" />
+                  )}
+                  {pincodeVerifier.isInvalid && (
+                    <AlertCircle className="w-4 h-4 text-destructive animate-in fade-in zoom-in-75 duration-200" />
+                  )}
+                </div>
+              </div>
+              {pincodeVerifier.isInvalid && (
+                <div className="mt-1.5 px-3 py-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-start gap-2 shadow-sm animate-in fade-in slide-in-from-top-1">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span>{OUTSIDE_REGION_ERROR}</span>
+                </div>
+              )}
             </div>
 
             <div className="relative flex items-center">
@@ -240,7 +306,7 @@ export function SolarConsultationForm() {
             <div className="pt-2 flex gap-3">
               <Button 
                 type="submit" 
-                disabled={isSubmitting}
+                disabled={isSubmitting || pincodeVerifier.isBlocked}
                 className="flex-grow h-[56px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all   active:scale-[0.98]"
               >
                 {isSubmitting ? "Redirecting..." : "Book FREE Consultation"}

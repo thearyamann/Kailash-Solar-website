@@ -2,12 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Phone, CheckCircle2, MessageCircle } from "lucide-react";
+import { Phone, CheckCircle2, MessageCircle, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { 
+  validatePincode, 
+  isServiceablePincode, 
+  getPincodeRegion, 
+  OUTSIDE_REGION_ERROR 
+} from "@/lib/pincode";
+import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
 
 export function BookVisitModal({ children, autoOpenDelay }: { children?: React.ReactNode, autoOpenDelay?: number }) {
   const { toast } = useToast();
@@ -15,13 +22,16 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [submittedWhatsappMsg, setSubmittedWhatsappMsg] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    address: "",
+    pincode: "",
     monthlyBill: "",
     customerType: "residential",
   });
+
+  const pincodeVerifier = usePincodeVerifier(formData.pincode);
 
   // Load from local storage
   useEffect(() => {
@@ -33,7 +43,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
           ...prev,
           name: parsed.name || prev.name,
           phone: parsed.phone || prev.phone,
-          address: parsed.address || parsed.pincode || prev.address,
+          pincode: parsed.pincode || "",
         }));
       } catch (e) {}
     }
@@ -118,6 +128,13 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       return;
     }
 
+    const trimmedPin = formData.pincode.trim();
+    const pinCheck = validatePincode(trimmedPin);
+    if (!pinCheck.isValid) {
+      setSubmitError(pinCheck.error!);
+      return;
+    }
+
     if (!formData.monthlyBill) {
       setSubmitError("Please select your monthly electricity bill.");
       return;
@@ -125,8 +142,17 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
 
     setIsSubmitting(true);
 
+    const fullAddress = `${trimmedPin} (${pinCheck.region})`;
+
     // Formulate WhatsApp message first
-    const whatsappMessage = encodeURIComponent(`Hi, I want to book a FREE consultation.\n\n` + `Name: ${formData.name}\n` + `WhatsApp: ${formData.phone}\n` + `Address/PIN: ${formData.address}\n` + `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`);
+    const whatsappMessage = encodeURIComponent(
+      `Hi, I want to book a FREE consultation.\n\n` +
+      `Name: ${formData.name}\n` +
+      `WhatsApp: ${formData.phone}\n` +
+      `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
+      `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`
+    );
+    setSubmittedWhatsappMsg(whatsappMessage);
     
     try {
       // Send to supabase edge function using fetch in background without blocking
@@ -139,7 +165,10 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          address: fullAddress,
+        })
       });
 
       if (!response.ok) {
@@ -150,14 +179,17 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
         import('posthog-js').then((ph) => {
           ph.default.capture('form_submitted', {
             form_name: 'book_visit',
-            lead_type: 'book_visit'
+            lead_type: 'book_visit',
+            pincode: trimmedPin,
+            region: pinCheck.region
           });
         });
         (window as any).dataLayer = (window as any).dataLayer || [];
         (window as any).dataLayer.push({
           'event': 'generate_lead',
           'form_name': 'book_visit',
-          'lead_type': 'book_visit'
+          'lead_type': 'book_visit',
+          'pincode': trimmedPin
         });
         if ((window as any).fbq) {
           (window as any).fbq('track', 'Lead');
@@ -179,7 +211,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       description: "Redirecting to WhatsApp..."
     });
     localStorage.setItem("kailash_modal_submitted", "true");
-    setFormData({ name: "", phone: "", address: "", monthlyBill: "", customerType: "residential" });
+    setFormData({ name: "", phone: "", pincode: "", monthlyBill: "", customerType: "residential" });
     setIsSubmitting(false);
   };
 
@@ -216,7 +248,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                   Redirecting you to WhatsApp to confirm your details...
                 </p>
                 <a 
-                  href={`https://wa.me/918999999654?text=Hi`}
+                  href={`https://wa.me/918999999654?text=${submittedWhatsappMsg || 'Hi'}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 items-center gap-2"
@@ -228,11 +260,11 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
             ) : (
               <>
                 {/* Typography Section */}
-                <div className="mb-3.5">
-                  <h2 className="text-[22px] sm:text-[24px] leading-[1.15] font-bold font-montserrat text-slate-900 mb-2">
-                    Get Solar Panels at <span className="text-primary">Zero Initial Cost</span>
+                <div className="mb-6">
+                  <h2 className="text-[22px] sm:text-[24px] leading-[1.25] font-bold font-montserrat text-slate-900 mb-4">
+                    Get Solar Panels at <span className="text-accent">Zero Down Payment</span>
                   </h2>
-                  <p className="text-[13px] sm:text-[14px] font-bold text-foreground">
+                  <p className="text-[13px] sm:text-[14px] font-bold text-foreground leading-normal">
                     Book a free site visit and claim your <span className="text-accent">₹1,08,000 subsidy before it ends!</span>
                   </p>
                 </div>
@@ -258,13 +290,45 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                     </div>
                     
                     <div>
-                      <Input 
-                        placeholder="PIN Code & Address*" 
-                        required 
-                        value={formData.address} 
-                        onChange={e => setFormData({ ...formData, address: e.target.value })} 
-                        className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70" 
-                      />
+                      <div className="relative">
+                        <Input 
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={6}
+                          placeholder="PIN Code (6 digits)*" 
+                          required 
+                          value={formData.pincode} 
+                          onChange={e => {
+                            setSubmitError("");
+                            const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                            setFormData({ ...formData, pincode: val });
+                          }} 
+                          className={`h-[42px] pl-4 pr-10 bg-background border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70 transition-all ${
+                            pincodeVerifier.isValid
+                              ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                              : pincodeVerifier.isInvalid
+                              ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
+                              : "border-border"
+                          }`}
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
+                          {pincodeVerifier.isChecking && (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />
+                          )}
+                          {pincodeVerifier.isValid && (
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 animate-in fade-in zoom-in-75 duration-200" />
+                          )}
+                          {pincodeVerifier.isInvalid && (
+                            <AlertCircle className="w-3.5 h-3.5 text-destructive animate-in fade-in zoom-in-75 duration-200" />
+                          )}
+                        </div>
+                      </div>
+                      {pincodeVerifier.isInvalid && (
+                        <div className="mt-1 px-3 py-1.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-[11px] font-medium flex items-start gap-1.5 shadow-sm animate-in fade-in slide-in-from-top-1">
+                          <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                          <span>{OUTSIDE_REGION_ERROR}</span>
+                        </div>
+                      )}
                     </div>
                     
                     <div className="relative flex items-center">
@@ -302,7 +366,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                   <div className="pt-2 flex gap-2 sm:gap-3">
                     <Button 
                       type="submit" 
-                      disabled={isSubmitting} 
+                      disabled={isSubmitting || pincodeVerifier.isBlocked} 
                       className="flex-grow h-[48px] rounded-[10px] text-[16px] font-bold transition-all active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90"
                     >
                       {isSubmitting ? "Booking..." : "Book FREE Consultation"}

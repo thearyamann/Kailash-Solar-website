@@ -29,6 +29,28 @@ interface InquiryEmailRequest {
   message: string;
 }
 
+function isServiceAreaPincode(pincode: string): boolean {
+  const p = pincode.trim().replace(/\D/g, "");
+  if (p.length !== 6) return false;
+  // Meerut Postal Division & District: all 250xxx codes
+  if (p.startsWith("250")) return true;
+  // Modinagar, Muradnagar, Bhojpur, Kharkhuda, and immediate border locations
+  const allowedBorderPincodes = new Set([
+    "201201", // Modinagar (Govindpuri)
+    "201204", // Modinagar (Main)
+    "201206", // Muradnagar, Duhai
+    "245304", // Bhojpur, Faridnagar
+    "245206", // Kharkhuda (Meerut district)
+    "245301", // Pilkhuwa (Modinagar border)
+    "245101", // Hapur (Main / Meerut border)
+    "245102", // Hapur (Mandi / Meerut border)
+    "245201", // Babugarh
+    "201017", // Raj Nagar Extension / Duhai border
+    "201003", // Morta / Meerut Road border
+  ]);
+  return allowedBorderPincodes.has(p);
+}
+
 function validateInput(data: unknown): {
   valid: boolean;
   error?: string;
@@ -56,6 +78,17 @@ function validateInput(data: unknown): {
     return { valid: false, error: "Address is required" };
   if (address.length > 500)
     return { valid: false, error: "Address must be less than 500 characters" };
+
+  const pinMatch = (address as string).match(/\b\d{6}\b/);
+  if (pinMatch) {
+    const pin = pinMatch[0];
+    if (!isServiceAreaPincode(pin)) {
+      return { 
+        valid: false, 
+        error: "We currently serve only Meerut, Modipuram, and Modinagar, but we will expand to your area soon." 
+      };
+    }
+  }
 
   if (monthlyBill !== undefined && monthlyBill !== null && monthlyBill !== "") {
     if (typeof monthlyBill !== "string" || monthlyBill.length > 20)
