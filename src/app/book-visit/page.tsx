@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Phone, CheckCircle2, MessageCircle, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,9 +15,14 @@ import {
   OUTSIDE_REGION_ERROR 
 } from "@/lib/pincode";
 import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
+import { 
+  recordSubmission, 
+  checkDuplicateSubmission 
+} from "@/lib/submission-tracker";
 import Link from "next/link";
 
 export default function BookVisitPage() {
+  const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -94,6 +100,27 @@ export default function BookVisitPage() {
       return;
     }
 
+    // Check duplicate submission
+    const duplicateCheck = checkDuplicateSubmission({
+      phone: formData.phone,
+      name: trimmedName,
+      monthlyBill: formData.monthlyBill,
+    });
+
+    if (duplicateCheck.isDuplicate) {
+      toast({
+        title: "Request Already Received",
+        description: duplicateCheck.message,
+      });
+      const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
+      if (typeof window !== "undefined") {
+        window.location.assign(dupUrl);
+      } else {
+        router.push(dupUrl);
+      }
+      return;
+    }
+
     setIsSubmitting(true);
     
     // Formulate WhatsApp message with user details including PIN Code & Region
@@ -163,21 +190,34 @@ export default function BookVisitPage() {
       console.error("Submission inquiry error:", e);
     }
 
-    // Mark modal as submitted in localStorage so popups don't bother the user again
-    localStorage.setItem("kailash_modal_submitted", "true");
+    // Record submission to suppress all popups across the site
+    recordSubmission({
+      name: trimmedName,
+      phone: formData.phone,
+      pincode: trimmedPin,
+      monthlyBill: formattedBill,
+    });
 
-    setIsSuccess(true);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("kailash_submitted_name", trimmedName);
+      sessionStorage.setItem("kailash_submitted_phone", formData.phone);
+      sessionStorage.setItem("kailash_submitted_pincode", trimmedPin);
+      sessionStorage.setItem("kailash_submitted_bill", formattedBill || "");
+    }
+
+    const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formattedBill)}&msg=${whatsappMessage}`;
+
     toast({
       title: "Consultation Booked!",
-      description: "Redirecting to WhatsApp..."
+      description: "Redirecting to your confirmation..."
     });
-    
-    setIsSubmitting(false);
 
-    // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
-    setTimeout(() => {
-      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
-    }, 800);
+    // Immediately run dedicated animated success page
+    if (typeof window !== "undefined") {
+      window.location.assign(redirectUrl);
+    } else {
+      router.push(redirectUrl);
+    }
   };
 
   return (

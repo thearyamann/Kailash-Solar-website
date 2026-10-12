@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,10 @@ import {
   OUTSIDE_REGION_ERROR 
 } from "@/lib/pincode";
 import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
+import { 
+  recordSubmission, 
+  checkDuplicateSubmission 
+} from "@/lib/submission-tracker";
 
 interface QuoteData {
   systemSize: number;
@@ -28,6 +33,7 @@ interface QuoteActionModalProps {
 }
 
 export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -71,7 +77,10 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
     e.preventDefault();
     setSubmitError("");
     
-    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+    const trimmedName = formData.name.trim();
+    const trimmedPin = formData.pincode.trim();
+    
+    if (!trimmedName || !/^[A-Za-z\s]+$/.test(trimmedName)) {
       setSubmitError("Name should contain only letters and spaces.");
       return;
     }
@@ -81,9 +90,31 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
       return;
     }
 
-    const pinCheck = validatePincode(formData.pincode);
+    const pinCheck = validatePincode(trimmedPin);
     if (!pinCheck.isValid) {
       setSubmitError(pinCheck.error!);
+      return;
+    }
+
+    // Check duplicate submission
+    const duplicateCheck = checkDuplicateSubmission({
+      phone: formData.phone,
+      name: trimmedName,
+      monthlyBill: `${quoteData.systemSize}kW System`,
+    });
+
+    if (duplicateCheck.isDuplicate) {
+      toast({
+        title: "Request Already Received",
+        description: duplicateCheck.message,
+      });
+      setIsOpen(false);
+      const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(`${quoteData.systemSize}kW System`)}`;
+      if (typeof window !== "undefined") {
+        window.location.assign(dupUrl);
+      } else {
+        router.push(dupUrl);
+      }
       return;
     }
     
@@ -100,9 +131,9 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
           'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify({
-          name: formData.name,
+          name: trimmedName,
           phone: formData.phone,
-          address: `${formData.pincode.trim()} (${pinCheck.region})`,
+          address: `${trimmedPin} (${pinCheck.region})`,
           monthlyBill: `${quoteData.systemSize}kW System`,
           customerType: "residential"
         })
@@ -122,9 +153,9 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
       // Send to WhatsApp
       const whatsappMessage = encodeURIComponent(
         `Hi, I want to book my installation.\n\n` +
-        `Name: ${formData.name}\n` +
+        `Name: ${trimmedName}\n` +
         `WhatsApp: ${formData.phone}\n` +
-        `PIN Code: ${formData.pincode.trim()} [${pinCheck.region}]\n` +
+        `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
         `---\n` +
         `*Quote Details*\n` +
         `System: ${quoteData.systemSize} kW\n` +
@@ -136,7 +167,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
           ph.default.capture('form_submitted', {
             form_name: 'quote_booking',
             lead_type: 'quote',
-            pincode: formData.pincode.trim(),
+            pincode: trimmedPin,
             region: pinCheck.region
           });
         });
@@ -145,25 +176,43 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
           'event': 'generate_lead',
           'form_name': 'quote_booking',
           'lead_type': 'quote',
-          'pincode': formData.pincode.trim()
+          'pincode': trimmedPin
         });
         if ((window as any).fbq) {
           (window as any).fbq('track', 'Lead');
         }
       }
 
-      // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
-      setTimeout(() => {
-        window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
-      }, 800);
-      
-      toast({
-        title: "Request Sent!",
-        description: "Our engineering team will contact you shortly."
+      // Record submission to suppress all popups across the site
+      recordSubmission({
+        name: trimmedName,
+        phone: formData.phone,
+        pincode: trimmedPin,
+        monthlyBill: `${quoteData.systemSize}kW System`,
       });
-      localStorage.setItem("kailash_modal_submitted", "true");
+
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("kailash_submitted_name", trimmedName);
+        sessionStorage.setItem("kailash_submitted_phone", formData.phone);
+        sessionStorage.setItem("kailash_submitted_pincode", trimmedPin);
+        sessionStorage.setItem("kailash_submitted_bill", `${quoteData.systemSize}kW System`);
+      }
+
+      const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(`${quoteData.systemSize}kW System`)}&msg=${whatsappMessage}`;
+
+      toast({
+        title: "Installation Request Received!",
+        description: "Redirecting to your confirmation..."
+      });
       setIsOpen(false);
       setFormData({ name: "", phone: "", pincode: "" });
+
+      // Immediately run dedicated animated success page
+      if (typeof window !== "undefined") {
+        window.location.assign(redirectUrl);
+      } else {
+        router.push(redirectUrl);
+      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to submit request. Please try again or contact us directly.";
       if (process.env.NODE_ENV !== 'production') {

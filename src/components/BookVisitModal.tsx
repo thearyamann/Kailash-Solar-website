@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Phone, CheckCircle2, MessageCircle, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,8 +16,14 @@ import {
   OUTSIDE_REGION_ERROR 
 } from "@/lib/pincode";
 import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
+import { 
+  isPopupSuppressed, 
+  recordSubmission, 
+  checkDuplicateSubmission 
+} from "@/lib/submission-tracker";
 
 export function BookVisitModal({ children, autoOpenDelay }: { children?: React.ReactNode, autoOpenDelay?: number }) {
+  const router = useRouter();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,11 +68,11 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
 
   useEffect(() => {
     if (autoOpenDelay && autoOpenDelay > 0) {
-      // Check if we've already auto-opened it in this session
+      // Check if user has already submitted ANY form or auto-opened this session
       const hasAutoOpened = sessionStorage.getItem("kailash_modal_auto_opened");
-      const hasSubmitted = localStorage.getItem("kailash_modal_submitted");
+      const isSuppressed = isPopupSuppressed();
       
-      if (!hasAutoOpened && !hasSubmitted) {
+      if (!hasAutoOpened && !isSuppressed) {
         const timer = setTimeout(() => {
           if (!document.querySelector('[role="dialog"]')) {
             setIsOpen(true);
@@ -84,7 +91,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     // Only run this logic for the main auto-opening instance to prevent multiple modals triggering
     if (autoOpenDelay && autoOpenDelay > 0) {
       // If the modal is closed, has been auto-opened before, and hasn't been submitted
-      if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !localStorage.getItem("kailash_modal_submitted")) {
+      if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !isPopupSuppressed()) {
         
         const retriggerCount = parseInt(sessionStorage.getItem("kailash_modal_retrigger_count") || "0", 10);
         
@@ -118,7 +125,10 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     e.preventDefault();
     setSubmitError("");
 
-    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+    const trimmedName = formData.name.trim();
+    const trimmedPin = formData.pincode.trim();
+
+    if (!trimmedName || !/^[A-Za-z\s]+$/.test(trimmedName)) {
       setSubmitError("Name should contain only letters and spaces.");
       return;
     }
@@ -128,7 +138,6 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       return;
     }
 
-    const trimmedPin = formData.pincode.trim();
     const pinCheck = validatePincode(trimmedPin);
     if (!pinCheck.isValid) {
       setSubmitError(pinCheck.error!);
@@ -140,14 +149,36 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       return;
     }
 
+    // Check duplicate submission
+    const duplicateCheck = checkDuplicateSubmission({
+      phone: formData.phone,
+      name: trimmedName,
+      monthlyBill: formData.monthlyBill,
+    });
+
+    if (duplicateCheck.isDuplicate) {
+      toast({
+        title: "Request Already Received",
+        description: duplicateCheck.message,
+      });
+      setIsOpen(false);
+      const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
+      if (typeof window !== "undefined") {
+        window.location.assign(dupUrl);
+      } else {
+        router.push(dupUrl);
+      }
+      return;
+    }
+
     setIsSubmitting(true);
 
     const fullAddress = `${trimmedPin} (${pinCheck.region})`;
 
-    // Formulate WhatsApp message first
+    // Formulate WhatsApp message
     const whatsappMessage = encodeURIComponent(
       `Hi, I want to book a FREE consultation.\n\n` +
-      `Name: ${formData.name}\n` +
+      `Name: ${trimmedName}\n` +
       `WhatsApp: ${formData.phone}\n` +
       `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
       `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`
@@ -167,6 +198,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
         },
         body: JSON.stringify({
           ...formData,
+          name: trimmedName,
           address: fullAddress,
         })
       });
@@ -200,19 +232,35 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       console.error(error);
     }
 
-    // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
-    setTimeout(() => {
-      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
-    }, 800);
-    
-    setIsSuccess(true);
-    toast({
-      title: "Request Sent!",
-      description: "Redirecting to WhatsApp..."
+    // Record submission to suppress all popups across the site
+    recordSubmission({
+      name: trimmedName,
+      phone: formData.phone,
+      pincode: trimmedPin,
+      monthlyBill: formData.monthlyBill,
     });
-    localStorage.setItem("kailash_modal_submitted", "true");
-    setFormData({ name: "", phone: "", pincode: "", monthlyBill: "", customerType: "residential" });
-    setIsSubmitting(false);
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("kailash_submitted_name", trimmedName);
+      sessionStorage.setItem("kailash_submitted_phone", formData.phone);
+      sessionStorage.setItem("kailash_submitted_pincode", trimmedPin);
+      sessionStorage.setItem("kailash_submitted_bill", formData.monthlyBill || "");
+    }
+
+    const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}&msg=${whatsappMessage}`;
+
+    toast({
+      title: "Consultation Booked!",
+      description: "Redirecting to your confirmation..."
+    });
+    setIsOpen(false);
+
+    // Immediately run dedicated animated success page
+    if (typeof window !== "undefined") {
+      window.location.assign(redirectUrl);
+    } else {
+      router.push(redirectUrl);
+    }
   };
 
   return (

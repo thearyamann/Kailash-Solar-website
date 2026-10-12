@@ -19,6 +19,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { recordSubmission } from '@/lib/submission-tracker';
 
 interface CalculatorResults {
   systemSize: number;
@@ -36,6 +38,7 @@ interface CalculatorResults {
 }
 
 const SolarCalculator = () => {
+  const router = useRouter();
   const { toast } = useToast();
   const [monthlyBill, setMonthlyBill] = useState<string>('');
   const [location, setLocation] = useState<string>('');
@@ -155,11 +158,32 @@ Calculate your savings: ${window.location.href}`;
         lead_type: 'proposal'
       });
     });
+    recordSubmission({
+      name: proposalForm.name.trim(),
+      phone: proposalForm.phone.trim(),
+      pincode: "",
+      monthlyBill: results ? `${results.systemSize}kW System` : "",
+    });
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("kailash_submitted_name", proposalForm.name.trim());
+      sessionStorage.setItem("kailash_submitted_phone", proposalForm.phone.trim());
+      sessionStorage.setItem("kailash_submitted_bill", results ? `${results.systemSize}kW System` : "");
+    }
+
     toast({
       title: "Request Submitted!",
-      description: "Our team will contact you within 24 hours with a detailed proposal.",
+      description: "Redirecting to your confirmation...",
     });
     setShowProposalForm(false);
+
+    const redirectUrl = `/booking-success?name=${encodeURIComponent(proposalForm.name.trim())}&phone=${encodeURIComponent(proposalForm.phone.trim())}&bill=${encodeURIComponent(results ? `${results.systemSize}kW System` : "")}`;
+
+    if (typeof window !== "undefined") {
+      window.location.assign(redirectUrl);
+    } else {
+      router.push(redirectUrl);
+    }
   };
 
   const formatCurrency = (value: number) => {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -15,8 +16,13 @@ import {
   OUTSIDE_REGION_ERROR 
 } from "@/lib/pincode";
 import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
+import { 
+  recordSubmission, 
+  checkDuplicateSubmission 
+} from "@/lib/submission-tracker";
 
 export function SolarConsultationForm() {
+  const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -68,7 +74,10 @@ export function SolarConsultationForm() {
     e.preventDefault();
     setSubmitError("");
 
-    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+    const trimmedName = formData.name.trim();
+    const trimmedPin = formData.pincode.trim();
+
+    if (!trimmedName || !/^[A-Za-z\s]+$/.test(trimmedName)) {
       setSubmitError("Name should contain only letters and spaces.");
       return;
     }
@@ -78,7 +87,6 @@ export function SolarConsultationForm() {
       return;
     }
 
-    const trimmedPin = formData.pincode.trim();
     const pinCheck = validatePincode(trimmedPin);
     if (!pinCheck.isValid) {
       setSubmitError(pinCheck.error!);
@@ -90,14 +98,35 @@ export function SolarConsultationForm() {
       return;
     }
 
+    // Check duplicate submission
+    const duplicateCheck = checkDuplicateSubmission({
+      phone: formData.phone,
+      name: trimmedName,
+      monthlyBill: formData.monthlyBill,
+    });
+
+    if (duplicateCheck.isDuplicate) {
+      toast({
+        title: "Request Already Received",
+        description: duplicateCheck.message,
+      });
+      const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
+      if (typeof window !== "undefined") {
+        window.location.assign(dupUrl);
+      } else {
+        router.push(dupUrl);
+      }
+      return;
+    }
+
     setIsSubmitting(true);
 
     const fullAddress = `${trimmedPin} (${pinCheck.region})`;
 
-    // Formulate WhatsApp message first
+    // Formulate WhatsApp message
     const whatsappMessage = encodeURIComponent(
       `Hi, I want to book a FREE consultation.\n\n` +
-      `Name: ${formData.name}\n` +
+      `Name: ${trimmedName}\n` +
       `WhatsApp: ${formData.phone}\n` +
       `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
       `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`
@@ -116,6 +145,7 @@ export function SolarConsultationForm() {
         },
         body: JSON.stringify({
           ...formData,
+          name: trimmedName,
           address: fullAddress,
         })
       });
@@ -148,19 +178,35 @@ export function SolarConsultationForm() {
     } catch (error) {
       console.error(error);
     } 
-    
-    // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
-    setTimeout(() => {
-      window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
-    }, 800);
-    
-    setIsSuccess(true);
+
+    // Record submission to suppress all popups across the site
+    recordSubmission({
+      name: trimmedName,
+      phone: formData.phone,
+      pincode: trimmedPin,
+      monthlyBill: formData.monthlyBill,
+    });
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("kailash_submitted_name", trimmedName);
+      sessionStorage.setItem("kailash_submitted_phone", formData.phone);
+      sessionStorage.setItem("kailash_submitted_pincode", trimmedPin);
+      sessionStorage.setItem("kailash_submitted_bill", formData.monthlyBill || "");
+    }
+
+    const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}&msg=${whatsappMessage}`;
+
     toast({
       title: "Consultation Booked!",
-      description: "Redirecting to WhatsApp..."
+      description: "Redirecting to your confirmation..."
     });
-    setFormData({ name: "", phone: "", pincode: "", monthlyBill: "", customerType: "residential" });
-    setIsSubmitting(false);
+
+    // Immediately run dedicated animated success page
+    if (typeof window !== "undefined") {
+      window.location.assign(redirectUrl);
+    } else {
+      router.push(redirectUrl);
+    }
   };
 
   return (

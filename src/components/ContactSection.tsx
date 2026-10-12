@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Phone, Mail, MapPin, MessageCircle, Send, Building2, User, IndianRupee, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,8 +16,13 @@ import {
   OUTSIDE_REGION_ERROR 
 } from "@/lib/pincode";
 import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
+import { 
+  recordSubmission, 
+  checkDuplicateSubmission 
+} from "@/lib/submission-tracker";
 
 const ContactSection = () => {
+  const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -55,13 +61,36 @@ const ContactSection = () => {
       return;
     }
 
+    const trimmedName = formData.name.trim();
+
+    // Check duplicate submission
+    const duplicateCheck = checkDuplicateSubmission({
+      phone: formData.phone,
+      name: trimmedName,
+      monthlyBill: formData.monthlyBill,
+    });
+
+    if (duplicateCheck.isDuplicate) {
+      toast({
+        title: "Request Already Received",
+        description: duplicateCheck.message,
+      });
+      const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
+      if (typeof window !== "undefined") {
+        window.location.assign(dupUrl);
+      } else {
+        router.push(dupUrl);
+      }
+      return;
+    }
+
     setIsSubmitting(true);
     const fullAddress = `${trimmedPin} (${pinCheck.region})`;
 
     try {
       const { error: fnError } = await supabase.functions.invoke(
         "send-inquiry-email",
-        { body: { ...formData, address: fullAddress } }
+        { body: { ...formData, name: trimmedName, address: fullAddress } }
       );
       
       if (fnError) {
@@ -73,7 +102,7 @@ const ContactSection = () => {
 
       const whatsappMessage = encodeURIComponent(
         `Hi, I'm interested in solar installation.\n\n` +
-        `Name: ${formData.name}\n` +
+        `Name: ${trimmedName}\n` +
         `Phone: ${formData.phone}\n` +
         `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
         `Monthly Bill: ₹${formData.monthlyBill || 'Not specified'}\n` +
@@ -99,14 +128,26 @@ const ContactSection = () => {
         });
       }
 
-      // Delay redirect to allow tracking scripts (PostHog/Meta) to finish in WebViews
-      setTimeout(() => {
-        window.location.href = `https://wa.me/918999999654?text=${whatsappMessage}`;
-      }, 800);
-      
+      // Record submission to suppress all popups across the site
+      recordSubmission({
+        name: trimmedName,
+        phone: formData.phone,
+        pincode: trimmedPin,
+        monthlyBill: formData.monthlyBill,
+      });
+
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("kailash_submitted_name", trimmedName);
+        sessionStorage.setItem("kailash_submitted_phone", formData.phone);
+        sessionStorage.setItem("kailash_submitted_pincode", trimmedPin);
+        sessionStorage.setItem("kailash_submitted_bill", formData.monthlyBill || "");
+      }
+
+      const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}&msg=${whatsappMessage}`;
+
       toast({
         title: "Inquiry Submitted!",
-        description: "Your inquiry has been saved and sent. Our team will contact you within 24 hours."
+        description: "Redirecting to your confirmation..."
       });
       
       setFormData({
@@ -117,6 +158,13 @@ const ContactSection = () => {
         customerType: "",
         message: ""
       });
+
+      // Immediately run dedicated animated success page
+      if (typeof window !== "undefined") {
+        window.location.assign(redirectUrl);
+      } else {
+        router.push(redirectUrl);
+      }
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
         console.error("Submission error:", error);
