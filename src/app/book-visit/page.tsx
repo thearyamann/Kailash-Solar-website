@@ -308,7 +308,7 @@ export default function BookVisitPage() {
                       setSubmitError("");
                       setFormData({ ...formData, name: e.target.value });
                     }} 
-                    className="h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-primary/30 rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all" 
+                    className="h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all" 
                   />
                 </div>
                 
@@ -330,7 +330,7 @@ export default function BookVisitPage() {
                       const val = e.target.value.replace(/\D/g, '');
                       setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) });
                     }} 
-                    className="h-[52px] pl-[64px] pr-4 bg-slate-50 border border-slate-200 hover:border-primary/30 rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white transition-all w-full relative" 
+                    className="h-[52px] pl-[64px] pr-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all w-full relative" 
                   />
                 </div>
 
@@ -350,12 +350,12 @@ export default function BookVisitPage() {
                         const val = e.target.value.replace(/\D/g, '').slice(0, 6);
                         setFormData({ ...formData, pincode: val });
                       }} 
-                      className={`h-[52px] pl-4 pr-11 bg-slate-50 border rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus-visible:ring-2 transition-all ${
+                      className={`h-[52px] pl-4 pr-11 bg-slate-50 border rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 transition-all ${
                         pincodeVerifier.isValid
-                          ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                          ? "border-emerald-500 bg-emerald-50/20" 
                           : pincodeVerifier.isInvalid
-                          ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
-                          : "border-slate-200 hover:border-primary/30 focus-visible:ring-primary focus-visible:bg-white"
+                          ? "border-destructive bg-destructive/5" 
+                          : "border-slate-200 hover:border-slate-300 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white"
                       }`}
                     />
                     <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
@@ -390,7 +390,7 @@ export default function BookVisitPage() {
                   >
                     <SelectTrigger 
                       aria-label="Monthly Electricity Bill"
-                      className="w-full h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-primary/30 rounded-[14px] text-[15px] font-medium focus:ring-2 focus:ring-primary focus:bg-white text-slate-700 transition-all"
+                      className="w-full h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[15px] font-medium focus:outline-none focus:ring-0 focus:border-slate-400 focus:bg-white text-slate-700 transition-all"
                     >
                       <SelectValue placeholder="Monthly Electricity Bill*" />
                     </SelectTrigger>

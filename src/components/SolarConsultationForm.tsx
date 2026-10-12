@@ -269,7 +269,7 @@ export function SolarConsultationForm() {
             <div>
               <Input 
                 placeholder="Full Name*" 
-                className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70"
+                className="h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 placeholder:text-muted-foreground/70"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
                 required
@@ -283,12 +283,12 @@ export function SolarConsultationForm() {
                   inputMode="numeric"
                   maxLength={6}
                   placeholder="PIN Code (6 digits)*" 
-                  className={`h-[52px] pl-4 pr-11 bg-background border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70 transition-all ${
+                  className={`h-[52px] pl-4 pr-11 bg-background border rounded-[12px] text-[15px] placeholder:text-muted-foreground/70 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 transition-all ${
                     pincodeVerifier.isValid
-                      ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                      ? "border-emerald-500 bg-emerald-50/20" 
                       : pincodeVerifier.isInvalid
-                      ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
-                      : "border-border"
+                      ? "border-destructive bg-destructive/5" 
+                      : "border-border focus:border-slate-400 focus-visible:border-slate-400"
                   }`}
                   value={formData.pincode}
                   onChange={(e) => {
@@ -318,14 +318,14 @@ export function SolarConsultationForm() {
               )}
             </div>
 
-            <div className="relative flex items-center">
-              <div className="absolute left-0 h-[52px] flex items-center justify-center px-4 text-muted-foreground font-bold bg-muted/50 border border-r-0 border-border rounded-l-[12px] z-10 pointer-events-none">
+            <div className="flex items-center h-[52px] bg-background border border-border rounded-[12px] overflow-hidden focus-within:border-slate-400 transition-colors">
+              <div className="h-full px-4 flex items-center justify-center text-muted-foreground font-bold bg-muted/40 border-r border-border shrink-0 select-none">
                 +91
               </div>
               <Input 
                 type="tel" 
                 placeholder="WhatsApp Number*" 
-                className="h-[52px] pl-[68px] pr-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70 w-full relative"
+                className="h-full border-0 rounded-none bg-transparent px-3.5 text-[15px] focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent placeholder:text-muted-foreground/70 w-full shadow-none"
                 value={formData.phone}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, '');
@@ -337,7 +337,7 @@ export function SolarConsultationForm() {
 
             <div>
               <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
-                <SelectTrigger className="w-full h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary text-foreground disabled:cursor-not-allowed">
+                <SelectTrigger className="w-full h-[52px] px-4 bg-background border-border rounded-[12px] text-[15px] focus:outline-none focus:ring-0 focus:border-slate-400 text-foreground disabled:cursor-not-allowed">
                   <SelectValue placeholder="Monthly Electricity Bill*" />
                 </SelectTrigger>
                 <SelectContent className="rounded-[12px]">

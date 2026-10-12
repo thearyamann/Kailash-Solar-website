@@ -434,8 +434,8 @@ Calculate your savings: ${window.location.href}`;
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="phone">Phone Number</Label>
-                            <div className="relative flex items-center">
-                              <div className="absolute left-0 h-12 flex items-center justify-center px-4 text-slate-600 font-bold bg-slate-100 border border-r-0 border-slate-200 rounded-l-xl z-10 pointer-events-none">
+                            <div className="flex items-center h-12 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:border-slate-400 transition-colors">
+                              <div className="h-full px-4 flex items-center justify-center text-slate-600 font-bold bg-slate-100 border-r border-slate-200 shrink-0 select-none">
                                 +91
                               </div>
                               <Input
@@ -447,7 +447,7 @@ Calculate your savings: ${window.location.href}`;
                                   const val = e.target.value.replace(/\D/g, '');
                                   setProposalForm({ ...proposalForm, phone: val.length <= 10 ? val : val.slice(0, 10) });
                                 }}
-                                className="h-12 pl-[68px] pr-4 rounded-xl bg-slate-50 relative w-full"
+                                className="h-full border-0 rounded-none bg-transparent px-3.5 focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent w-full shadow-none"
                               />
                             </div>
                           </div>

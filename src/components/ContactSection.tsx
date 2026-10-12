@@ -291,15 +291,15 @@ const ContactSection = () => {
                       required 
                       value={formData.name} 
                       onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76]" 
+                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400" 
                     />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-foreground font-bold text-sm">Phone Number</Label>
-                  <div className="relative flex items-center">
-                    <div className="absolute left-0 h-14 flex items-center justify-center px-4 text-muted-foreground font-bold bg-muted border border-r-0 border-border rounded-l-xl z-10 pointer-events-none">
+                  <div className="flex items-center h-14 bg-muted/50 border border-border rounded-xl overflow-hidden focus-within:border-slate-400 transition-colors">
+                    <div className="h-full px-4 flex items-center justify-center text-muted-foreground font-bold bg-muted border-r border-border shrink-0 select-none">
                       +91
                     </div>
                     <Input 
@@ -312,7 +312,7 @@ const ContactSection = () => {
                         const val = e.target.value.replace(/\D/g, '');
                         setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) })
                       }} 
-                      className="h-14 pl-[72px] pr-4 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76] w-full relative" 
+                      className="h-full border-0 rounded-none bg-transparent px-4 text-base focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent w-full shadow-none" 
                     />
                   </div>
                 </div>
@@ -333,12 +333,12 @@ const ContactSection = () => {
                       const val = e.target.value.replace(/\D/g, '').slice(0, 6);
                       setFormData({ ...formData, pincode: val });
                     }} 
-                    className={`h-14 pl-4 pr-12 bg-muted/50 border rounded-xl text-base focus-visible:ring-[#133B76] transition-all ${
+                    className={`h-14 pl-4 pr-12 bg-muted/50 border rounded-xl text-base focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 transition-all ${
                       pincodeVerifier.isValid
-                        ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                        ? "border-emerald-500 bg-emerald-50/20" 
                         : pincodeVerifier.isInvalid
-                        ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
-                        : "border-border"
+                        ? "border-destructive bg-destructive/5" 
+                        : "border-border focus:border-slate-400 focus-visible:border-slate-400"
                     }`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
@@ -365,14 +365,14 @@ const ContactSection = () => {
                 <div className="space-y-2">
                   <Label htmlFor="monthlyBill" className="text-foreground font-bold text-sm">Average Monthly Bill (₹)</Label>
                   <div className="relative group">
-                    <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[#133B76] transition-colors" />
+                    <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-slate-600 transition-colors" />
                     <Input 
                       id="monthlyBill" 
                       type="number" 
                       placeholder="e.g., 5000" 
                       value={formData.monthlyBill} 
                       onChange={e => setFormData({ ...formData, monthlyBill: e.target.value })} 
-                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76]" 
+                      className="pl-12 h-14 bg-muted/50 border-border rounded-xl text-base focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400" 
                     />
                   </div>
                 </div>
@@ -380,7 +380,7 @@ const ContactSection = () => {
                 <div className="space-y-2">
                   <Label htmlFor="customerType" className="text-foreground font-bold text-sm">Customer Type</Label>
                   <Select value={formData.customerType} onValueChange={value => setFormData({ ...formData, customerType: value })}>
-                    <SelectTrigger className="h-14 bg-muted/50 border-border rounded-xl text-base focus:ring-[#133B76]">
+                    <SelectTrigger className="h-14 bg-muted/50 border-border rounded-xl text-base focus:outline-none focus:ring-0 focus:border-slate-400">
                       <div className="flex items-center">
                         <Building2 className="w-5 h-5 text-muted-foreground mr-3" />
                         <SelectValue placeholder="Select type" />
@@ -402,7 +402,7 @@ const ContactSection = () => {
                   placeholder="Tell us more about your specific requirements..." 
                   value={formData.message} 
                   onChange={e => setFormData({ ...formData, message: e.target.value })} 
-                  className="p-4 min-h-[120px] bg-muted/50 border-border rounded-xl text-base focus-visible:ring-[#133B76] resize-y" 
+                  className="p-4 min-h-[120px] bg-muted/50 border-border rounded-xl text-base focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 resize-y" 
                 />
               </div>
 

@@ -274,28 +274,28 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
                     setSubmitError("");
                     setFormData({ ...formData, name: e.target.value });
                   }} 
-                  className="h-[48px] px-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary" 
+                  className="h-[48px] px-4 bg-background border-border rounded-[12px] text-[15px] focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400" 
                 />
               </div>
               
-              <div className="relative flex items-center">
-                <div className="absolute left-0 h-[48px] flex items-center justify-center px-3 text-muted-foreground font-bold bg-muted/50 border border-r-0 border-border rounded-l-[12px] z-10 pointer-events-none">
+              <div className="flex items-center h-[48px] bg-background border border-border rounded-[12px] overflow-hidden focus-within:border-slate-400 transition-colors">
+                <div className="h-full px-3 flex items-center justify-center text-muted-foreground font-bold bg-muted/50 border-r border-border shrink-0 select-none text-[14px]">
                   +91
                 </div>
                 <Input 
                   type="tel" 
                   placeholder="WhatsApp Number (10 digits)*" 
                   required 
-                  maxLength={10}
-                  pattern="[0-9]{10}"
-                  title="Please enter a valid 10-digit mobile number"
+                  maxLength={10} 
+                  pattern="[0-9]{10}" 
+                  title="Please enter a valid 10-digit mobile number" 
                   value={formData.phone} 
                   onChange={e => {
                     setSubmitError("");
                     const val = e.target.value.replace(/\D/g, '');
                     if (val.length <= 10) setFormData({ ...formData, phone: val });
                   }} 
-                  className="h-[48px] pl-[60px] pr-4 bg-background border-border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary w-full relative" 
+                  className="h-full border-0 rounded-none bg-transparent px-3 text-[15px] focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent w-full shadow-none" 
                 />
               </div>
 
@@ -315,12 +315,12 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
                       const val = e.target.value.replace(/\D/g, '');
                       if (val.length <= 6) setFormData({ ...formData, pincode: val });
                     }} 
-                    className={`h-[48px] pl-4 pr-10 bg-background border rounded-[12px] text-[15px] focus-visible:ring-primary focus-visible:border-primary transition-all ${
+                    className={`h-[48px] pl-4 pr-10 bg-background border rounded-[12px] text-[15px] focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 transition-all ${
                       pincodeVerifier.isValid
-                        ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                        ? "border-emerald-500 bg-emerald-50/20" 
                         : pincodeVerifier.isInvalid
-                        ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
-                        : "border-border"
+                        ? "border-destructive bg-destructive/5" 
+                        : "border-border focus:border-slate-400 focus-visible:border-slate-400"
                     }`}
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">

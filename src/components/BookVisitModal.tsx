@@ -333,7 +333,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                         required 
                         value={formData.name} 
                         onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                        className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70" 
+                        className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 placeholder:text-muted-foreground/70" 
                       />
                     </div>
                     
@@ -351,12 +351,12 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                             const val = e.target.value.replace(/\D/g, '').slice(0, 6);
                             setFormData({ ...formData, pincode: val });
                           }} 
-                          className={`h-[42px] pl-4 pr-10 bg-background border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70 transition-all ${
+                          className={`h-[42px] pl-4 pr-10 bg-background border rounded-[10px] text-[14px] placeholder:text-muted-foreground/70 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 transition-all ${
                             pincodeVerifier.isValid
-                              ? "border-emerald-500 focus-visible:ring-emerald-500 bg-emerald-50/20" 
+                              ? "border-emerald-500 bg-emerald-50/20" 
                               : pincodeVerifier.isInvalid
-                              ? "border-destructive focus-visible:ring-destructive bg-destructive/5" 
-                              : "border-border"
+                              ? "border-destructive bg-destructive/5" 
+                              : "border-border focus:border-slate-400 focus-visible:border-slate-400"
                           }`}
                         />
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
@@ -379,8 +379,8 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                       )}
                     </div>
                     
-                    <div className="relative flex items-center">
-                      <div className="absolute left-0 h-[42px] flex items-center justify-center px-3 text-muted-foreground font-bold bg-muted/50 border border-r-0 border-border rounded-l-[10px] z-10 pointer-events-none">
+                    <div className="flex items-center h-[42px] bg-background border border-border rounded-[10px] overflow-hidden focus-within:border-slate-400 transition-colors">
+                      <div className="h-full px-3 flex items-center justify-center text-muted-foreground font-bold bg-muted/40 border-r border-border shrink-0 select-none text-[13px]">
                         +91
                       </div>
                       <Input 
@@ -392,13 +392,13 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                           const val = e.target.value.replace(/\D/g, '');
                           setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) })
                         }} 
-                        className="h-[42px] pl-[60px] pr-4 bg-background border-border rounded-[10px] text-[14px] focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/70 w-full relative" 
+                        className="h-full border-0 rounded-none bg-transparent px-3 text-[14px] focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent placeholder:text-muted-foreground/70 w-full shadow-none" 
                       />
                     </div>
 
                     <div>
                       <Select value={formData.monthlyBill} onValueChange={value => setFormData({ ...formData, monthlyBill: value })}>
-                        <SelectTrigger className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] text-muted-foreground focus:ring-primary">
+                        <SelectTrigger className="h-[42px] px-4 bg-background border-border rounded-[10px] text-[14px] text-muted-foreground focus:outline-none focus:ring-0 focus:border-slate-400">
                           <SelectValue placeholder="Monthly Electricity Bill*" />
                         </SelectTrigger>
                         <SelectContent className="rounded-[12px] z-[100]">
