@@ -15,11 +15,12 @@ const TEMPLATE_CONFIGS = {
     language: "en",
     hasHeader: false,
   },
-  // Message #4: Gentle Re-engagement / Last Reminder (3-4 days if no action)
+  // Message #4: Gentle Re-engagement / Day 4 Reminder (sent strictly after 4 days if no reply)
   last_reminder: {
-    name: "kailash_last_reminder",
+    name: "kailash_day4_reminder",
     language: "en",
-    hasHeader: false,
+    hasHeader: true,
+    mediaId: "1104441709052746",
   },
   // Won Customer Referral Rewards
   refer_and_earn: {
@@ -121,12 +122,12 @@ export async function GET(request: NextRequest) {
         targetTemplateKey = "website_followup";
         stepTagToAdd = "Website Follow-up Sent";
       } else if ((followUp1Sent || websiteFollowUpSent) && !lastReminderSent) {
-        // Branch 3: Customer received outreach 3-4 days ago without action
-        // Enforce strict 3-day (72 hours) cooling-off gap before sending the last reminder
+        // Branch 3: Customer received outreach 4 days ago without action
+        // Enforce strict 4-day (96 hours) cooling-off gap before sending the Day 4 reminder
         const modifiedTime = lead.Modified_Time ? new Date(lead.Modified_Time).getTime() : 0;
         const hoursSinceLastTouch = (Date.now() - modifiedTime) / (1000 * 60 * 60);
-        if (hoursSinceLastTouch < 72) {
-          // Still within the 3-day window; do not send reminder yet
+        if (hoursSinceLastTouch < 96) {
+          // Still within the 4-day window; do not send reminder yet
           continue;
         }
         targetTemplateKey = "last_reminder";
