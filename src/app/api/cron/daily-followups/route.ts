@@ -104,10 +104,11 @@ export async function GET(request: NextRequest) {
       const visitedWebsite = tags.includes("Visited Website");
       const followUp1Sent = tags.includes("Follow-up 1 Sent");
       const websiteFollowUpSent = tags.includes("Website Follow-up Sent");
-      const lastReminderSent = tags.includes("Last Reminder Sent");
+      const day4ReminderSent = tags.includes("Day 4 Reminder Sent") || tags.includes("Last Reminder Sent");
+      const day10ReminderSent = tags.includes("Day 10 Final Reminder Sent");
 
-      // Stop if engaged, already booked, or already completed full cycle
-      if (hasReplied || hasBooked || lastReminderSent) {
+      // Stop if engaged, already booked, or completed full Day 10 cycle
+      if (hasReplied || hasBooked || day10ReminderSent) {
         continue;
       }
 
@@ -121,7 +122,17 @@ export async function GET(request: NextRequest) {
         // Branch 2: Customer visited website 1-2 days ago without booking
         targetTemplateKey = "website_followup";
         stepTagToAdd = "Website Follow-up Sent";
-      } else if ((followUp1Sent || websiteFollowUpSent) && !lastReminderSent) {
+      } else if (day4ReminderSent && !day10ReminderSent) {
+        // Branch 4: Customer received Day 4 reminder, waited 6 more days (Day 10 total) without action
+        const modifiedTime = lead.Modified_Time ? new Date(lead.Modified_Time).getTime() : 0;
+        const hoursSinceLastTouch = (Date.now() - modifiedTime) / (1000 * 60 * 60);
+        if (hoursSinceLastTouch < 144) {
+          // Still within the 6-day gap between Day 4 and Day 10; wait
+          continue;
+        }
+        targetTemplateKey = "last_reminder";
+        stepTagToAdd = "Day 10 Final Reminder Sent";
+      } else if ((followUp1Sent || websiteFollowUpSent) && !day4ReminderSent) {
         // Branch 3: Customer received outreach 4 days ago without action
         // Enforce strict 4-day (96 hours) cooling-off gap before sending the Day 4 reminder
         const modifiedTime = lead.Modified_Time ? new Date(lead.Modified_Time).getTime() : 0;
@@ -131,7 +142,7 @@ export async function GET(request: NextRequest) {
           continue;
         }
         targetTemplateKey = "last_reminder";
-        stepTagToAdd = "Last Reminder Sent";
+        stepTagToAdd = "Day 4 Reminder Sent";
       } else if (!followUp1Sent) {
         // Branch 1: Initial Short Follow-up Card with Flyer
         targetTemplateKey = "inquiry_initial";
