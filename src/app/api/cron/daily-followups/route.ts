@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const zohoToken = await getZohoAccessToken();
-    const leadsUrl = `https://www.zohoapis.${dc}/crm/v6/Leads?fields=Full_Name,Phone,Tag,Description,City&per_page=20`;
+    const leadsUrl = `https://www.zohoapis.${dc}/crm/v6/Leads?fields=Full_Name,Phone,Tag,Description,City,Modified_Time&per_page=20`;
 
     const crmResp = await fetch(leadsUrl, {
       headers: { Authorization: `Zoho-oauthtoken ${zohoToken}` },
@@ -122,6 +122,13 @@ export async function GET(request: NextRequest) {
         stepTagToAdd = "Website Follow-up Sent";
       } else if ((followUp1Sent || websiteFollowUpSent) && !lastReminderSent) {
         // Branch 3: Customer received outreach 3-4 days ago without action
+        // Enforce strict 3-day (72 hours) cooling-off gap before sending the last reminder
+        const modifiedTime = lead.Modified_Time ? new Date(lead.Modified_Time).getTime() : 0;
+        const hoursSinceLastTouch = (Date.now() - modifiedTime) / (1000 * 60 * 60);
+        if (hoursSinceLastTouch < 72) {
+          // Still within the 3-day window; do not send reminder yet
+          continue;
+        }
         targetTemplateKey = "last_reminder";
         stepTagToAdd = "Last Reminder Sent";
       } else if (!followUp1Sent) {
