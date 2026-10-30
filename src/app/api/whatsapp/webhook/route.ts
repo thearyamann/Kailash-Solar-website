@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
                 msg.text?.body ||
                 msg.interactive?.button_reply?.title ||
                 msg.button?.text ||
+                msg.button?.payload ||
                 "";
               
               console.log(`[Incoming WhatsApp] From: +${fromPhone} | Type: ${msgType} | Text: "${text}"`);
