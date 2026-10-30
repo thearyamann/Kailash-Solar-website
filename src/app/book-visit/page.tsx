@@ -19,6 +19,11 @@ import {
   recordSubmission, 
   checkDuplicateSubmission 
 } from "@/lib/submission-tracker";
+import { 
+  submitBookVisitToCRM, 
+  estimatePlantSizeFromBill,
+  type BookVisitPayload 
+} from "@/lib/crm";
 import Link from "next/link";
 
 export default function BookVisitPage() {
@@ -33,6 +38,9 @@ export default function BookVisitPage() {
     phone: "",
     pincode: "",
     monthlyBill: "",
+    address: "",
+    preferredDate: "",
+    plantSize: 3,
     customerType: "residential",
   });
 
@@ -50,6 +58,9 @@ export default function BookVisitPage() {
           phone: parsed.phone || prev.phone,
           pincode: parsed.pincode || prev.pincode || "",
           monthlyBill: parsed.monthlyBill || prev.monthlyBill,
+          address: parsed.address || prev.address || "",
+          preferredDate: parsed.preferredDate || prev.preferredDate || "",
+          plantSize: parsed.plantSize || prev.plantSize || 3,
         }));
       } catch (e) {
         // Ignore JSON parse errors
@@ -125,16 +136,51 @@ export default function BookVisitPage() {
     
     // Formulate WhatsApp message with user details including PIN Code & Region
     const formattedBill = formData.monthlyBill || 'Not specified';
-    const fullAddress = `${trimmedPin} (${pinCheck.region})`;
+    const userCity = pinCheck.region || "Meerut";
+    const fullAddress = formData.address.trim() 
+      ? `${formData.address.trim()}, PIN: ${trimmedPin} (${userCity})` 
+      : `${trimmedPin} (${userCity})`;
+
+    const formattedPhone = formData.phone.startsWith("+91")
+      ? formData.phone
+      : `+91 ${formData.phone}`;
+
+    const calculatedPlantSize = Number(formData.plantSize) || estimatePlantSizeFromBill(formData.monthlyBill);
     
     const whatsappMessage = encodeURIComponent(
-      `Hi, I want to book a FREE consultation.\n\n` +
+      `Hi, I want to book a FREE site visit.\n\n` +
       `Name: ${trimmedName}\n` +
       `WhatsApp: ${formData.phone}\n` +
-      `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
-      `Monthly Bill: ${formattedBill}`
+      `PIN Code: ${trimmedPin} [${userCity}]\n` +
+      `Address: ${formData.address.trim() || 'Meerut'}\n` +
+      `Monthly Bill: ${formattedBill}\n` +
+      `Plant Capacity: ${calculatedPlantSize} kW`
     );
     setSubmittedWhatsappMsg(whatsappMessage);
+
+    // 1. Submit lead to Zoho CRM & WhatsApp Automation API
+    const crmPayload: BookVisitPayload = {
+      name: trimmedName,
+      phone: formattedPhone,
+      city: userCity,
+      address: formData.address.trim() ? formData.address.trim() : fullAddress,
+      preferred_date: formData.preferredDate || "",
+      plant_size_kw: calculatedPlantSize,
+    };
+
+    const crmResult = await submitBookVisitToCRM(crmPayload);
+
+    if (!crmResult.success) {
+      const errorMsg = crmResult.error || "Submission error. Please try again.";
+      setSubmitError(errorMsg);
+      toast({
+        title: "Submission Error",
+        description: errorMsg,
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
 
     const submissionPayload = {
       name: trimmedName,
@@ -142,8 +188,10 @@ export default function BookVisitPage() {
       address: fullAddress,
       monthlyBill: formattedBill,
       customerType: formData.customerType,
+      leadId: crmResult.lead_id,
     };
     
+    // 2. Trigger Supabase notifications & PostHog / Meta analytics in background
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tjikswdntqctoqqrnjkq.supabase.co';
@@ -171,7 +219,8 @@ export default function BookVisitPage() {
             form_name: 'book_visit_page',
             lead_type: 'book_visit',
             pincode: trimmedPin,
-            region: pinCheck.region
+            region: pinCheck.region,
+            lead_id: crmResult.lead_id
           });
         });
         (window as any).dataLayer = (window as any).dataLayer || [];
@@ -179,7 +228,8 @@ export default function BookVisitPage() {
           'event': 'generate_lead',
           'form_name': 'book_visit_page',
           'lead_type': 'book_visit',
-          'pincode': trimmedPin
+          'pincode': trimmedPin,
+          'lead_id': crmResult.lead_id
         });
         if ((window as any).fbq) {
           (window as any).fbq('track', 'Lead');
@@ -187,10 +237,10 @@ export default function BookVisitPage() {
       }
 
     } catch (e) {
-      console.error("Submission inquiry error:", e);
+      console.error("Submission inquiry notification error:", e);
     }
 
-    // Record submission to suppress all popups across the site
+    // 3. Record submission to suppress popups across the site
     recordSubmission({
       name: trimmedName,
       phone: formData.phone,
@@ -203,14 +253,19 @@ export default function BookVisitPage() {
       sessionStorage.setItem("kailash_submitted_phone", formData.phone);
       sessionStorage.setItem("kailash_submitted_pincode", trimmedPin);
       sessionStorage.setItem("kailash_submitted_bill", formattedBill || "");
+      if (crmResult.lead_id) {
+        sessionStorage.setItem("kailash_submitted_lead_id", crmResult.lead_id);
+      }
     }
 
-    const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formattedBill)}&msg=${whatsappMessage}`;
+    const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formattedBill)}&msg=${whatsappMessage}${crmResult.lead_id ? `&lead_id=${encodeURIComponent(crmResult.lead_id)}` : ""}`;
 
     toast({
-      title: "Consultation Booked!",
+      title: "Site Visit Scheduled!",
       description: "Redirecting to your confirmation..."
     });
+
+    setIsSuccess(true);
 
     // Immediately run dedicated animated success page
     if (typeof window !== "undefined") {
@@ -223,7 +278,7 @@ export default function BookVisitPage() {
   return (
     <div className="min-h-[100dvh] bg-slate-50 sm:bg-muted flex flex-col items-center justify-start sm:py-8">
       
-      <div className="w-full max-w-[400px] bg-white sm:rounded-3xl sm:shadow-2xl relative flex flex-col min-h-[100dvh] sm:min-h-0">
+      <div className="w-full max-w-[420px] bg-white sm:rounded-3xl sm:shadow-2xl relative flex flex-col min-h-[100dvh] sm:min-h-0">
         
         {/* Floating Native App Header */}
         <div className="absolute top-0 w-full z-50 px-4 h-16 flex items-center justify-between">
@@ -252,8 +307,8 @@ export default function BookVisitPage() {
         <div className="px-5 pt-8 pb-32 sm:pb-8 flex-grow flex flex-col bg-white rounded-t-[32px] -mt-8 relative z-10 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
           <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2" />
           
-          <div className="mb-7 mt-1">
-            <h1 className="text-[25px] sm:text-[27px] leading-[1.25] font-bold font-montserrat text-slate-900 mb-4 sm:mb-5">
+          <div className="mb-6 mt-1">
+            <h1 className="text-[25px] sm:text-[27px] leading-[1.25] font-bold font-montserrat text-slate-900 mb-3 sm:mb-4">
               Get Solar Panels at <span className="text-accent">Zero Down Payment</span>
             </h1>
             <p className="text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 leading-normal">
@@ -297,6 +352,7 @@ export default function BookVisitPage() {
               )}
 
               <div className="space-y-3 flex-grow">
+                {/* Full Name */}
                 <div>
                   <Input 
                     id="name" 
@@ -312,6 +368,7 @@ export default function BookVisitPage() {
                   />
                 </div>
                 
+                {/* WhatsApp Phone */}
                 <div className="relative flex items-center">
                   <div className="absolute left-0 h-[52px] flex items-center justify-center px-3.5 text-slate-600 font-bold bg-slate-100 border border-r-0 border-slate-200 rounded-l-[14px] z-10 pointer-events-none">
                     +91
@@ -334,6 +391,7 @@ export default function BookVisitPage() {
                   />
                 </div>
 
+                {/* PIN Code Verification */}
                 <div>
                   <div className="relative">
                     <Input 
@@ -378,14 +436,17 @@ export default function BookVisitPage() {
                   )}
                 </div>
 
-
-
+                {/* Monthly Electricity Bill */}
                 <div>
                   <Select 
                     value={formData.monthlyBill} 
                     onValueChange={value => {
                       setSubmitError("");
-                      setFormData({ ...formData, monthlyBill: value });
+                      setFormData({ 
+                        ...formData, 
+                        monthlyBill: value,
+                        plantSize: estimatePlantSizeFromBill(value)
+                      });
                     }}
                   >
                     <SelectTrigger 
@@ -395,13 +456,74 @@ export default function BookVisitPage() {
                       <SelectValue placeholder="Monthly Electricity Bill*" />
                     </SelectTrigger>
                     <SelectContent className="rounded-[14px] z-[100] bg-white border-slate-200">
-                      <SelectItem value="< 1500" className="text-[15px] py-2.5">Less than ₹1,500</SelectItem>
-                      <SelectItem value="1500 - 2500" className="text-[15px] py-2.5">₹1,500 - ₹2,500</SelectItem>
-                      <SelectItem value="2500 - 5000" className="text-[15px] py-2.5">₹2,500 - ₹5,000</SelectItem>
-                      <SelectItem value="> 5000" className="text-[15px] py-2.5">More than ₹5,000</SelectItem>
+                      <SelectItem value="< 1500" className="text-[15px] py-2.5">Less than ₹1,500 (~2 kW system)</SelectItem>
+                      <SelectItem value="1500 - 2500" className="text-[15px] py-2.5">₹1,500 - ₹2,500 (~3 kW system)</SelectItem>
+                      <SelectItem value="2500 - 5000" className="text-[15px] py-2.5">₹2,500 - ₹5,000 (~4-5 kW system)</SelectItem>
+                      <SelectItem value="> 5000" className="text-[15px] py-2.5">More than ₹5,000 (~6-10 kW system)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+
+                {/* House Address / Colony (Optional) */}
+                <div>
+                  <Input 
+                    id="address" 
+                    placeholder="House No., Colony or Landmark (Optional)" 
+                    aria-label="Address or Landmark"
+                    value={formData.address} 
+                    onChange={e => {
+                      setSubmitError("");
+                      setFormData({ ...formData, address: e.target.value });
+                    }} 
+                    className="h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all" 
+                  />
+                </div>
+
+                {/* Preferred Date & Capacity Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <Input 
+                      id="preferredDate" 
+                      type="date"
+                      min={new Date().toISOString().split("T")[0]}
+                      aria-label="Preferred Visit Date"
+                      title="Preferred Visit Date (Optional)"
+                      value={formData.preferredDate} 
+                      onChange={e => {
+                        setSubmitError("");
+                        setFormData({ ...formData, preferredDate: e.target.value });
+                      }} 
+                      className="h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[14px] font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all" 
+                    />
+                    <p className="text-[11px] text-slate-400 mt-1 ml-1">Preferred Inspection Date (Optional)</p>
+                  </div>
+
+                  <div>
+                    <Select 
+                      value={String(formData.plantSize || 3)} 
+                      onValueChange={value => {
+                        setFormData({ ...formData, plantSize: Number(value) });
+                      }}
+                    >
+                      <SelectTrigger 
+                        aria-label="Solar Plant Capacity"
+                        className="w-full h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[14px] font-medium focus:outline-none focus:ring-0 focus:border-slate-400 focus:bg-white text-slate-700 transition-all"
+                      >
+                        <SelectValue placeholder="System Capacity (kW)" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-[14px] z-[100] bg-white border-slate-200">
+                        <SelectItem value="2" className="text-[14px] py-2">2 kW System</SelectItem>
+                        <SelectItem value="3" className="text-[14px] py-2">3 kW System (Recommended)</SelectItem>
+                        <SelectItem value="4" className="text-[14px] py-2">4 kW System</SelectItem>
+                        <SelectItem value="5" className="text-[14px] py-2">5 kW System</SelectItem>
+                        <SelectItem value="8" className="text-[14px] py-2">8 kW System</SelectItem>
+                        <SelectItem value="10" className="text-[14px] py-2">10 kW System</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-[11px] text-slate-400 mt-1 ml-1">Desired Plant Size (Optional)</p>
+                  </div>
+                </div>
+
               </div>
 
               {/* App Bottom Action Bar */}
@@ -414,7 +536,7 @@ export default function BookVisitPage() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Redirecting...</span>
+                      <span>Scheduling Site Visit...</span>
                     </>
                   ) : (
                     "Book FREE Consultation"

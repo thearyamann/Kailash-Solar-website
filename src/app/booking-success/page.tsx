@@ -9,7 +9,7 @@ import { getPincodeRegion } from "@/lib/pincode";
 
 function getLiveCustomerData() {
   if (typeof window === "undefined") {
-    return { name: "", phone: "", pincode: "", region: "", bill: "", msg: "" };
+    return { name: "", phone: "", pincode: "", region: "", bill: "", leadId: "", msg: "" };
   }
 
   let name = "";
@@ -17,6 +17,7 @@ function getLiveCustomerData() {
   let pincode = "";
   let region = "";
   let bill = "";
+  let leadId = "";
   let msg = "";
 
   // 1. Direct window.location.search (instantaneous, never stale)
@@ -27,6 +28,7 @@ function getLiveCustomerData() {
     pincode = params.get("pincode") || "";
     region = params.get("region") || "";
     bill = params.get("bill") || "";
+    leadId = params.get("lead_id") || "";
     msg = params.get("msg") || "";
   } catch (e) {}
 
@@ -49,6 +51,11 @@ function getLiveCustomerData() {
   if (!bill) {
     try {
       bill = sessionStorage.getItem("kailash_submitted_bill") || "";
+    } catch (e) {}
+  }
+  if (!leadId) {
+    try {
+      leadId = sessionStorage.getItem("kailash_submitted_lead_id") || "";
     } catch (e) {}
   }
 
@@ -87,6 +94,7 @@ function getLiveCustomerData() {
     pincode: pincode.trim(), 
     region: region || "Meerut", 
     bill: bill.trim(), 
+    leadId: leadId.trim(),
     msg 
   };
 }
@@ -99,6 +107,7 @@ function BookingSuccessAppContent() {
     pincode: "",
     region: "",
     bill: "",
+    leadId: "",
     whatsappMsg: "",
   });
 
@@ -109,6 +118,7 @@ function BookingSuccessAppContent() {
     const spPin = (searchParams.get("pincode") || "").trim();
     const spRegion = (searchParams.get("region") || "").trim();
     const spBill = (searchParams.get("bill") || "").trim();
+    const spLeadId = (searchParams.get("lead_id") || "").trim();
     const spMsg = (searchParams.get("msg") || "").trim();
 
     const name = spName || live.name;
@@ -116,6 +126,7 @@ function BookingSuccessAppContent() {
     const pincode = spPin || live.pincode;
     const region = spRegion || live.region || (pincode ? getPincodeRegion(pincode) : "") || "Meerut";
     const bill = spBill || live.bill;
+    const leadId = spLeadId || live.leadId;
 
     const defaultMsg = encodeURIComponent(
       `Hi Kailash Solar, I just booked a site visit on your website.\n\n` +
@@ -123,6 +134,7 @@ function BookingSuccessAppContent() {
       (phone ? `Phone: ${phone}\n` : "") +
       (pincode ? `PIN Code: ${pincode} [${region}]\n` : "") +
       (bill ? `Monthly Bill: ${bill}\n` : "") +
+      (leadId ? `Booking Ref: #${leadId}\n` : "") +
       `Please let me know when your engineer can visit.`
     );
 
@@ -132,6 +144,7 @@ function BookingSuccessAppContent() {
       pincode,
       region,
       bill,
+      leadId,
       whatsappMsg: spMsg || live.msg || defaultMsg,
     });
   }, [searchParams]);
@@ -231,6 +244,15 @@ function BookingSuccessAppContent() {
               <div className="flex justify-between items-center pb-2.5 border-b border-slate-200/70">
                 <span className="text-slate-500">Monthly Bill</span>
                 <span className="text-slate-900 font-semibold">{details.bill}</span>
+              </div>
+            )}
+
+            {details.leadId && (
+              <div className="flex justify-between items-center pb-2.5 border-b border-slate-200/70">
+                <span className="text-slate-500">Lead Reference ID</span>
+                <span className="text-slate-900 font-mono font-semibold text-xs bg-slate-100 px-2 py-0.5 rounded">
+                  #{details.leadId.replace(/^ks_lead_/, '')}
+                </span>
               </div>
             )}
 

@@ -21,6 +21,10 @@ import {
   recordSubmission, 
   checkDuplicateSubmission 
 } from "@/lib/submission-tracker";
+import { 
+  submitBookVisitToCRM, 
+  estimatePlantSizeFromBill 
+} from "@/lib/crm";
 
 export function BookVisitModal({ children, autoOpenDelay }: { children?: React.ReactNode, autoOpenDelay?: number }) {
   const router = useRouter();
@@ -173,17 +177,44 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
 
     setIsSubmitting(true);
 
-    const fullAddress = `${trimmedPin} (${pinCheck.region})`;
+    const userCity = pinCheck.region || "Meerut";
+    const fullAddress = `${trimmedPin} (${userCity})`;
+    const formattedPhone = formData.phone.startsWith("+91") ? formData.phone : `+91 ${formData.phone}`;
+    const calculatedPlantSize = estimatePlantSizeFromBill(formData.monthlyBill);
 
     // Formulate WhatsApp message
     const whatsappMessage = encodeURIComponent(
       `Hi, I want to book a FREE consultation.\n\n` +
       `Name: ${trimmedName}\n` +
       `WhatsApp: ${formData.phone}\n` +
-      `PIN Code: ${trimmedPin} [${pinCheck.region}]\n` +
-      `Monthly Bill: ${formData.monthlyBill || 'Not specified'}`
+      `PIN Code: ${trimmedPin} [${userCity}]\n` +
+      `Monthly Bill: ${formData.monthlyBill || 'Not specified'}\n` +
+      `Estimated Capacity: ${calculatedPlantSize} kW`
     );
     setSubmittedWhatsappMsg(whatsappMessage);
+
+    // 1. Submit lead to Zoho CRM & WhatsApp Automation API
+    const crmPayload = {
+      name: trimmedName,
+      phone: formattedPhone,
+      city: userCity,
+      address: fullAddress,
+      plant_size_kw: calculatedPlantSize,
+    };
+
+    const crmResult = await submitBookVisitToCRM(crmPayload);
+
+    if (!crmResult.success) {
+      const errorMsg = crmResult.error || "Submission error. Please try again.";
+      setSubmitError(errorMsg);
+      toast({
+        title: "Submission Error",
+        description: errorMsg,
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
     
     try {
       // Send to supabase edge function using fetch in background without blocking
@@ -200,6 +231,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
           ...formData,
           name: trimmedName,
           address: fullAddress,
+          leadId: crmResult.lead_id,
         })
       });
 
@@ -213,7 +245,8 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
             form_name: 'book_visit',
             lead_type: 'book_visit',
             pincode: trimmedPin,
-            region: pinCheck.region
+            region: pinCheck.region,
+            lead_id: crmResult.lead_id
           });
         });
         (window as any).dataLayer = (window as any).dataLayer || [];
@@ -221,7 +254,8 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
           'event': 'generate_lead',
           'form_name': 'book_visit',
           'lead_type': 'book_visit',
-          'pincode': trimmedPin
+          'pincode': trimmedPin,
+          'lead_id': crmResult.lead_id
         });
         if ((window as any).fbq) {
           (window as any).fbq('track', 'Lead');
@@ -245,9 +279,12 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       sessionStorage.setItem("kailash_submitted_phone", formData.phone);
       sessionStorage.setItem("kailash_submitted_pincode", trimmedPin);
       sessionStorage.setItem("kailash_submitted_bill", formData.monthlyBill || "");
+      if (crmResult.lead_id) {
+        sessionStorage.setItem("kailash_submitted_lead_id", crmResult.lead_id);
+      }
     }
 
-    const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}&msg=${whatsappMessage}`;
+    const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}&msg=${whatsappMessage}${crmResult.lead_id ? `&lead_id=${encodeURIComponent(crmResult.lead_id)}` : ""}`;
 
     toast({
       title: "Consultation Booked!",
