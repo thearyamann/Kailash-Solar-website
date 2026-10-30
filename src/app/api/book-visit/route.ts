@@ -102,9 +102,9 @@ export async function POST(request: NextRequest) {
       leadId = `ks_lead_${Date.now()}`;
     }
 
-    const metaToken = process.env.META_WHATSAPP_TOKEN;
-    const phoneId = process.env.META_PHONE_NUMBER_ID;
-    const officeWa = process.env.WHATSAPP_NUMBER || "918999999654";
+    const metaToken = process.env.META_WHATSAPP_TOKEN?.replace(/^["']|["']$/g, "").trim();
+    const phoneId = process.env.META_PHONE_NUMBER_ID?.replace(/^["']|["']$/g, "").trim();
+    const officeWa = (process.env.WHATSAPP_NUMBER || "918999999654").replace(/\D/g, "");
 
     // 2. Send Instant WhatsApp Alert to Kailash Solar Sales Team (+91 89999 99654)
     if (metaToken && phoneId) {

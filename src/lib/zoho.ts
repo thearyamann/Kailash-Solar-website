@@ -11,10 +11,10 @@ export async function getZohoAccessToken(): Promise<string> {
     return cachedToken.token;
   }
 
-  const clientId = process.env.ZOHO_CLIENT_ID;
-  const clientSecret = process.env.ZOHO_CLIENT_SECRET;
-  const refreshToken = process.env.ZOHO_REFRESH_TOKEN;
-  const dc = (process.env.ZOHO_DC || "in").toLowerCase();
+  const clientId = process.env.ZOHO_CLIENT_ID?.replace(/^["']|["']$/g, "").trim();
+  const clientSecret = process.env.ZOHO_CLIENT_SECRET?.replace(/^["']|["']$/g, "").trim();
+  const refreshToken = process.env.ZOHO_REFRESH_TOKEN?.replace(/^["']|["']$/g, "").trim();
+  const dc = (process.env.ZOHO_DC || "in").toLowerCase().replace(/^["']|["']$/g, "").trim();
 
   if (!clientId || !clientSecret || !refreshToken) {
     throw new Error("Zoho credentials missing in environment variables.");

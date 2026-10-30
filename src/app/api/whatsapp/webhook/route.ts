@@ -72,9 +72,9 @@ export async function POST(request: NextRequest) {
                 console.error("Failed to sync WhatsApp reply to Zoho CRM:", crmErr);
               }
 
-              const metaToken = process.env.META_WHATSAPP_TOKEN;
-              const phoneId = process.env.META_PHONE_NUMBER_ID;
-              const officeWa = process.env.WHATSAPP_NUMBER || "918999999654";
+              const metaToken = process.env.META_WHATSAPP_TOKEN?.replace(/^["']|["']$/g, "").trim();
+              const phoneId = process.env.META_PHONE_NUMBER_ID?.replace(/^["']|["']$/g, "").trim();
+              const officeWa = (process.env.WHATSAPP_NUMBER || "918999999654").replace(/\D/g, "");
 
               // Send Instant WhatsApp Alert to Kailash Solar Sales Team Phone (+91 89999 99654)
               if (metaToken && phoneId) {

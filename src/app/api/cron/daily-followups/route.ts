@@ -42,9 +42,9 @@ export async function GET(request: NextRequest) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const metaToken = process.env.META_WHATSAPP_TOKEN;
-  const phoneId = process.env.META_PHONE_NUMBER_ID;
-  const dc = (process.env.ZOHO_DC || "in").toLowerCase();
+  const metaToken = process.env.META_WHATSAPP_TOKEN?.replace(/^["']|["']$/g, "").trim();
+  const phoneId = process.env.META_PHONE_NUMBER_ID?.replace(/^["']|["']$/g, "").trim();
+  const dc = (process.env.ZOHO_DC || "in").toLowerCase().replace(/^["']|["']$/g, "").trim();
 
   if (!metaToken || !phoneId) {
     return NextResponse.json({ error: "Meta WhatsApp credentials not set" }, { status: 500 });
