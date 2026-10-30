@@ -52,12 +52,19 @@ export async function GET(request: NextRequest) {
 
   const results: {
     timestamp: string;
+    token_debug?: { hasToken: boolean; prefix?: string; length?: number; phoneId?: string };
     total_evaluated: number;
     dispatched: number;
     failed: number;
     details: Array<{ lead_id: string; name: string; phone: string; template: string; status: string }>;
   } = {
     timestamp: new Date().toISOString(),
+    token_debug: {
+      hasToken: Boolean(metaToken),
+      prefix: metaToken ? metaToken.slice(0, 8) + "..." : undefined,
+      length: metaToken ? metaToken.length : 0,
+      phoneId,
+    },
     total_evaluated: 0,
     dispatched: 0,
     failed: 0,
