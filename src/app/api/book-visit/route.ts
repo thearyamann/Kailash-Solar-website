@@ -1,5 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getZohoAccessToken, addNoteToZohoLead, addTagToZohoLead, findZohoLeadByPhone } from "@/lib/zoho";
+import {
+  addNoteToZohoLead,
+  addTagsToZohoLead,
+  createZohoLead,
+  findZohoLeadByPhone,
+  hasZohoCredentials,
+  updateZohoLead,
+} from "@/lib/zoho";
+import { sendCustomerAcknowledgement, sendTeamLeadAlert } from "@/lib/whatsapp";
+import { istNowString, toWhatsappNumber } from "@/lib/env";
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,178 +19,145 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
+// Which website form the lead came from. Only "book_visit" counts as a booked site visit.
+const SOURCES: Record<string, { label: string; leadSource: string }> = {
+  book_visit: { label: "Website – Book Free Site Visit", leadSource: "Website Book Visit Form" },
+  consultation: { label: "Website – Free Consultation form", leadSource: "Website Consultation Form" },
+  quote: { label: "Website – Solar Quote / Book Installation", leadSource: "Website Quote Form" },
+  contact: { label: "Website – Contact Us form", leadSource: "Website Contact Form" },
+};
+
+const str = (v: unknown) => (v === undefined || v === null ? "" : String(v).trim());
+
 /**
- * Website Form Booking Endpoint: POST /api/book-visit
- * Connects /book-visit and modal forms directly to Zoho CRM & WhatsApp:
- * 1. Creates or updates the lead in Zoho CRM with status 'Site Visit Scheduled'
- * 2. Tags the lead as 'Site Visit Booked' (so cold follow-up loops automatically STOP)
- * 3. Sends instant WhatsApp confirmation message to the customer
- * 4. Dispatches an instant WhatsApp alert to the Kailash Solar team (+91 89999 99654)
+ * Website Lead Endpoint: POST /api/book-visit
+ * Used by every website form (Book Visit page/modal, Consultation, Quote, Contact):
+ * 1. Creates or updates the lead in Zoho CRM (name, phone, PIN code, address)
+ * 2. Tags it 'Hot Lead - Interested' / 'Website Lead' (+ 'Site Visit Booked' for bookings) so cold follow-ups STOP
+ * 3. Sends an instant free-form WhatsApp alert with the lead's details to the Kailash Solar team number
+ * 4. Sends the approved "request received" acknowledgement template to the customer
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}));
 
-    const name = (body.name || body.customer_name || body.fullName || "Customer").trim();
-    const rawPhone = (body.phone || body.mobile || body.phone1 || "").toString().trim();
-    const city = (body.city || "Meerut").trim();
-    const address = (body.address || "").trim();
-    const preferredDate = (body.preferred_date || body.visit_date || body.date || "").trim();
-    const plantSize = body.plant_size_kw || body.recommended_plant_size_kw || 3;
+    const sourceKey = SOURCES[str(body.source)] ? str(body.source) : "book_visit";
+    const source = SOURCES[sourceKey];
+    const isBooking = sourceKey === "book_visit";
+
+    const name = str(body.name || body.customer_name || body.fullName) || "Customer";
+    const rawPhone = str(body.phone || body.mobile || body.phone1);
+    const city = str(body.city) || "Meerut";
+    const address = str(body.address);
+    const pincode = str(body.pincode || body.pin_code || body.zip).replace(/\D/g, "").slice(0, 6);
+    const preferredDate = str(body.preferred_date || body.visit_date || body.date);
+    const plantSize = str(body.plant_size_kw || body.recommended_plant_size_kw);
+    const monthlyBill = str(body.monthly_bill || body.monthlyBill);
+    const message = str(body.message).slice(0, 500);
 
     if (!rawPhone) {
       return NextResponse.json({ success: false, error: "Phone number is required" }, { status: 400, headers: corsHeaders });
     }
+    const waPhone = toWhatsappNumber(rawPhone);
+    if (!waPhone) {
+      return NextResponse.json(
+        { success: false, error: "Please enter a valid 10-digit mobile number" },
+        { status: 400, headers: corsHeaders }
+      );
+    }
 
-    const cleanPhone = rawPhone.replace(/\D/g, "");
-    const formattedPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+    const nowStr = istNowString();
+    const details = [
+      `Form: ${source.label}`,
+      preferredDate && `Preferred Date: ${preferredDate}`,
+      pincode && `PIN Code: ${pincode}`,
+      address && `Address: ${address}`,
+      plantSize && `Plant Size: ${plantSize} kW`,
+      monthlyBill && `Monthly Bill: ${monthlyBill}`,
+      message && `Message: ${message}`,
+    ].filter(Boolean) as string[];
 
     let leadId: string | undefined;
+    let isNewLead = false;
 
-    // 1. Direct Zoho CRM Sync (if configured)
-    const hasZohoCreds = Boolean(
-      process.env.ZOHO_CLIENT_ID &&
-      process.env.ZOHO_CLIENT_SECRET &&
-      process.env.ZOHO_REFRESH_TOKEN
-    );
-
-    if (hasZohoCreds) {
+    if (hasZohoCredentials()) {
       try {
-        const dc = (process.env.ZOHO_DC || "in").toLowerCase();
-        const zohoToken = await getZohoAccessToken();
-
-        // Check if lead already exists in Zoho CRM
-        const existingLead = await findZohoLeadByPhone(cleanPhone);
+        const existingLead = await findZohoLeadByPhone(waPhone);
         leadId = existingLead?.id;
 
         if (!leadId) {
-          // Create new Lead in Zoho CRM
-          const createUrl = `https://www.zohoapis.${dc}/crm/v6/Leads`;
-          const createRes = await fetch(createUrl, {
-            method: "POST",
-            headers: {
-              Authorization: `Zoho-oauthtoken ${zohoToken}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              data: [
-                {
-                  Last_Name: name,
-                  Full_Name: name,
-                  Phone: `+${formattedPhone}`,
-                  City: city,
-                  Street: address,
-                  Lead_Source: "Website Book Visit Form",
-                  Lead_Status: "Site Visit Scheduled",
-                  Description: `Site visit requested on website for ${preferredDate || "Earliest available date"}. Plant size: ${plantSize} kW`,
-                },
-              ],
-            }),
+          leadId = await createZohoLead({
+            Last_Name: name,
+            Full_Name: name,
+            Phone: `+${waPhone}`,
+            City: city,
+            Street: address || undefined,
+            Zip_Code: pincode || undefined,
+            Lead_Source: source.leadSource,
+            Lead_Status: isBooking ? "Site Visit Scheduled" : "Not Contacted",
+            Description: `${source.label} submitted on ${nowStr}.\n${details.join("\n")}`,
           });
-
-          const createData = await createRes.json();
-          leadId = createData?.data?.[0]?.details?.id;
+          isNewLead = true;
           console.log(`✓ Created new lead in Zoho CRM for ${name} (ID: ${leadId})`);
         } else {
           console.log(`✓ Found existing lead in Zoho CRM for ${name} (ID: ${leadId})`);
+          const updates: Record<string, string> = {};
+          if (pincode) updates.Zip_Code = pincode;
+          if (address) updates.Street = address;
+          if (isBooking) updates.Lead_Status = "Site Visit Scheduled";
+          if (Object.keys(updates).length) await updateZohoLead(leadId, updates);
         }
 
         // Tag in Zoho CRM to immediately stop cold follow-ups
-        if (leadId) {
-          const nowStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-          await addTagToZohoLead(leadId, "Site Visit Booked");
-          await addTagToZohoLead(leadId, "Site Visit Scheduled");
-          await addNoteToZohoLead(
-            leadId,
-            "Website Site Visit Booked",
-            `Customer booked free site visit via website on ${nowStr}.\nPreferred Date: ${preferredDate || "Not specified"}\nAddress: ${address || "Not specified"}\nPlant Size: ${plantSize} kW`
-          );
-        }
+        await addTagsToZohoLead(
+          leadId,
+          isBooking ? ["Hot Lead - Interested", "Website Lead", "Site Visit Booked", "Site Visit Scheduled"] : ["Hot Lead - Interested", "Website Lead"]
+        );
+        await addNoteToZohoLead(
+          leadId,
+          isBooking ? "Website Site Visit Booked" : `Website Lead: ${source.label}`,
+          `Customer submitted ${source.label} on ${nowStr}.\n${details.join("\n")}`
+        );
       } catch (zohoErr) {
+        // The team alert below still goes out so the lead is never lost.
         console.error("Zoho CRM sync error:", zohoErr);
       }
     } else {
       console.log("[Local / Mock Mode] Zoho credentials not provided, generating mock lead ID.");
-      leadId = `ks_lead_${Date.now()}`;
     }
 
-    const metaToken = process.env.META_WHATSAPP_TOKEN?.replace(/^["']|["']$/g, "").trim();
-    const phoneId = process.env.META_PHONE_NUMBER_ID?.replace(/^["']|["']$/g, "").trim();
-    const officeWa = (process.env.WHATSAPP_NUMBER || "918999999654").replace(/\D/g, "");
+    // Instant free-form alert to the Kailash Solar team number
+    await sendTeamLeadAlert({
+      name,
+      phone: waPhone,
+      city,
+      pincode,
+      address,
+      message,
+      extra: [
+        preferredDate && `📅 *Preferred Visit Date:* ${preferredDate}`,
+        plantSize && `⚡ *Solar Plant:* ${plantSize} kW`,
+        monthlyBill && `💡 *Monthly Bill:* ${monthlyBill}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+      source: source.label,
+      leadId,
+      isNewLead,
+    });
 
-    // 2. Send Instant WhatsApp Alert to Kailash Solar Sales Team (+91 89999 99654)
-    if (metaToken && phoneId) {
-      try {
-        const teamAlert =
-          `🏡 *NEW SITE VISIT BOOKED! (Website)*\n\n` +
-          `एक कस्टमर ने वेबसाइट पर फ्री साइट विज़िट बुक की है!\n\n` +
-          `👤 *नाम:* ${name}\n` +
-          `📞 *फ़ोन:* +${formattedPhone}\n` +
-          `📍 *शहर:* ${city}\n` +
-          `📅 *तारीख:* ${preferredDate || "जल्द से जल्द"}\n` +
-          `🏠 *पता:* ${address || "कॉल पर पूछें"}\n` +
-          `⚡ *सोलर प्लांट:* ${plantSize} kW\n\n` +
-          `👉 कृपया तुरंत कस्टमर को कॉल करके समय कन्फर्म करें!`;
-
-        await fetch(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${metaToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            messaging_product: "whatsapp",
-            recipient_type: "individual",
-            to: officeWa,
-            type: "text",
-            text: { body: teamAlert },
-          }),
-        });
-        console.log(`✓ Sent instant site visit alert to sales team (+${officeWa})`);
-      } catch (alertErr) {
-        console.error("Failed to send team alert:", alertErr);
-      }
-
-      // 3. Send WhatsApp Confirmation to Customer
-      try {
-        const customerConfirmation =
-          `नमस्ते ${name} जी! ☀️\n\n` +
-          `Kailash Solar मेरठ से फ्री साइट सर्वे बुक करने के लिए बहुत-बहुत धन्यवाद।\n\n` +
-          `हमारी टेक्निकल टीम आपकी छत का सर्वे करने और ₹1,08,000 की सरकारी सब्सिडी समझाने के लिए जल्द ही आपसे संपर्क करेगी।\n\n` +
-          `यदि आपको कोई सवाल पूछना है, तो सीधे हमारे ऑफिस कॉल करें:\n` +
-          `📞 +91 89999 99654\n\n` +
-          `*Kailash Solar – Meerut’s No. 1 Solar Company.*`;
-
-        await fetch(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${metaToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            messaging_product: "whatsapp",
-            recipient_type: "individual",
-            to: formattedPhone,
-            type: "text",
-            text: { body: customerConfirmation },
-          }),
-        });
-        console.log(`✓ Sent booking confirmation to customer (+${formattedPhone})`);
-      } catch (custErr) {
-        console.error("Failed to send customer confirmation:", custErr);
-      }
-    }
+    // Customer confirmation via the approved UTILITY template (free-form text would not be delivered
+    // because the customer has not messaged us in the last 24 hours).
+    const ack = await sendCustomerAcknowledgement(waPhone);
+    if (!ack.ok) console.error(`✗ Customer acknowledgement to +${waPhone} failed: ${ack.error}`);
 
     return NextResponse.json(
       {
         success: true,
-        message: "Site visit booked and synced to Zoho CRM successfully",
+        message: "Lead received and synced to Zoho CRM",
         lead_id: leadId || `ks_lead_${Date.now()}`,
       },
-      {
-        status: 200,
-        headers: corsHeaders,
-      }
+      { status: 200, headers: corsHeaders }
     );
   } catch (err: any) {
     console.error("Book visit handler error:", err);

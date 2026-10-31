@@ -1,242 +1,225 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getZohoAccessToken, addNoteToZohoLead, addTagToZohoLead } from "@/lib/zoho";
+import { addNoteToZohoLead, addTagsToZohoLead, fetchAllZohoLeads, fetchRecentLeadNotes, zohoTagNames } from "@/lib/zoho";
+import { hasWhatsappCredentials, sendWhatsappTemplate, teamWhatsappNumber } from "@/lib/whatsapp";
+import { istDate, istNowString, readEnv, toWhatsappNumber } from "@/lib/env";
+import {
+  FOLLOWUP_NOTE_PREFIX,
+  FOLLOWUP_STEPS,
+  FollowUpDates,
+  FollowUpStep,
+  planFollowUp,
+  stepFromNoteTitle,
+} from "@/lib/followups";
 
-const TEMPLATE_CONFIGS = {
-  // Message #1: Initial Short Follow-up Card with Flyer
-  inquiry_initial: {
-    name: "kailash_short_followup",
-    language: "en",
-    hasHeader: true,
-    mediaId: "1826165885362638",
-  },
-  // Message #3: Website Visitor Follow-up (1-2 days after visiting website without booking)
-  website_followup: {
-    name: "kailash_visit_booking_followup",
-    language: "en",
-    hasHeader: false,
-  },
-  // Message #4: Gentle Re-engagement / Day 4 Reminder (sent strictly after 4 days if no reply)
-  last_reminder: {
-    name: "kailash_day4_reminder",
-    language: "en",
-    hasHeader: true,
-    mediaId: "1104441709052746",
-  },
-  // Won Customer Referral Rewards
-  refer_and_earn: {
-    name: "kailash_refer_and_earn",
-    language: "hi",
-    imageUrl:
-      "https://scontent.whatsapp.net/v/t61.29466-34/869701833_1045199618541379_8865236857511946707_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=0NS8DBXJaU4Q7kNvwFvl4iL&_nc_oc=Adp8VGvKneLi4T32GU9OtU5aFVogxam5HSCJbBUIEHo8vOPA1Fg3zxvmidsiCvcLcB4&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=_9kDy2dYUDQCRdxRO-WMwA&_nc_tpa=Q5bMBQI7Xkw_PxKZwdc0kXBH1c5mLqt-yug2GRAxajFt-n9ddLTz7oNed9Rf9-hDboUHJz3RHGr3nHZNDQ&oh=01_Q5Aa5wHLW8A0gjhwyU5tcwko9BoOOMvXItEWrMmkvCaJqMESAw&oe=6B0A8916",
-    hasHeader: true,
-  },
-};
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
+// Max number of NEW leads that get the Day 1 message per day (reminders for leads already in the sequence are not capped).
+const DEFAULT_DAILY_NEW_LIMIT = 25;
+const NOTE_LOOKBACK_DAYS = 60;
+const SEND_CONCURRENCY = 5;
+
+type Detail = { lead_id: string; name: string; phone: string; step?: string; template?: string; status: string };
+
+function isAuthorized(request: NextRequest): boolean {
+  const secret = readEnv("CRON_SECRET");
+  if (secret) return request.headers.get("authorization") === `Bearer ${secret}`;
+  // Without CRON_SECRET, only accept Vercel's own cron invoker.
+  return (request.headers.get("user-agent") || "").startsWith("vercel-cron/");
+}
+
+function firstNameOf(lead: any): string {
+  const name = String(lead.Full_Name || lead.Last_Name || "").replace(/[\n\t]+/g, " ").trim();
+  const first = name.split(/\s+/)[0] || "";
+  return /[A-Za-zऀ-ॿ]/.test(first) ? first.slice(0, 30) : "Customer";
+}
+
+/** Rebuilds the IST send date of each follow-up step per lead from the cron's own Zoho notes. */
+function buildSendDates(notes: Array<{ leadId: string; title: string; createdTime: string }>): Map<string, FollowUpDates> {
+  const byLead = new Map<string, FollowUpDates>();
+  // Oldest first so the first matching note wins for each step
+  for (const note of [...notes].reverse()) {
+    const step = stepFromNoteTitle(note.title);
+    if (!step) continue;
+    const dates = byLead.get(note.leadId) || {};
+    const day = istDate(new Date(note.createdTime));
+    if (step === "legacy_day4_template") {
+      // The old cron used the same template for Day 4 and Day 10
+      if (!dates.day4) dates.day4 = day;
+      else if (!dates.day10) dates.day10 = day;
+    } else if (!dates[step]) {
+      dates[step] = day;
+    }
+    byLead.set(note.leadId, dates);
+  }
+  return byLead;
+}
 
 /**
  * Daily Automated WhatsApp Follow-up Cron
- * Runs automatically every morning at 10:00 AM IST (configured in vercel.json)
+ * Runs automatically every morning at 10:00 AM IST (configured in vercel.json).
+ *
+ * Query params (all require auth):
+ *   ?dry_run=1        → evaluate every lead and report what WOULD be sent; sends nothing, writes nothing
+ *   ?only_phone=98..  → restrict the run to a single phone number (for testing)
+ *   ?as_of=YYYY-MM-DD → (dry run only) evaluate as if today were that date
  */
 export async function GET(request: NextRequest) {
-  // Verify Cron Secret if set (for security)
-  const authHeader = request.headers.get("authorization");
-  if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!isAuthorized(request)) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const metaToken = process.env.META_WHATSAPP_TOKEN?.replace(/^["']|["']$/g, "").trim();
-  const phoneId = process.env.META_PHONE_NUMBER_ID?.replace(/^["']|["']$/g, "").trim();
-  const dc = (process.env.ZOHO_DC || "in").toLowerCase().replace(/^["']|["']$/g, "").trim();
+  const { searchParams } = new URL(request.url);
+  const dryRun = searchParams.get("dry_run") === "1";
+  const onlyPhone = toWhatsappNumber(searchParams.get("only_phone"));
+  // Dry runs can simulate a future day, e.g. ?dry_run=1&as_of=2026-11-02
+  const asOf = searchParams.get("as_of");
+  if (asOf && (!dryRun || !/^\d{4}-\d{2}-\d{2}$/.test(asOf))) {
+    return NextResponse.json({ error: "as_of (YYYY-MM-DD) is only allowed with dry_run=1" }, { status: 400 });
+  }
+  const dailyNewLimit = Number(readEnv("FOLLOWUP_DAILY_NEW_LIMIT")) || DEFAULT_DAILY_NEW_LIMIT;
 
-  if (!metaToken || !phoneId) {
+  if (!dryRun && !hasWhatsappCredentials()) {
     return NextResponse.json({ error: "Meta WhatsApp credentials not set" }, { status: 500 });
   }
 
-  const results: {
-    timestamp: string;
-    token_debug?: { hasToken: boolean; prefix?: string; length?: number; phoneId?: string };
-    total_evaluated: number;
-    dispatched: number;
-    failed: number;
-    details: Array<{ lead_id: string; name: string; phone: string; template: string; status: string }>;
-  } = {
+  const today = asOf || istDate();
+  const results = {
     timestamp: new Date().toISOString(),
-    token_debug: {
-      hasToken: Boolean(metaToken),
-      prefix: metaToken ? metaToken.slice(0, 8) + "..." : undefined,
-      length: metaToken ? metaToken.length : 0,
-      phoneId,
-    },
-    total_evaluated: 0,
+    today_ist: today,
+    dry_run: dryRun,
+    total_leads: 0,
+    daily_new_limit: dailyNewLimit,
+    day1_already_sent_today: 0,
     dispatched: 0,
     failed: 0,
-    details: [],
+    aborted: null as string | null,
+    summary: {} as Record<string, number>,
+    details: [] as Detail[],
   };
+  const count = (key: string) => (results.summary[key] = (results.summary[key] || 0) + 1);
 
   try {
-    const zohoToken = await getZohoAccessToken();
-    const leadsUrl = `https://www.zohoapis.${dc}/crm/v6/Leads?fields=Full_Name,Phone,Tag,Description,City,Modified_Time&per_page=20`;
+    const [allLeads, notes] = await Promise.all([
+      fetchAllZohoLeads(["Full_Name", "Last_Name", "Phone", "Mobile", "Tag", "Lead_Status", "Created_Time", "Description"]),
+      fetchRecentLeadNotes(new Date(Date.now() - NOTE_LOOKBACK_DAYS * 86_400_000)),
+    ]);
+    const leads = onlyPhone
+      ? allLeads.filter((l) => toWhatsappNumber(l.Phone || l.Mobile) === onlyPhone)
+      : allLeads;
+    results.total_leads = leads.length;
 
-    const crmResp = await fetch(leadsUrl, {
-      headers: { Authorization: `Zoho-oauthtoken ${zohoToken}` },
+    const sendDates = buildSendDates(notes);
+    sendDates.forEach((dates) => {
+      if (dates.day1 === today) results.day1_already_sent_today++;
     });
+    let day1Budget = Math.max(0, dailyNewLimit - results.day1_already_sent_today);
 
-    if (!crmResp.ok) {
-      throw new Error(`Zoho API responded with status ${crmResp.status}`);
-    }
-
-    const crmData = await crmResp.json();
-    const leads = crmData?.data || [];
-    results.total_evaluated = leads.length;
+    const teamNumber = teamWhatsappNumber();
+    const queue: Array<{ lead: any; step: FollowUpStep }> = [];
 
     for (const lead of leads) {
-      const phone = lead.Phone;
-      if (!phone) continue;
-
-      const cleanPhone = phone.replace(/\D/g, "");
-      const formattedPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
-      const firstName = (lead.Full_Name || "Customer").trim().split(" ")[0];
-
-      // Multi-Branch Intelligence Loop:
-      const tags: string[] = (lead.Tag || []).map((t: any) => (typeof t === "string" ? t : t.name));
-      const isWon = tags.includes("Won Customer");
-      const hasReplied = tags.includes("Hot Lead - Interested") || tags.includes("Replied - Interested") || tags.includes("Replied");
-      const hasBooked = tags.includes("Site Visit Scheduled") || tags.includes("Site Visit Booked") || tags.includes("Site Visit Completed");
-      const visitedWebsite = tags.includes("Visited Website");
-      const followUp1Sent = tags.includes("Follow-up 1 Sent");
-      const websiteFollowUpSent = tags.includes("Website Follow-up Sent");
-      const day4ReminderSent = tags.includes("Day 4 Reminder Sent") || tags.includes("Last Reminder Sent");
-      const day10ReminderSent = tags.includes("Day 10 Final Reminder Sent");
-
-      // Stop if engaged, already booked, or completed full Day 10 cycle
-      if (hasReplied || hasBooked || day10ReminderSent) {
-        continue;
-      }
-
-      let targetTemplateKey: keyof typeof TEMPLATE_CONFIGS = "inquiry_initial";
-      let stepTagToAdd = "Follow-up 1 Sent";
-
-      if (isWon) {
-        targetTemplateKey = "refer_and_earn";
-        stepTagToAdd = "Referral Offer Sent";
-      } else if (visitedWebsite && !websiteFollowUpSent) {
-        // Branch 2: Customer visited website 1-2 days ago without booking
-        targetTemplateKey = "website_followup";
-        stepTagToAdd = "Website Follow-up Sent";
-      } else if (day4ReminderSent && !day10ReminderSent) {
-        // Branch 4: Customer received Day 4 reminder, waited 6 more days (Day 10 total) without action
-        const modifiedTime = lead.Modified_Time ? new Date(lead.Modified_Time).getTime() : 0;
-        const hoursSinceLastTouch = (Date.now() - modifiedTime) / (1000 * 60 * 60);
-        if (hoursSinceLastTouch < 144) {
-          // Still within the 6-day gap between Day 4 and Day 10; wait
-          continue;
-        }
-        targetTemplateKey = "last_reminder";
-        stepTagToAdd = "Day 10 Final Reminder Sent";
-      } else if ((followUp1Sent || websiteFollowUpSent) && !day4ReminderSent) {
-        // Branch 3: Customer received outreach 4 days ago without action
-        // Enforce strict 4-day (96 hours) cooling-off gap before sending the Day 4 reminder
-        const modifiedTime = lead.Modified_Time ? new Date(lead.Modified_Time).getTime() : 0;
-        const hoursSinceLastTouch = (Date.now() - modifiedTime) / (1000 * 60 * 60);
-        if (hoursSinceLastTouch < 96) {
-          // Still within the 4-day window; do not send reminder yet
-          continue;
-        }
-        targetTemplateKey = "last_reminder";
-        stepTagToAdd = "Day 4 Reminder Sent";
-      } else if (!followUp1Sent) {
-        // Branch 1: Initial Short Follow-up Card with Flyer
-        targetTemplateKey = "inquiry_initial";
-        stepTagToAdd = "Follow-up 1 Sent";
-      } else {
-        continue;
-      }
-
-      const tmpl = TEMPLATE_CONFIGS[targetTemplateKey];
-
-      // Build Meta API components
-      const components: any[] = [];
-      if (tmpl.hasHeader) {
-        if ((tmpl as any).mediaId) {
-          components.push({
-            type: "header",
-            parameters: [{ type: "image", image: { id: (tmpl as any).mediaId } }],
-          });
-        } else if ((tmpl as any).imageUrl) {
-          components.push({
-            type: "header",
-            parameters: [{ type: "image", image: { link: (tmpl as any).imageUrl } }],
-          });
-        }
-      }
-      components.push({
-        type: "body",
-        parameters: [{ type: "text", text: firstName }],
-      });
-
-      // Dispatch to Meta
-      const metaPayload = {
-        messaging_product: "whatsapp",
-        recipient_type: "individual",
-        to: formattedPhone,
-        type: "template",
-        template: {
-          name: tmpl.name,
-          language: { code: tmpl.language },
-          components,
+      const phone = lead.Phone || lead.Mobile || "";
+      const decision = planFollowUp(
+        {
+          id: lead.id,
+          phone,
+          status: lead.Lead_Status,
+          tags: zohoTagNames(lead),
+          createdDate: lead.Created_Time ? istDate(new Date(lead.Created_Time)) : null,
+          description: lead.Description,
         },
-      };
+        sendDates.get(lead.id) || {},
+        today,
+        { teamNumber }
+      );
 
-      try {
-        const metaRes = await fetch(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${metaToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(metaPayload),
-        });
-
-        const metaData = await metaRes.json();
-
-        if (metaData.messages && metaData.messages.length > 0) {
-          results.dispatched++;
-          results.details.push({
-            lead_id: lead.id,
-            name: lead.Full_Name,
-            phone: formattedPhone,
-            template: tmpl.name,
-            status: "sent",
-          });
-
-          // Log follow-up Note & Update Stage Tag in Zoho CRM
-          const noteTitle = `Automated WhatsApp: ${tmpl.name}`;
-          const noteBody = `Automated message sent: ${tmpl.name}\nStep: ${stepTagToAdd}\nDate: ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}`;
-          await addNoteToZohoLead(lead.id, noteTitle, noteBody);
-          await addTagToZohoLead(lead.id, stepTagToAdd);
-        } else {
-          results.failed++;
-          results.details.push({
-            lead_id: lead.id,
-            name: lead.Full_Name,
-            phone: formattedPhone,
-            template: tmpl.name,
-            status: metaData.error?.message || "error",
-          });
-        }
-      } catch (sendErr: any) {
-        results.failed++;
-        results.details.push({
-          lead_id: lead.id,
-          name: lead.Full_Name,
-          phone: formattedPhone,
-          template: tmpl.name,
-          status: sendErr.message,
-        });
+      if (decision.action === "skip" || decision.action === "wait") {
+        count(`${decision.action}: ${decision.reason.replace(/\d+ day\(s\)/, "N day(s)")}`);
+        continue;
       }
+
+      if (decision.action === "backfill") {
+        // A step tag exists without a recorded date: record today as its date instead of guessing (never sends a message).
+        count(`backfill: ${decision.step}`);
+        if (!dryRun) {
+          await addNoteToZohoLead(
+            lead.id,
+            `${FOLLOWUP_NOTE_PREFIX} ${decision.step} (date recorded, no message sent)`,
+            `${decision.reason}. Recorded ${istNowString()} so the next reminder is timed from today.`
+          );
+        }
+        continue;
+      }
+
+      if (decision.step === "day1") {
+        if (day1Budget <= 0) {
+          count("wait: daily new-lead limit reached");
+          continue;
+        }
+        day1Budget--;
+      }
+      queue.push({ lead, step: decision.step });
     }
 
+    const dispatch = async ({ lead, step }: { lead: any; step: FollowUpStep }) => {
+      const cfg = FOLLOWUP_STEPS[step];
+      const phone = toWhatsappNumber(lead.Phone || lead.Mobile);
+      const detail: Detail = { lead_id: lead.id, name: lead.Full_Name, phone, step, template: cfg.template, status: "" };
+      results.details.push(detail);
+      count(`send: ${step}`);
+
+      if (dryRun) {
+        detail.status = "dry_run";
+        return;
+      }
+      if (results.aborted) {
+        detail.status = "not sent (run aborted)";
+        return;
+      }
+
+      const components: any[] = [];
+      if (cfg.headerImageUrl) {
+        components.push({ type: "header", parameters: [{ type: "image", image: { link: cfg.headerImageUrl } }] });
+      }
+      components.push({ type: "body", parameters: [{ type: "text", text: firstNameOf(lead) }] });
+
+      const sent = await sendWhatsappTemplate(phone, cfg.template, cfg.language, components);
+      if (!sent.ok) {
+        results.failed++;
+        detail.status = `failed: ${sent.error}`;
+        if (/access token|OAuthException|session has expired/i.test(sent.error || "")) {
+          results.aborted = `Meta token problem: ${sent.error}`;
+        }
+        return;
+      }
+
+      results.dispatched++;
+      // Tag first: the tag is what stops the same step from being sent again tomorrow.
+      const tagged = await addTagsToZohoLead(lead.id, [cfg.tag]);
+      const noted = await addNoteToZohoLead(
+        lead.id,
+        `${FOLLOWUP_NOTE_PREFIX} ${step} (${cfg.template})`,
+        `Automated WhatsApp sent: ${cfg.template}\nStep: ${cfg.tag}\nMeta message ID: ${sent.messageId}\nDate: ${istNowString()}`
+      );
+      detail.status = tagged && noted ? "sent" : `sent, but Zoho update failed (tag: ${tagged}, note: ${noted})`;
+      if (!tagged) {
+        // If Zoho can't record the step, stop the run so nobody is messaged twice.
+        results.aborted = `Zoho tag update failed for lead ${lead.id}; stopped to prevent duplicate messages`;
+      }
+    };
+
+    for (let i = 0; i < queue.length && !results.aborted; i += SEND_CONCURRENCY) {
+      await Promise.all(queue.slice(i, i + SEND_CONCURRENCY).map(dispatch));
+    }
+
+    console.log(
+      `[Follow-up Cron] ${dryRun ? "DRY RUN " : ""}leads=${results.total_leads} sent=${results.dispatched} failed=${results.failed}` +
+        (results.aborted ? ` ABORTED: ${results.aborted}` : "")
+    );
     return NextResponse.json(results);
   } catch (err: any) {
+    console.error("[Follow-up Cron] Error:", err);
     return NextResponse.json({ error: err.message, results }, { status: 500 });
   }
 }

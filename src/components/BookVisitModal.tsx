@@ -199,7 +199,10 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       phone: formattedPhone,
       city: userCity,
       address: fullAddress,
+      pincode: trimmedPin,
       plant_size_kw: calculatedPlantSize,
+      monthly_bill: formData.monthlyBill || "",
+      source: "book_visit" as const,
     };
 
     const crmResult = await submitBookVisitToCRM(crmPayload);

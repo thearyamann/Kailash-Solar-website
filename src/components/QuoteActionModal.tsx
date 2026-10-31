@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { submitBookVisitToCRM } from "@/lib/crm";
 import { 
   validatePincode, 
   isServiceablePincode, 
@@ -119,6 +120,19 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
     }
     
     setIsSubmitting(true);
+
+    // Sync lead to Zoho CRM + instant WhatsApp alert to the team (never blocks the form)
+    await submitBookVisitToCRM({
+      name: trimmedName,
+      phone: formData.phone,
+      city: pinCheck.region || "Meerut",
+      address: `${trimmedPin} (${pinCheck.region})`,
+      pincode: trimmedPin,
+      plant_size_kw: Number(quoteData.systemSize) || undefined,
+      monthly_bill: `${quoteData.systemSize}kW System`,
+      source: "quote",
+    });
+
     try {
       // Send to supabase edge function using fetch for better error transparency
       const { data: { session } } = await supabase.auth.getSession();

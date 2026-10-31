@@ -164,8 +164,11 @@ export default function BookVisitPage() {
       phone: formattedPhone,
       city: userCity,
       address: formData.address.trim() ? formData.address.trim() : fullAddress,
+      pincode: trimmedPin,
       preferred_date: formData.preferredDate || "",
       plant_size_kw: calculatedPlantSize,
+      monthly_bill: formattedBill,
+      source: "book_visit",
     };
 
     const crmResult = await submitBookVisitToCRM(crmPayload);

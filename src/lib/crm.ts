@@ -7,8 +7,13 @@ export interface BookVisitPayload {
   phone: string;
   city?: string;
   address?: string;
+  pincode?: string;
   preferred_date?: string;
   plant_size_kw?: number;
+  monthly_bill?: string;
+  message?: string;
+  /** Which website form the lead came from (default "book_visit"). */
+  source?: "book_visit" | "consultation" | "quote" | "contact";
 }
 
 export interface BookVisitResponse {
@@ -68,8 +73,12 @@ export async function submitBookVisitToCRM(payload: BookVisitPayload): Promise<B
     phone: payload.phone.trim(),
     city: payload.city || "Meerut",
     address: payload.address || "",
+    pincode: payload.pincode || "",
     preferred_date: payload.preferred_date || "",
     plant_size_kw: payload.plant_size_kw && payload.plant_size_kw > 0 ? payload.plant_size_kw : 3,
+    monthly_bill: payload.monthly_bill || "",
+    message: payload.message || "",
+    source: payload.source || "book_visit",
   };
 
   try {

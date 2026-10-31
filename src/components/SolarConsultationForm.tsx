@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { submitBookVisitToCRM } from "@/lib/crm";
 import { Info, Check, Calculator, Zap, IndianRupee, ArrowRight, Phone, CheckCircle2, MessageCircle, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -122,6 +123,17 @@ export function SolarConsultationForm() {
     setIsSubmitting(true);
 
     const fullAddress = `${trimmedPin} (${pinCheck.region})`;
+
+    // Sync lead to Zoho CRM + instant WhatsApp alert to the team (never blocks the form)
+    await submitBookVisitToCRM({
+      name: trimmedName,
+      phone: formData.phone,
+      city: pinCheck.region || "Meerut",
+      address: fullAddress,
+      pincode: trimmedPin,
+      monthly_bill: formData.monthlyBill || "",
+      source: "consultation",
+    });
 
     // Formulate WhatsApp message
     const whatsappMessage = encodeURIComponent(

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { submitBookVisitToCRM } from "@/lib/crm";
 import { 
   validatePincode, 
   isServiceablePincode, 
@@ -86,6 +87,18 @@ const ContactSection = () => {
 
     setIsSubmitting(true);
     const fullAddress = `${trimmedPin} (${pinCheck.region})`;
+
+    // Sync lead to Zoho CRM + instant WhatsApp alert to the team (never blocks the form)
+    await submitBookVisitToCRM({
+      name: trimmedName,
+      phone: formData.phone,
+      city: pinCheck.region || "Meerut",
+      address: fullAddress,
+      pincode: trimmedPin,
+      monthly_bill: formData.monthlyBill ? `₹${formData.monthlyBill}` : "",
+      message: [formData.customerType && `Customer type: ${formData.customerType}`, formData.message].filter(Boolean).join(" | "),
+      source: "contact",
+    });
 
     try {
       const { error: fnError } = await supabase.functions.invoke(

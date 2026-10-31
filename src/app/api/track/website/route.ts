@@ -1,22 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findZohoLeadByPhone, addNoteToZohoLead, addTagToZohoLead } from "@/lib/zoho";
+import { findZohoLeadByPhone, addNoteToZohoLead, addTagsToZohoLead } from "@/lib/zoho";
+import { istNowString } from "@/lib/env";
+
+export const dynamic = "force-dynamic";
+
+const DEFAULT_DEST = "https://www.kailashsolar.com/";
+
+/** Only allow redirects to our own website (prevents this endpoint being used as an open redirect). */
+function safeDestination(dest: string | null): string {
+  if (!dest) return DEFAULT_DEST;
+  try {
+    const url = new URL(dest, DEFAULT_DEST);
+    return /(^|\.)kailashsolar\.com$/i.test(url.hostname) ? url.toString() : DEFAULT_DEST;
+  } catch {
+    return DEFAULT_DEST;
+  }
+}
 
 /**
  * WhatsApp Website Visit Tracking Endpoint
- * When customer taps "Visit Website" button in WhatsApp, it redirects through here:
+ * When customer taps a tracked "Visit Website" link in WhatsApp, it redirects through here:
  * 1. Logs website visit into Zoho CRM lead notes
- * 2. Tags the lead as 'Visited Website' in Zoho CRM
- * 3. Immediately redirects customer to https://kailashsolar.com
+ * 2. Tags the lead as 'Visited Website' (the daily cron then sends the one-time website follow-up)
+ * 3. Immediately redirects customer to https://www.kailashsolar.com
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const phone = searchParams.get("phone");
   const leadId = searchParams.get("lead_id");
-  const targetUrl = searchParams.get("dest") || "https://kailashsolar.com/";
+  const targetUrl = safeDestination(searchParams.get("dest"));
 
   if (phone || leadId) {
     try {
-      let targetLeadId = leadId;
+      let targetLeadId = leadId && /^\d{6,25}$/.test(leadId) ? leadId : null;
       if (!targetLeadId && phone) {
         const lead = await findZohoLeadByPhone(phone);
         if (lead && lead.id) {
@@ -25,13 +41,12 @@ export async function GET(request: NextRequest) {
       }
 
       if (targetLeadId) {
-        const nowStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
         await addNoteToZohoLead(
           targetLeadId,
           "Website Visit from WhatsApp",
-          `Customer clicked "Visit Website" button on WhatsApp and visited website on ${nowStr}. Scheduled for website follow-up.`
+          `Customer clicked "Visit Website" button on WhatsApp and visited website on ${istNowString()}. Scheduled for website follow-up.`
         );
-        await addTagToZohoLead(targetLeadId, "Visited Website");
+        await addTagsToZohoLead(targetLeadId, ["Visited Website"]);
         console.log(`✓ Tracked website visit for Zoho Lead ID ${targetLeadId}`);
       }
     } catch (err) {
@@ -39,6 +54,5 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Redirect to official website
-  return NextResponse.redirect(new URL(targetUrl), 302);
+  return NextResponse.redirect(targetUrl, 302);
 }
