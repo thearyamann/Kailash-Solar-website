@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addNoteToZohoLead, addTagsToZohoLead, fetchAllZohoLeads, fetchRecentLeadNotes, zohoTagNames } from "@/lib/zoho";
-import { hasWhatsappCredentials, sendWhatsappTemplate, teamWhatsappNumber } from "@/lib/whatsapp";
+import { hasWhatsappCredentials, isTemplateApproved, sendWhatsappTemplate, teamWhatsappNumber } from "@/lib/whatsapp";
+import { signVisitRef } from "@/lib/tracking";
 import { istDate, istNowString, readEnv, toWhatsappNumber } from "@/lib/env";
 import {
   FOLLOWUP_NOTE_PREFIX,
@@ -162,10 +163,24 @@ export async function GET(request: NextRequest) {
       queue.push({ lead, step: decision.step });
     }
 
+    // Use the tracked version of a template (personal "Book Free Visit" link) only once Meta has approved it.
+    const trackedNames = new Set(
+      Object.values(FOLLOWUP_STEPS).flatMap((cfg) => (cfg.trackedTemplate ? [cfg.trackedTemplate.name] : []))
+    );
+    const approvedTracked = new Set<string>();
+    await Promise.all(
+      Array.from(trackedNames).map(async (name) => {
+        if (await isTemplateApproved(name)) approvedTracked.add(name);
+      })
+    );
+
     const dispatch = async ({ lead, step }: { lead: any; step: FollowUpStep }) => {
       const cfg = FOLLOWUP_STEPS[step];
       const phone = toWhatsappNumber(lead.Phone || lead.Mobile);
-      const detail: Detail = { lead_id: lead.id, name: lead.Full_Name, phone, step, template: cfg.template, status: "" };
+      const visitRef = signVisitRef(lead.id);
+      const tracked = cfg.trackedTemplate && visitRef && approvedTracked.has(cfg.trackedTemplate.name) ? cfg.trackedTemplate : null;
+      const template = tracked ? tracked.name : cfg.template;
+      const detail: Detail = { lead_id: lead.id, name: lead.Full_Name, phone, step, template, status: "" };
       results.details.push(detail);
       count(`send: ${step}`);
 
@@ -183,8 +198,16 @@ export async function GET(request: NextRequest) {
         components.push({ type: "header", parameters: [{ type: "image", image: { link: cfg.headerImageUrl } }] });
       }
       components.push({ type: "body", parameters: [{ type: "text", text: firstNameOf(lead) }] });
+      if (tracked) {
+        components.push({
+          type: "button",
+          sub_type: "url",
+          index: String(tracked.urlButtonIndex),
+          parameters: [{ type: "text", text: visitRef }],
+        });
+      }
 
-      const sent = await sendWhatsappTemplate(phone, cfg.template, cfg.language, components);
+      const sent = await sendWhatsappTemplate(phone, template, cfg.language, components);
       if (!sent.ok) {
         results.failed++;
         detail.status = `failed: ${sent.error}`;
@@ -199,8 +222,8 @@ export async function GET(request: NextRequest) {
       const tagged = await addTagsToZohoLead(lead.id, [cfg.tag]);
       const noted = await addNoteToZohoLead(
         lead.id,
-        `${FOLLOWUP_NOTE_PREFIX} ${step} (${cfg.template})`,
-        `Automated WhatsApp sent: ${cfg.template}\nStep: ${cfg.tag}\nMeta message ID: ${sent.messageId}\nDate: ${istNowString()}`
+        `${FOLLOWUP_NOTE_PREFIX} ${step} (${template})`,
+        `Automated WhatsApp sent: ${template}\nStep: ${cfg.tag}\nMeta message ID: ${sent.messageId}\nDate: ${istNowString()}`
       );
       detail.status = tagged && noted ? "sent" : `sent, but Zoho update failed (tag: ${tagged}, note: ${noted})`;
       if (!tagged) {

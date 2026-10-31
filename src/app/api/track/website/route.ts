@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findZohoLeadByPhone, addNoteToZohoLead, addTagsToZohoLead } from "@/lib/zoho";
+import { addNoteToZohoLead, addTagsToZohoLead } from "@/lib/zoho";
+import { verifyVisitRef } from "@/lib/tracking";
 import { istNowString } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
@@ -19,36 +20,26 @@ function safeDestination(dest: string | null): string {
 
 /**
  * WhatsApp Website Visit Tracking Endpoint
- * When customer taps a tracked "Visit Website" link in WhatsApp, it redirects through here:
- * 1. Logs website visit into Zoho CRM lead notes
+ * The "Book Free Visit" button of the tracked Day 4 template links here with ?r=<leadId>.<signature>:
+ * 1. Logs the website visit into the lead's Zoho notes
  * 2. Tags the lead as 'Visited Website' (the daily cron then sends the one-time website follow-up)
- * 3. Immediately redirects customer to https://www.kailashsolar.com
+ * 3. Immediately redirects the customer to the website
+ * Unsigned links only redirect, so nobody can fake visits and trigger paid messages.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const phone = searchParams.get("phone");
-  const leadId = searchParams.get("lead_id");
+  const leadId = verifyVisitRef(searchParams.get("r"));
   const targetUrl = safeDestination(searchParams.get("dest"));
 
-  if (phone || leadId) {
+  if (leadId) {
     try {
-      let targetLeadId = leadId && /^\d{6,25}$/.test(leadId) ? leadId : null;
-      if (!targetLeadId && phone) {
-        const lead = await findZohoLeadByPhone(phone);
-        if (lead && lead.id) {
-          targetLeadId = lead.id;
-        }
-      }
-
-      if (targetLeadId) {
-        await addNoteToZohoLead(
-          targetLeadId,
-          "Website Visit from WhatsApp",
-          `Customer clicked "Visit Website" button on WhatsApp and visited website on ${istNowString()}. Scheduled for website follow-up.`
-        );
-        await addTagsToZohoLead(targetLeadId, ["Visited Website"]);
-        console.log(`✓ Tracked website visit for Zoho Lead ID ${targetLeadId}`);
-      }
+      const tagged = await addTagsToZohoLead(leadId, ["Visited Website"]);
+      await addNoteToZohoLead(
+        leadId,
+        "Website Visit from WhatsApp",
+        `Customer tapped "Book Free Visit" on WhatsApp and opened the website on ${istNowString()}. Scheduled for website follow-up.`
+      );
+      if (tagged) console.log(`✓ Tracked website visit for Zoho Lead ID ${leadId}`);
     } catch (err) {
       console.error("Failed to log website visit to Zoho CRM:", err);
     }

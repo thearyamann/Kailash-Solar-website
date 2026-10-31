@@ -15,14 +15,23 @@ export type FollowUpStep = "day1" | "day4" | "day10" | "website";
 
 // Flyers are served from the website (public/marketing). Public links don't expire, unlike uploaded Meta media IDs (30 days).
 const FLYER_BASE = "https://www.kailashsolar.com/marketing";
+// kailash_day4_reminder with a dynamic "Book Free Visit" URL (button 3) → /api/track/website?r=<signed lead ref>
+const TRACKED_DAY4 = { name: "kailash_day4_tracked", urlButtonIndex: 2 };
 
 export const FOLLOWUP_STEPS: Record<
   FollowUpStep,
-  { tag: string; template: string; language: string; headerImageUrl?: string }
+  {
+    tag: string;
+    template: string;
+    language: string;
+    headerImageUrl?: string;
+    /** Same message with a personal tracked "Book Free Visit" link; used instead of `template` once Meta approves it. */
+    trackedTemplate?: { name: string; urlButtonIndex: number };
+  }
 > = {
   day1: { tag: "Follow-up 1 Sent", template: "kailash_short_followup", language: "en", headerImageUrl: `${FLYER_BASE}/kailash_followup_flyer.png` },
-  day4: { tag: "Day 4 Reminder Sent", template: "kailash_day4_reminder", language: "en", headerImageUrl: `${FLYER_BASE}/newk2.png` },
-  day10: { tag: "Day 10 Final Reminder Sent", template: "kailash_day4_reminder", language: "en", headerImageUrl: `${FLYER_BASE}/newk2.png` },
+  day4: { tag: "Day 4 Reminder Sent", template: "kailash_day4_reminder", language: "en", headerImageUrl: `${FLYER_BASE}/newk2.png`, trackedTemplate: TRACKED_DAY4 },
+  day10: { tag: "Day 10 Final Reminder Sent", template: "kailash_day4_reminder", language: "en", headerImageUrl: `${FLYER_BASE}/newk2.png`, trackedTemplate: TRACKED_DAY4 },
   website: { tag: "Website Follow-up Sent", template: "kailash_visit_booking_followup", language: "en" },
 };
 

@@ -71,6 +71,23 @@ export function sendWhatsappTemplate(
   return sendWhatsapp(to, { type: "template", template: { name, language: { code: language }, components } });
 }
 
+/** True if the template exists in our WhatsApp Business Account and Meta has approved it. */
+export async function isTemplateApproved(name: string): Promise<boolean> {
+  const token = readEnv("META_WHATSAPP_TOKEN");
+  const wabaId = readEnv("META_WABA_ID");
+  if (!token || !wabaId) return false;
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v21.0/${wabaId}/message_templates?name=${encodeURIComponent(name)}&fields=name,status`,
+      { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }
+    );
+    const data = await res.json().catch(() => ({}));
+    return (data?.data || []).some((t: any) => t.name === name && t.status === "APPROVED");
+  } catch {
+    return false;
+  }
+}
+
 /** Approved UTILITY template: "Thank you! Aapki request humein receive ho gayi hai..." (works outside the 24h window). */
 export function sendCustomerAcknowledgement(to: string): Promise<SendResult> {
   return sendWhatsappTemplate(to, "kailash_interested_ack", "en");
