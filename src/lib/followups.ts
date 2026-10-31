@@ -32,7 +32,7 @@ export const FOLLOWUP_STEPS: Record<
   day1: { tag: "Follow-up 1 Sent", template: "kailash_short_followup", language: "en", headerImageUrl: `${FLYER_BASE}/kailash_followup_flyer.png` },
   day4: { tag: "Day 4 Reminder Sent", template: "kailash_day4_reminder", language: "en", headerImageUrl: `${FLYER_BASE}/newk2.png`, trackedTemplate: TRACKED_DAY4 },
   day10: { tag: "Day 10 Final Reminder Sent", template: "kailash_day4_reminder", language: "en", headerImageUrl: `${FLYER_BASE}/newk2.png`, trackedTemplate: TRACKED_DAY4 },
-  website: { tag: "Website Follow-up Sent", template: "kailash_visit_booking_followup", language: "en" },
+  website: { tag: "Website Follow-up Sent", template: "kailash_visit_booking_followup", language: "en", headerImageUrl: `${FLYER_BASE}/newk2.png` },
 };
 
 /** Notes written by the cron are titled `WA Follow-up: <step>` so send dates can be recovered. */
