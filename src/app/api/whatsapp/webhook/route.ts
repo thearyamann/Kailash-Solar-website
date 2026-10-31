@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findZohoLeadByPhone, addNoteToZohoLead, addTagToZohoLead } from "@/lib/zoho";
+import { findZohoLeadByPhone, addNoteToZohoLead, addTagToZohoLead, getZohoAccessToken } from "@/lib/zoho";
 
 const VERIFY_TOKEN = process.env.META_WEBHOOK_VERIFY_TOKEN || "kailash_solar_webhook_verify_2026";
 
@@ -54,20 +54,55 @@ export async function POST(request: NextRequest) {
               
               console.log(`[Incoming WhatsApp] From: +${fromPhone} | Type: ${msgType} | Text: "${text}"`);
               
-              // Find lead in Zoho CRM and log automatic note + tag
-              let leadName = "Customer";
+              // Find lead in Zoho CRM or automatically create new inbound lead
+              const profileName = value.contacts?.[0]?.profile?.name || "Customer";
+              let leadName = profileName;
               let leadCity = "Meerut";
+              const nowStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+
               try {
                 const lead = await findZohoLeadByPhone(fromPhone);
                 if (lead && lead.id) {
-                  leadName = lead.Full_Name || "Customer";
+                  leadName = lead.Full_Name || profileName || "Customer";
                   leadCity = lead.City || "Meerut";
-                  const nowStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
                   const noteTitle = `WhatsApp: "${text.slice(0, 40)}"`;
-                  const noteContent = `Customer replied/clicked on WhatsApp on ${nowStr}.\nMessage: ${text}\nSender: +${fromPhone}`;
+                  const noteContent = `Customer replied/sent on WhatsApp on ${nowStr}.\nMessage: ${text}\nSender: +${fromPhone}`;
                   await addNoteToZohoLead(lead.id, noteTitle, noteContent);
                   await addTagToZohoLead(lead.id, "Hot Lead - Interested");
                   console.log(`✓ Attached note and tagged 'Hot Lead - Interested' to Zoho Lead ID ${lead.id} (${lead.Full_Name})`);
+                } else {
+                  // Lead doesn't exist yet: automatically create a new Lead in Zoho CRM!
+                  const dc = (process.env.ZOHO_DC || "in").toLowerCase().replace(/^["']|["']$/g, "").trim();
+                  const zohoToken = await getZohoAccessToken();
+                  const createUrl = `https://www.zohoapis.${dc}/crm/v6/Leads`;
+                  const createRes = await fetch(createUrl, {
+                    method: "POST",
+                    headers: {
+                      Authorization: `Zoho-oauthtoken ${zohoToken}`,
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      data: [
+                        {
+                          Last_Name: profileName,
+                          Full_Name: profileName,
+                          Phone: `+${fromPhone}`,
+                          City: "Meerut",
+                          Lead_Source: "Inbound WhatsApp Inquiry",
+                          Lead_Status: "Attempted to Contact",
+                          Description: `New inbound WhatsApp message received on ${nowStr}: "${text}".`,
+                        },
+                      ],
+                    }),
+                  });
+                  const createData = await createRes.json();
+                  const newLeadId = createData?.data?.[0]?.details?.id;
+                  if (newLeadId) {
+                    await addTagToZohoLead(newLeadId, "Active Lead");
+                    await addTagToZohoLead(newLeadId, "Hot Lead - Interested");
+                    await addTagToZohoLead(newLeadId, "Inbound WhatsApp");
+                    console.log(`✓ Automatically created new Zoho Lead for inbound WhatsApp inquiry from ${profileName} (ID: ${newLeadId})`);
+                  }
                 }
               } catch (crmErr) {
                 console.error("Failed to sync WhatsApp reply to Zoho CRM:", crmErr);
@@ -80,13 +115,16 @@ export async function POST(request: NextRequest) {
               // Send Instant WhatsApp Alert to Kailash Solar Sales Team Phone (+91 89999 99654)
               if (metaToken && phoneId) {
                 try {
+                  const isButton = text.toLowerCase().includes("interested");
                   const alertMsg =
                     `🚨 *HOT LEAD ALERT! (Kailash Solar)*\n\n` +
-                    `एक कस्टमर ने WhatsApp पर *"Yes, I'm Interested"* पर क्लिक किया है!\n\n` +
+                    (isButton
+                      ? `एक कस्टमर ने WhatsApp पर *"Yes, I'm Interested"* पर क्लिक किया है!\n\n`
+                      : `एक कस्टमर ने WhatsApp पर नया मैसेज भेजा है!\n\n`) +
                     `👤 *नाम:* ${leadName}\n` +
                     `📞 *फ़ोन:* +${fromPhone}\n` +
                     `📍 *शहर:* ${leadCity}\n` +
-                    `💬 *ऐक्शन:* ${text}\n\n` +
+                    `💬 *मैसेज / ऐक्शन:* "${text}"\n\n` +
                     `👉 कृपया कस्टमर को तुरंत कॉल करें और साइट विज़िट बुक करें!`;
 
                   await fetch(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
