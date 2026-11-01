@@ -196,17 +196,18 @@ function BookingSuccessAppContent() {
           {/* Animated success tick (payment-app style) */}
           <div className="relative mt-4 mb-4 shrink-0 w-36 h-36 flex items-center justify-center" aria-hidden="true">
             <div className="absolute inset-0 rounded-full success-glow" />
-            <div className="absolute w-24 h-24 rounded-full border-2 border-emerald-400/60 success-ring" />
-            <div className="absolute w-24 h-24 rounded-full border-2 border-emerald-300/50 success-ring success-ring-2" />
+            <div className="absolute w-24 h-24 rounded-full border-2 border-[#1E56A8]/45 success-ring" />
+            <div className="absolute w-24 h-24 rounded-full border-2 border-[#1E56A8]/30 success-ring success-ring-2" />
             {Array.from({ length: 8 }).map((_, i) => (
               <span
                 key={i}
                 className="absolute w-1.5 h-1.5 rounded-full success-dot"
-                style={{ "--a": `${i * 45 + 22.5}deg`, background: i % 2 ? "#F59E0B" : "#10B981" } as React.CSSProperties}
+                style={{ "--a": `${i * 45 + 22.5}deg`, background: i % 2 ? "#F7931E" : "#1E56A8" } as React.CSSProperties}
               />
             ))}
-            <div className="w-24 h-24 rounded-full flex items-center justify-center success-badge relative z-10">
-              <svg className="w-12 h-12" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div className="w-24 h-24 rounded-full flex items-center justify-center success-badge relative z-10 overflow-hidden">
+              <span className="absolute top-[6%] left-[16%] w-[62%] h-[38%] rounded-full success-gloss" aria-hidden="true" />
+              <svg className="w-12 h-12 relative drop-shadow-[0_2px_2px_rgba(8,26,56,0.45)]" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 15 29 L 24 38 L 41 19" stroke="#FFFFFF" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" className="success-check" />
               </svg>
             </div>
@@ -237,8 +238,8 @@ function BookingSuccessAppContent() {
                   </div>
                 ))}
               </div>
-              <div className="mt-3 flex items-center justify-center gap-1.5 text-[12.5px] font-medium text-emerald-700">
-                <Check className="w-3.5 h-3.5" strokeWidth={3} />
+              <div className="mt-3 flex items-center justify-center gap-1.5 text-[12.5px] font-medium text-[#133B76]">
+                <Check className="w-3.5 h-3.5 text-[#F7931E]" strokeWidth={3} />
                 Eligible for up to ₹1,08,000 PM Surya Ghar subsidy
               </div>
             </section>
@@ -275,7 +276,7 @@ function BookingSuccessAppContent() {
               href={`https://wa.me/918999999654?text=${details.whatsappMsg}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-[1.6] h-[52px] rounded-2xl bg-[#25D366] active:bg-[#1fb257] active:scale-[0.98] text-white font-semibold text-[15px] flex items-center justify-center gap-2 shadow-[0_8px_20px_-8px_rgba(37,211,102,0.7)] transition-all"
+              className="flex-[1.6] h-[52px] rounded-2xl bg-[#133B76] active:bg-[#0E2C59] active:scale-[0.98] text-white font-semibold text-[15px] flex items-center justify-center gap-2 shadow-[0_10px_24px_-10px_rgba(19,59,118,0.75)] transition-all"
             >
               <MessageCircle className="w-5 h-5" />
               Chat on WhatsApp
@@ -295,14 +296,19 @@ function BookingSuccessAppContent() {
       {/* Success animation */}
       <style jsx global>{`
         .success-badge {
-          background: radial-gradient(circle at 32% 28%, #34D399 0%, #10B981 45%, #059669 100%);
+          background: radial-gradient(circle at 30% 25%, #3B78D4 0%, #1E56A8 38%, #133B76 72%, #0B2550 100%);
           box-shadow:
-            0 18px 36px -8px rgba(16, 185, 129, 0.5),
-            inset 0 3px 6px rgba(255, 255, 255, 0.45),
-            inset 0 -4px 8px rgba(4, 120, 87, 0.55);
+            0 22px 40px -12px rgba(19, 59, 118, 0.65),
+            0 8px 14px -6px rgba(19, 59, 118, 0.45),
+            inset 0 4px 8px rgba(255, 255, 255, 0.35),
+            inset 0 -8px 14px rgba(5, 18, 42, 0.55);
           transform: scale(0);
           animation: sBadge 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
           will-change: transform;
+        }
+        .success-gloss {
+          background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%);
+          filter: blur(1px);
         }
         .success-check {
           stroke-dasharray: 44;
@@ -310,7 +316,7 @@ function BookingSuccessAppContent() {
           animation: sCheck 0.36s cubic-bezier(0.65, 0, 0.35, 1) 0.38s forwards;
         }
         .success-glow {
-          background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0) 70%);
+          background: radial-gradient(circle, rgba(30, 86, 168, 0.16) 0%, rgba(30, 86, 168, 0) 70%);
           opacity: 0;
           animation: sFade 0.8s ease-out 0.15s forwards;
         }
