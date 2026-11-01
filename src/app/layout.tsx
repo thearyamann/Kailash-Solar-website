@@ -9,10 +9,9 @@ import { PostHogProvider } from './providers';
 import '../index.css'; // Use existing global styles
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
+  // The site is always light, so keep the phone status bar white even in dark mode
+  themeColor: '#ffffff',
+  colorScheme: 'light',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,

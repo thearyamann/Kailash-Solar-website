@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Phone, ArrowLeft, Home, MessageCircle, Clock, Check } from "lucide-react";
+import { Phone, ArrowLeft, MessageCircle, Check } from "lucide-react";
 import { getLastSubmission } from "@/lib/submission-tracker";
 import { getPincodeRegion } from "@/lib/pincode";
 
@@ -149,280 +149,217 @@ function BookingSuccessAppContent() {
     });
   }, [searchParams]);
 
+  // Light success haptic, like payment apps (Android Chrome; iOS ignores it)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          navigator.vibrate?.([14, 60, 22]);
+        }
+      } catch (e) {}
+    }, 380);
+    return () => clearTimeout(t);
+  }, []);
+
+  const firstName = details.name ? details.name.split(" ")[0] : "";
+  const rows = [
+    details.name && { label: "Name", value: <span className="capitalize">{details.name}</span> },
+    details.phone && { label: "WhatsApp", value: `+91 ${details.phone.slice(-10)}` },
+    details.pincode && { label: "Location", value: `${details.region || "Meerut"} · ${details.pincode}` },
+    details.bill && { label: "Monthly bill", value: details.bill },
+    details.leadId && { label: "Booking ID", value: `#${details.leadId.replace(/^ks_lead_/, "")}` },
+  ].filter(Boolean) as { label: string; value: React.ReactNode }[];
+
+  const steps = [
+    { title: "Confirmation call", text: "Our engineer confirms your visit on WhatsApp." },
+    { title: "Free site survey", text: "We check your rooftop and size the right system." },
+    { title: "Subsidy & installation", text: "We handle the subsidy, loan and net-meter paperwork." },
+  ];
+
   return (
-    <div className="min-h-[100dvh] bg-slate-50 sm:bg-slate-100 flex flex-col items-center justify-start sm:justify-center sm:py-6 select-none font-sans">
-      
-      {/* Native App Shell Frame */}
-      <div className="w-full max-w-[420px] bg-white min-h-[100dvh] sm:min-h-0 sm:max-h-[92vh] sm:rounded-3xl sm:shadow-xl sm:border sm:border-slate-200 relative flex flex-col overflow-hidden">
-        
-        {/* Fixed Top Header (Permanently locked in place - does not scroll) */}
-        <header className="fixed top-0 left-0 right-0 max-w-[420px] mx-auto z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 h-14 flex items-center justify-between shrink-0">
+    <div className="min-h-[100dvh] bg-white sm:bg-slate-100 flex justify-center sm:items-center sm:py-10 select-none font-sans">
+      <div className="w-full max-w-[420px] bg-white min-h-[100dvh] sm:min-h-0 sm:rounded-[28px] sm:shadow-[0_20px_60px_-20px_rgba(15,23,42,0.25)] relative flex flex-col">
+
+        {/* Minimal top bar */}
+        <header className="absolute top-0 left-0 right-0 z-20 px-4 h-14 flex items-center">
           <Link
             href="/solar-company-meerut"
             aria-label="Back to home"
-            className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all flex items-center justify-center text-slate-700"
+            className="w-9 h-9 -ml-1 rounded-full flex items-center justify-center text-slate-500 active:bg-slate-100 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-5 h-5" />
           </Link>
-
-          <span className="text-[15px] font-bold font-montserrat text-slate-900 tracking-tight">
-            Booking Confirmed
-          </span>
-
-          {/* Spacer to keep title centered */}
-          <div className="w-9 h-9" />
         </header>
 
-        {/* Scrollable Content (pt-16 ensures clearance below fixed navbar) */}
-        <main className="flex-1 w-full overflow-y-auto px-5 pt-16 pb-36 flex flex-col items-center">
-          
-          {/* Clean 3D Circular Tick Badge */}
-          <div className="relative my-4 shrink-0 flex items-center justify-center">
-            {/* Tactile subtle ripple ring */}
-            <div className="absolute w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-emerald-100/70 pointer-events-none anim-ripple" />
+        <main className="flex-1 px-6 pt-14 pb-[calc(7.5rem+env(safe-area-inset-bottom))] sm:pb-6 flex flex-col items-center overscroll-contain">
 
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center tick-3d-badge relative z-10">
-              <svg 
-                className="w-12 h-12 sm:w-14 sm:h-14" 
-                viewBox="0 0 56 56" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path 
-                  d="M 15 29 L 24 38 L 41 19" 
-                  stroke="#FFFFFF" 
-                  strokeWidth="5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                  className="anim-check-stroke"
-                />
+          {/* Animated success tick (payment-app style) */}
+          <div className="relative mt-4 mb-4 shrink-0 w-36 h-36 flex items-center justify-center" aria-hidden="true">
+            <div className="absolute inset-0 rounded-full success-glow" />
+            <div className="absolute w-24 h-24 rounded-full border-2 border-emerald-400/60 success-ring" />
+            <div className="absolute w-24 h-24 rounded-full border-2 border-emerald-300/50 success-ring success-ring-2" />
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span
+                key={i}
+                className="absolute w-1.5 h-1.5 rounded-full success-dot"
+                style={{ "--a": `${i * 45 + 22.5}deg`, background: i % 2 ? "#F59E0B" : "#10B981" } as React.CSSProperties}
+              />
+            ))}
+            <div className="w-24 h-24 rounded-full flex items-center justify-center success-badge relative z-10">
+              <svg className="w-12 h-12" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 15 29 L 24 38 L 41 19" stroke="#FFFFFF" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" className="success-check" />
               </svg>
             </div>
           </div>
 
-          {/* Typography & Details with smooth stagger */}
-          <div className="w-full flex flex-col items-center anim-content-fade">
-            <div className="text-center mt-2 mb-6">
-              <h1 className="text-[22px] font-bold font-montserrat text-slate-900 tracking-tight">
-                Site Visit Scheduled!
-              </h1>
-              <p className="text-[14px] text-slate-600 mt-1 max-w-[300px] mx-auto leading-relaxed">
-                Thank you{details.name ? <>, <span className="font-bold text-slate-900 capitalize">{details.name}</span></> : ""}! Our engineer will contact you shortly.
-              </p>
-            </div>
-
-          {/* Single Clean Details Card */}
-          <div className="w-full bg-slate-50 border border-slate-200/90 rounded-2xl p-4 text-left space-y-3 text-[13px] mb-5">
-            {details.name && (
-              <div className="flex justify-between items-center pb-2.5 border-b border-slate-200/70">
-                <span className="text-slate-500">Customer Name</span>
-                <span className="text-slate-900 font-bold capitalize">
-                  {details.name}
-                </span>
-              </div>
-            )}
-
-            {details.phone && (
-              <div className="flex justify-between items-center pb-2.5 border-b border-slate-200/70">
-                <span className="text-slate-500">WhatsApp Number</span>
-                <span className="text-slate-900 font-semibold font-mono">
-                  +91 {details.phone.slice(-10)}
-                </span>
-              </div>
-            )}
-
-            {details.pincode && (
-              <div className="flex justify-between items-center pb-2.5 border-b border-slate-200/70">
-                <span className="text-slate-500">Service Location</span>
-                <span className="text-slate-900 font-semibold">
-                  {details.pincode} ({details.region || "Meerut"})
-                </span>
-              </div>
-            )}
-
-            {details.bill && (
-              <div className="flex justify-between items-center pb-2.5 border-b border-slate-200/70">
-                <span className="text-slate-500">Monthly Bill</span>
-                <span className="text-slate-900 font-semibold">{details.bill}</span>
-              </div>
-            )}
-
-            {details.leadId && (
-              <div className="flex justify-between items-center pb-2.5 border-b border-slate-200/70">
-                <span className="text-slate-500">Lead Reference ID</span>
-                <span className="text-slate-900 font-mono font-semibold text-xs bg-slate-100 px-2 py-0.5 rounded">
-                  #{details.leadId.replace(/^ks_lead_/, '')}
-                </span>
-              </div>
-            )}
-
-            <div className="pt-0.5 flex items-center justify-between text-xs">
-              <span className="text-slate-500">PM Surya Ghar Subsidy</span>
-              <span className="text-accent font-bold">Eligible for ₹1,08,000</span>
-            </div>
+          {/* Heading */}
+          <div className="text-center mb-8 success-rise" style={{ animationDelay: "0.42s" }}>
+            <h1 className="text-[24px] leading-tight font-bold font-montserrat text-slate-900 tracking-tight">
+              Site visit booked
+            </h1>
+            <p className="text-[14.5px] text-slate-500 mt-2 max-w-[290px] mx-auto leading-relaxed">
+              {firstName ? <>Thanks, <span className="capitalize text-slate-700 font-medium">{firstName}</span>. </> : "Thank you. "}
+              Our engineer will call you within 30 minutes.
+            </p>
           </div>
 
-          {/* Clean "What Happens Next" Section */}
-          <div className="w-full bg-white border border-slate-200/90 rounded-2xl p-4 text-left mb-4">
-            <h2 className="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-3">
-              What Happens Next
+          {/* Booking details */}
+          {rows.length > 0 && (
+            <section className="w-full success-rise" style={{ animationDelay: "0.52s" }}>
+              <div className="rounded-2xl bg-slate-50 px-4">
+                {rows.map((row, i) => (
+                  <div
+                    key={row.label}
+                    className={`flex items-center justify-between gap-4 py-3.5 text-[14px] ${i ? "border-t border-slate-200/70" : ""}`}
+                  >
+                    <span className="text-slate-500">{row.label}</span>
+                    <span className="text-slate-900 font-semibold text-right truncate">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 flex items-center justify-center gap-1.5 text-[12.5px] font-medium text-emerald-700">
+                <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                Eligible for up to ₹1,08,000 PM Surya Ghar subsidy
+              </div>
+            </section>
+          )}
+
+          {/* What happens next */}
+          <section className="w-full mt-8 success-rise" style={{ animationDelay: "0.62s" }}>
+            <h2 className="text-[12px] uppercase tracking-[0.08em] font-semibold text-slate-400 mb-4">
+              What happens next
             </h2>
+            <ol className="relative">
+              {steps.map((step, i) => (
+                <li key={step.title} className="relative flex gap-3.5 pb-5 last:pb-0">
+                  {i < steps.length - 1 && (
+                    <span className="absolute left-[11px] top-7 bottom-0 w-px bg-slate-200" aria-hidden="true" />
+                  )}
+                  <span className={`relative z-10 w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[11px] font-bold ${i === 0 ? "bg-[#133B76] text-white" : "bg-slate-100 text-slate-500"}`}>
+                    {i + 1}
+                  </span>
+                  <div className="pt-0.5">
+                    <p className="text-[14px] font-semibold text-slate-900 leading-tight">{step.title}</p>
+                    <p className="text-[13px] text-slate-500 mt-1 leading-snug">{step.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </main>
 
-            <div className="space-y-3 text-[12.5px]">
-              <div className="flex items-start gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#133B76] text-white flex items-center justify-center shrink-0 text-[10px] font-bold mt-0.5">
-                  1
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-900">Engineer WhatsApp Confirmation</p>
-                  <p className="text-slate-500 text-[11.5px] leading-tight">We verify your rooftop parameters and confirm site availability.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#133B76] text-white flex items-center justify-center shrink-0 text-[10px] font-bold mt-0.5">
-                  2
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-900">Site Survey</p>
-                  <p className="text-slate-500 text-[11.5px] leading-tight">Accurate rooftop evaluation & customized solar system sizing.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#133B76] text-white flex items-center justify-center shrink-0 text-[10px] font-bold mt-0.5">
-                  3
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-900">Subsidy & Zero Down Payment Approval</p>
-                  <p className="text-slate-500 text-[11.5px] leading-tight">Complete net-metering and bank subsidy paperwork handled by us.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Notice */}
-          <div className="flex items-center gap-1.5 text-xs text-slate-400 pt-1 pb-2">
-            <Clock className="w-3.5 h-3.5" />
-            <span>Average response time: within 30 minutes</span>
-          </div>
-
-        </div>
-
-      </main>
-
-        {/* Fixed Bottom Action Dock (Clean Native App Bar - Does not scroll) */}
-        <div className="fixed bottom-0 left-0 right-0 max-w-[420px] mx-auto p-4 bg-white/95 backdrop-blur-md border-t border-slate-100 z-50 flex flex-col gap-2.5 shrink-0">
-          
-          {/* Primary Action Button: WhatsApp */}
-          <a
-            href={`https://wa.me/918999999654?text=${details.whatsappMsg}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full h-12 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] active:scale-[0.98] text-white font-bold text-[15px] flex items-center justify-center gap-2 shadow-sm transition-all"
-          >
-            <MessageCircle className="w-5 h-5 fill-current" />
-            <span>Chat on WhatsApp</span>
-          </a>
-
-          {/* Secondary Buttons */}
-          <div className="grid grid-cols-2 gap-2">
+        {/* Bottom action bar: only the two actions that matter */}
+        <div className="fixed sm:sticky bottom-0 left-0 right-0 max-w-[420px] mx-auto px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-5 bg-white/90 backdrop-blur-xl border-t border-slate-100 sm:rounded-b-[28px] z-30 success-dock">
+          <div className="flex gap-3">
+            <a
+              href={`https://wa.me/918999999654?text=${details.whatsappMsg}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-[1.6] h-[52px] rounded-2xl bg-[#25D366] active:bg-[#1fb257] active:scale-[0.98] text-white font-semibold text-[15px] flex items-center justify-center gap-2 shadow-[0_8px_20px_-8px_rgba(37,211,102,0.7)] transition-all"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Chat on WhatsApp
+            </a>
             <a
               href="tel:+918999999654"
-              className="h-11 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-[0.98] text-slate-800 font-semibold text-[13px] flex items-center justify-center gap-1.5 transition-all"
+              className="flex-1 h-[52px] rounded-2xl bg-slate-100 active:bg-slate-200 active:scale-[0.98] text-slate-900 font-semibold text-[15px] flex items-center justify-center gap-2 transition-all"
             >
-              <Phone className="w-4 h-4 text-slate-600" />
-              <span>Call Us</span>
+              <Phone className="w-[18px] h-[18px]" />
+              Call Us
             </a>
-
-            <Link
-              href="/solar-company-meerut"
-              className="h-11 rounded-xl bg-[#133B76] hover:bg-[#0e2c59] active:scale-[0.98] text-white font-semibold text-[13px] flex items-center justify-center gap-1.5 transition-all shadow-sm"
-            >
-              <Home className="w-4 h-4" />
-              <span>Back to Home</span>
-            </Link>
           </div>
-
         </div>
 
       </div>
 
-      {/* 3D Tick Styling and Animation */}
+      {/* Success animation */}
       <style jsx global>{`
-        .tick-3d-badge {
-          background-color: #10B981;
-          box-shadow: 
-            0 16px 32px -4px rgba(16, 185, 129, 0.45),
-            0 6px 12px -2px rgba(16, 185, 129, 0.25),
-            inset 0 4px 6px rgba(255, 255, 255, 0.52),
-            inset 0 -5px 8px rgba(4, 120, 87, 0.7);
-          animation: badgePop 0.52s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
-          transform-origin: center center;
+        .success-badge {
+          background: radial-gradient(circle at 32% 28%, #34D399 0%, #10B981 45%, #059669 100%);
+          box-shadow:
+            0 18px 36px -8px rgba(16, 185, 129, 0.5),
+            inset 0 3px 6px rgba(255, 255, 255, 0.45),
+            inset 0 -4px 8px rgba(4, 120, 87, 0.55);
+          transform: scale(0);
+          animation: sBadge 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
+          will-change: transform;
         }
-
-        .anim-ripple {
-          animation: ripplePop 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        .success-check {
+          stroke-dasharray: 44;
+          stroke-dashoffset: 44;
+          animation: sCheck 0.36s cubic-bezier(0.65, 0, 0.35, 1) 0.38s forwards;
+        }
+        .success-glow {
+          background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0) 70%);
           opacity: 0;
+          animation: sFade 0.8s ease-out 0.15s forwards;
         }
-
-        .anim-check-stroke {
-          stroke-dasharray: 52;
-          stroke-dashoffset: 52;
-          animation: drawCheck 0.38s cubic-bezier(0.2, 0.8, 0.25, 1) 0.22s forwards;
+        .success-ring {
+          opacity: 0;
+          animation: sRing 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+          will-change: transform, opacity;
         }
-
-        .anim-content-fade {
-          animation: contentFade 0.45s ease-out 0.35s both;
+        .success-ring-2 { animation-delay: 0.55s; }
+        .success-dot {
+          opacity: 0;
+          transform: rotate(var(--a)) translateY(0) scale(0.4);
+          animation: sDot 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.42s forwards;
+          will-change: transform, opacity;
         }
-
-        @keyframes badgePop {
-          0% {
-            transform: scale(0.35);
-            opacity: 0;
-          }
-          65% {
-            transform: scale(1.12);
-            opacity: 1;
-          }
-          82% {
-            transform: scale(0.96);
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
+        .success-rise {
+          opacity: 0;
+          animation: sRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+          will-change: transform, opacity;
         }
-
-        @keyframes ripplePop {
-          0% {
-            transform: scale(0.65);
-            opacity: 0.75;
-          }
-          100% {
-            transform: scale(1.3);
-            opacity: 0;
-          }
+        .success-dock {
+          transform: translateY(110%);
+          animation: sDock 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
         }
-
-        @keyframes drawCheck {
-          0% {
-            stroke-dashoffset: 52;
-          }
-          100% {
-            stroke-dashoffset: 0;
-          }
+        @keyframes sBadge {
+          0% { transform: scale(0); }
+          100% { transform: scale(1); }
         }
-
-        @keyframes contentFade {
-          0% {
-            opacity: 0;
-            transform: translateY(8px);
+        @keyframes sCheck { to { stroke-dashoffset: 0; } }
+        @keyframes sFade { to { opacity: 1; } }
+        @keyframes sRing {
+          0% { opacity: 0.9; transform: scale(1); }
+          100% { opacity: 0; transform: scale(1.75); }
+        }
+        @keyframes sDot {
+          0% { opacity: 0; transform: rotate(var(--a)) translateY(0) scale(0.4); }
+          25% { opacity: 1; }
+          100% { opacity: 0; transform: rotate(var(--a)) translateY(-68px) scale(1); }
+        }
+        @keyframes sRise {
+          0% { opacity: 0; transform: translateY(14px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes sDock { to { transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+          .success-badge, .success-check, .success-glow, .success-rise, .success-dock {
+            animation: none !important; opacity: 1 !important; transform: none !important; stroke-dashoffset: 0 !important;
           }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          .success-ring, .success-dot { display: none; }
         }
       `}</style>
 

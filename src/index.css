@@ -107,10 +107,34 @@
 
   html {
     scroll-behavior: smooth;
+    /* Native-app feel on iOS & Android */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     @apply bg-background text-foreground font-inter antialiased;
+    overscroll-behavior-x: none;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Remove 300ms tap delay / double-tap zoom on controls */
+  a, button, input, select, textarea, label, summary, [role="button"], [role="option"], [role="tab"] {
+    touch-action: manipulation;
+  }
+
+  /* No long-press callout / text selection on buttons, like native apps */
+  button, [role="button"] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Hide the iOS/Android "drag image" ghost when long-pressing images inside links */
+  a img {
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -260,5 +284,15 @@
 @media screen and (max-width: 767px) {
   input, select, textarea {
     font-size: 16px !important;
+  }
+}
+
+/* Respect users who turn off animations in phone settings */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
