@@ -238,8 +238,8 @@ function BookingSuccessAppContent() {
                   </div>
                 ))}
               </div>
-              <div className="mt-3 flex items-center justify-center gap-1.5 text-[12.5px] font-medium text-[#133B76]">
-                <Check className="w-3.5 h-3.5 text-[#F7931E]" strokeWidth={3} />
+              <div className="mt-3 flex items-center justify-center gap-1.5 text-[12.5px] font-semibold text-accent">
+                <Check className="w-3.5 h-3.5" strokeWidth={3} />
                 Eligible for up to ₹1,08,000 PM Surya Ghar subsidy
               </div>
             </section>
@@ -276,7 +276,7 @@ function BookingSuccessAppContent() {
               href={`https://wa.me/918999999654?text=${details.whatsappMsg}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-[1.6] h-[52px] rounded-2xl bg-[#133B76] active:bg-[#0E2C59] active:scale-[0.98] text-white font-semibold text-[15px] flex items-center justify-center gap-2 shadow-[0_10px_24px_-10px_rgba(19,59,118,0.75)] transition-all"
+              className="flex-[1.6] h-[52px] rounded-2xl bg-[#133B76] active:bg-[#0E2C59] active:scale-[0.98] text-white font-semibold text-[15px] flex items-center justify-center gap-2 transition-all"
             >
               <MessageCircle className="w-5 h-5" />
               Chat on WhatsApp
