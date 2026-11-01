@@ -152,7 +152,6 @@ export default function BookVisitPage() {
       `Name: ${trimmedName}\n` +
       `WhatsApp: ${formData.phone}\n` +
       `PIN Code: ${trimmedPin} [${userCity}]\n` +
-      `Address: ${formData.address.trim() || 'Meerut'}\n` +
       `Monthly Bill: ${formattedBill}\n` +
       `Plant Capacity: ${calculatedPlantSize} kW`
     );
@@ -279,9 +278,9 @@ export default function BookVisitPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50 sm:bg-muted flex flex-col items-center justify-start sm:py-8">
+    <div className="min-h-[100dvh] [-webkit-tap-highlight-color:transparent] bg-slate-50 sm:bg-muted flex flex-col items-center justify-start sm:py-8">
       
-      <div className="w-full max-w-[420px] bg-white sm:rounded-3xl sm:shadow-2xl relative flex flex-col min-h-[100dvh] sm:min-h-0">
+      <div className="w-full max-w-[400px] bg-white sm:rounded-3xl sm:shadow-2xl relative flex flex-col min-h-[100dvh] sm:min-h-0">
         
         {/* Floating Native App Header */}
         <div className="absolute top-0 w-full z-50 px-4 h-16 flex items-center justify-between">
@@ -307,11 +306,11 @@ export default function BookVisitPage() {
         </div>
 
         {/* Form Container (Bottom Sheet Effect) */}
-        <div className="px-5 pt-8 pb-32 sm:pb-8 flex-grow flex flex-col bg-white rounded-t-[32px] -mt-8 relative z-10 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
+        <div className="px-5 pt-8 pb-[calc(8rem+env(safe-area-inset-bottom))] sm:pb-8 flex-grow flex flex-col bg-white rounded-t-[32px] -mt-8 relative z-10 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
           <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2" />
           
-          <div className="mb-6 mt-1">
-            <h1 className="text-[25px] sm:text-[27px] leading-[1.25] font-bold font-montserrat text-slate-900 mb-3 sm:mb-4">
+          <div className="mb-7 mt-1">
+            <h1 className="text-[25px] sm:text-[27px] leading-[1.25] font-bold font-montserrat text-slate-900 mb-4 sm:mb-5">
               Get Solar Panels at <span className="text-accent">Zero Down Payment</span>
             </h1>
             <p className="text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 leading-normal">
@@ -359,6 +358,9 @@ export default function BookVisitPage() {
                 <div>
                   <Input 
                     id="name" 
+                    autoComplete="name"
+                    autoCapitalize="words"
+                    enterKeyHint="next"
                     placeholder="Full Name*" 
                     aria-label="Full Name"
                     required 
@@ -378,6 +380,8 @@ export default function BookVisitPage() {
                   </div>
                   <Input 
                     id="phone" 
+                    autoComplete="tel-national"
+                    enterKeyHint="next"
                     type="tel" 
                     inputMode="numeric"
                     maxLength={10}
@@ -399,6 +403,8 @@ export default function BookVisitPage() {
                   <div className="relative">
                     <Input 
                       id="pincode" 
+                      autoComplete="postal-code"
+                      enterKeyHint="done"
                       type="text"
                       inputMode="numeric"
                       maxLength={6}
@@ -459,78 +465,17 @@ export default function BookVisitPage() {
                       <SelectValue placeholder="Monthly Electricity Bill*" />
                     </SelectTrigger>
                     <SelectContent className="rounded-[14px] z-[100] bg-white border-slate-200">
-                      <SelectItem value="< 1500" className="text-[15px] py-2.5">Less than ₹1,500 (~2 kW system)</SelectItem>
-                      <SelectItem value="1500 - 2500" className="text-[15px] py-2.5">₹1,500 - ₹2,500 (~3 kW system)</SelectItem>
-                      <SelectItem value="2500 - 5000" className="text-[15px] py-2.5">₹2,500 - ₹5,000 (~4-5 kW system)</SelectItem>
-                      <SelectItem value="> 5000" className="text-[15px] py-2.5">More than ₹5,000 (~6-10 kW system)</SelectItem>
+                      <SelectItem value="< 1500" className="text-[15px] py-2.5">Less than ₹1,500</SelectItem>
+                      <SelectItem value="1500 - 2500" className="text-[15px] py-2.5">₹1,500 - ₹2,500</SelectItem>
+                      <SelectItem value="2500 - 5000" className="text-[15px] py-2.5">₹2,500 - ₹5,000</SelectItem>
+                      <SelectItem value="> 5000" className="text-[15px] py-2.5">More than ₹5,000</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
-                {/* House Address / Colony (Optional) */}
-                <div>
-                  <Input 
-                    id="address" 
-                    placeholder="House No., Colony or Landmark (Optional)" 
-                    aria-label="Address or Landmark"
-                    value={formData.address} 
-                    onChange={e => {
-                      setSubmitError("");
-                      setFormData({ ...formData, address: e.target.value });
-                    }} 
-                    className="h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all" 
-                  />
-                </div>
-
-                {/* Preferred Date & Capacity Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <Input 
-                      id="preferredDate" 
-                      type="date"
-                      min={new Date().toISOString().split("T")[0]}
-                      aria-label="Preferred Visit Date"
-                      title="Preferred Visit Date (Optional)"
-                      value={formData.preferredDate} 
-                      onChange={e => {
-                        setSubmitError("");
-                        setFormData({ ...formData, preferredDate: e.target.value });
-                      }} 
-                      className="h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[14px] font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all" 
-                    />
-                    <p className="text-[11px] text-slate-400 mt-1 ml-1">Preferred Inspection Date (Optional)</p>
-                  </div>
-
-                  <div>
-                    <Select 
-                      value={String(formData.plantSize || 3)} 
-                      onValueChange={value => {
-                        setFormData({ ...formData, plantSize: Number(value) });
-                      }}
-                    >
-                      <SelectTrigger 
-                        aria-label="Solar Plant Capacity"
-                        className="w-full h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[14px] font-medium focus:outline-none focus:ring-0 focus:border-slate-400 focus:bg-white text-slate-700 transition-all"
-                      >
-                        <SelectValue placeholder="System Capacity (kW)" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-[14px] z-[100] bg-white border-slate-200">
-                        <SelectItem value="2" className="text-[14px] py-2">2 kW System</SelectItem>
-                        <SelectItem value="3" className="text-[14px] py-2">3 kW System (Recommended)</SelectItem>
-                        <SelectItem value="4" className="text-[14px] py-2">4 kW System</SelectItem>
-                        <SelectItem value="5" className="text-[14px] py-2">5 kW System</SelectItem>
-                        <SelectItem value="8" className="text-[14px] py-2">8 kW System</SelectItem>
-                        <SelectItem value="10" className="text-[14px] py-2">10 kW System</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <p className="text-[11px] text-slate-400 mt-1 ml-1">Desired Plant Size (Optional)</p>
-                  </div>
-                </div>
-
               </div>
 
               {/* App Bottom Action Bar */}
-              <div className="fixed sm:relative bottom-0 left-0 w-full p-4 sm:p-0 bg-white sm:bg-transparent border-t border-slate-100 sm:border-0 z-[100] flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] sm:shadow-none">
+              <div className="fixed sm:relative bottom-0 left-0 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-0 bg-white sm:bg-transparent border-t border-slate-100 sm:border-0 z-[100] flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] sm:shadow-none">
                 <Button 
                   type="submit" 
                   disabled={isSubmitting || pincodeVerifier.isBlocked}
@@ -539,7 +484,7 @@ export default function BookVisitPage() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Scheduling Site Visit...</span>
+                      <span>Redirecting...</span>
                     </>
                   ) : (
                     "Book FREE Consultation"
