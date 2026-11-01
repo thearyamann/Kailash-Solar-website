@@ -165,7 +165,7 @@ function BookingSuccessAppContent() {
   const rows = [
     details.name && { label: "Name", value: <span className="capitalize">{details.name}</span> },
     details.phone && { label: "WhatsApp", value: `+91 ${details.phone.slice(-10)}` },
-    details.pincode && { label: "Location", value: `${details.region || "Meerut"} · ${details.pincode}` },
+    details.pincode && { label: "PIN code", value: details.pincode },
     details.bill && { label: "Monthly bill", value: details.bill },
     details.leadId && { label: "Booking ID", value: `#${details.leadId.replace(/^ks_lead_/, "")}` },
   ].filter(Boolean) as { label: string; value: React.ReactNode }[];
