@@ -179,7 +179,7 @@ function BookingSuccessAppContent() {
   ];
 
   return (
-    <div className="min-h-[100dvh] bg-white sm:bg-slate-100 flex justify-center sm:items-center sm:py-10 select-none font-sans">
+    <div className="min-h-[100dvh] bg-white sm:bg-slate-100 flex justify-center sm:items-center sm:py-10 select-none font-sans success-screen">
       <div className="w-full max-w-[420px] bg-white min-h-[100dvh] sm:min-h-0 sm:rounded-[28px] sm:shadow-[0_20px_60px_-20px_rgba(15,23,42,0.25)] relative flex flex-col">
 
         <CelebrationConfetti originRef={tickRef} delay={320} />
@@ -293,6 +293,9 @@ function BookingSuccessAppContent() {
 
       {/* Success animation */}
       <style jsx global>{`
+        .success-screen {
+          animation: sScreen 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
         .success-pop {
           opacity: 0;
           animation: sPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
@@ -307,6 +310,10 @@ function BookingSuccessAppContent() {
           transform: translateY(110%);
           animation: sDock 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
         }
+        @keyframes sScreen {
+          0% { opacity: 0; transform: translateY(24px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
         @keyframes sPop {
           0% { opacity: 0; transform: scale(0.3); }
           65% { opacity: 1; transform: scale(1.12); }
@@ -319,7 +326,7 @@ function BookingSuccessAppContent() {
         }
         @keyframes sDock { to { transform: translateY(0); } }
         @media (prefers-reduced-motion: reduce) {
-          .success-pop, .success-rise, .success-dock {
+          .success-screen, .success-pop, .success-rise, .success-dock {
             animation: none !important; opacity: 1 !important; transform: none !important;
           }
         }

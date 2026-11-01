@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { goToBookingSuccess } from "@/lib/go-to-success";
 import { ArrowLeft, Phone, CheckCircle2, MessageCircle, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,11 +125,7 @@ export default function BookVisitPage() {
         description: duplicateCheck.message,
       });
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
-      if (typeof window !== "undefined") {
-        window.location.assign(dupUrl);
-      } else {
-        router.push(dupUrl);
-      }
+      goToBookingSuccess(router, dupUrl);
       return;
     }
 
@@ -270,11 +267,7 @@ export default function BookVisitPage() {
     setIsSuccess(true);
 
     // Immediately run dedicated animated success page
-    if (typeof window !== "undefined") {
-      window.location.assign(redirectUrl);
-    } else {
-      router.push(redirectUrl);
-    }
+    goToBookingSuccess(router, redirectUrl);
   };
 
   return (

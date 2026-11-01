@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { goToBookingSuccess } from '@/lib/go-to-success';
 import { recordSubmission } from '@/lib/submission-tracker';
 
 interface CalculatorResults {
@@ -179,11 +180,7 @@ Calculate your savings: ${window.location.href}`;
 
     const redirectUrl = `/booking-success?name=${encodeURIComponent(proposalForm.name.trim())}&phone=${encodeURIComponent(proposalForm.phone.trim())}&bill=${encodeURIComponent(results ? `${results.systemSize}kW System` : "")}`;
 
-    if (typeof window !== "undefined") {
-      window.location.assign(redirectUrl);
-    } else {
-      router.push(redirectUrl);
-    }
+    goToBookingSuccess(router, redirectUrl);
   };
 
   const formatCurrency = (value: number) => {

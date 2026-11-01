@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { goToBookingSuccess } from "@/lib/go-to-success";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Phone, CheckCircle2, MessageCircle, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -167,11 +168,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       });
       setIsOpen(false);
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
-      if (typeof window !== "undefined") {
-        window.location.assign(dupUrl);
-      } else {
-        router.push(dupUrl);
-      }
+      goToBookingSuccess(router, dupUrl);
       return;
     }
 
@@ -296,11 +293,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     setIsOpen(false);
 
     // Immediately run dedicated animated success page
-    if (typeof window !== "undefined") {
-      window.location.assign(redirectUrl);
-    } else {
-      router.push(redirectUrl);
-    }
+    goToBookingSuccess(router, redirectUrl);
   };
 
   return (

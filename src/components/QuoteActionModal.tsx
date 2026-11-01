@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { goToBookingSuccess } from "@/lib/go-to-success";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -111,11 +112,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
       });
       setIsOpen(false);
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(`${quoteData.systemSize}kW System`)}`;
-      if (typeof window !== "undefined") {
-        window.location.assign(dupUrl);
-      } else {
-        router.push(dupUrl);
-      }
+      goToBookingSuccess(router, dupUrl);
       return;
     }
     
@@ -222,11 +219,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
       setFormData({ name: "", phone: "", pincode: "" });
 
       // Immediately run dedicated animated success page
-      if (typeof window !== "undefined") {
-        window.location.assign(redirectUrl);
-      } else {
-        router.push(redirectUrl);
-      }
+      goToBookingSuccess(router, redirectUrl);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to submit request. Please try again or contact us directly.";
       if (process.env.NODE_ENV !== 'production') {

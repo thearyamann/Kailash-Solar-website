@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { goToBookingSuccess } from "@/lib/go-to-success";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -112,11 +113,7 @@ export function SolarConsultationForm() {
         description: duplicateCheck.message,
       });
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
-      if (typeof window !== "undefined") {
-        window.location.assign(dupUrl);
-      } else {
-        router.push(dupUrl);
-      }
+      goToBookingSuccess(router, dupUrl);
       return;
     }
 
@@ -214,11 +211,7 @@ export function SolarConsultationForm() {
     });
 
     // Immediately run dedicated animated success page
-    if (typeof window !== "undefined") {
-      window.location.assign(redirectUrl);
-    } else {
-      router.push(redirectUrl);
-    }
+    goToBookingSuccess(router, redirectUrl);
   };
 
   return (

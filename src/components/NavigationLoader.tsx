@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 /**
  * Global navigation loader.
@@ -14,6 +14,7 @@ const MAX_VISIBLE_MS = 8000;
 export default function NavigationLoader() {
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const showTimer = useRef<ReturnType<typeof setTimeout>>();
   const hideTimer = useRef<ReturnType<typeof setTimeout>>();
 
@@ -22,6 +23,16 @@ export default function NavigationLoader() {
     clearTimeout(hideTimer.current);
     setIsLoading(false);
   };
+
+  // Preload the booking success screen in the background so it opens instantly after a form submit
+  useEffect(() => {
+    const prefetch = () => {
+      try { router.prefetch('/booking-success'); } catch (e) {}
+    };
+    const w = window as any;
+    const id = w.requestIdleCallback ? w.requestIdleCallback(prefetch, { timeout: 4000 }) : setTimeout(prefetch, 2500);
+    return () => (w.cancelIdleCallback ? w.cancelIdleCallback(id) : clearTimeout(id));
+  }, [router]);
 
   // Hide as soon as the new route renders
   useEffect(() => {

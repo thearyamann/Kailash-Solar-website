@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { goToBookingSuccess } from "@/lib/go-to-success";
 import { Phone, Mail, MapPin, MessageCircle, Send, Building2, User, IndianRupee, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,11 +78,7 @@ const ContactSection = () => {
         description: duplicateCheck.message,
       });
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
-      if (typeof window !== "undefined") {
-        window.location.assign(dupUrl);
-      } else {
-        router.push(dupUrl);
-      }
+      goToBookingSuccess(router, dupUrl);
       return;
     }
 
@@ -173,11 +170,7 @@ const ContactSection = () => {
       });
 
       // Immediately run dedicated animated success page
-      if (typeof window !== "undefined") {
-        window.location.assign(redirectUrl);
-      } else {
-        router.push(redirectUrl);
-      }
+      goToBookingSuccess(router, redirectUrl);
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
         console.error("Submission error:", error);
