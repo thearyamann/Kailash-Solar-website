@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import CelebrationConfetti from "@/components/CelebrationConfetti";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Phone, ArrowLeft, MessageCircle, Check } from "lucide-react";
@@ -157,10 +158,11 @@ function BookingSuccessAppContent() {
           navigator.vibrate?.([14, 60, 22]);
         }
       } catch (e) {}
-    }, 380);
+    }, 300);
     return () => clearTimeout(t);
   }, []);
 
+  const tickRef = useRef<HTMLDivElement>(null);
   const firstName = details.name ? details.name.split(" ")[0] : "";
   const rows = [
     details.name && { label: "Name", value: <span className="capitalize">{details.name}</span> },
@@ -180,6 +182,8 @@ function BookingSuccessAppContent() {
     <div className="min-h-[100dvh] bg-white sm:bg-slate-100 flex justify-center sm:items-center sm:py-10 select-none font-sans">
       <div className="w-full max-w-[420px] bg-white min-h-[100dvh] sm:min-h-0 sm:rounded-[28px] sm:shadow-[0_20px_60px_-20px_rgba(15,23,42,0.25)] relative flex flex-col">
 
+        <CelebrationConfetti originRef={tickRef} delay={320} />
+
         {/* Minimal top bar */}
         <header className="absolute top-0 left-0 right-0 z-20 px-4 h-14 flex items-center">
           <Link
@@ -193,24 +197,18 @@ function BookingSuccessAppContent() {
 
         <main className="flex-1 px-6 pt-14 pb-[calc(7.5rem+env(safe-area-inset-bottom))] sm:pb-6 flex flex-col items-center overscroll-contain">
 
-          {/* Animated success tick (payment-app style) */}
-          <div className="relative mt-4 mb-4 shrink-0 w-36 h-36 flex items-center justify-center" aria-hidden="true">
-            <div className="absolute inset-0 rounded-full success-glow" />
-            <div className="absolute w-24 h-24 rounded-full border-2 border-[#1E56A8]/45 success-ring" />
-            <div className="absolute w-24 h-24 rounded-full border-2 border-[#1E56A8]/30 success-ring success-ring-2" />
-            {Array.from({ length: 8 }).map((_, i) => (
-              <span
-                key={i}
-                className="absolute w-1.5 h-1.5 rounded-full success-dot"
-                style={{ "--a": `${i * 45 + 22.5}deg`, background: i % 2 ? "#F7931E" : "#1E56A8" } as React.CSSProperties}
-              />
-            ))}
-            <div className="w-24 h-24 rounded-full flex items-center justify-center success-badge relative z-10 overflow-hidden">
-              <span className="absolute top-[6%] left-[16%] w-[62%] h-[38%] rounded-full success-gloss" aria-hidden="true" />
-              <svg className="w-12 h-12 relative drop-shadow-[0_2px_2px_rgba(8,26,56,0.45)]" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 15 29 L 24 38 L 41 19" stroke="#FFFFFF" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" className="success-check" />
-              </svg>
-            </div>
+          {/* 3D success tick (same as CFOH site) */}
+          {/* 132px image = 96px visible circle, same size as the previous tick */}
+          <div ref={tickRef} className="relative mt-4 mb-2 w-[132px] h-[132px] shrink-0 success-pop">
+            <img
+              src="/images/success-check-3d.png"
+              alt="Success"
+              width={132}
+              height={132}
+              fetchPriority="high"
+              decoding="async"
+              className="w-full h-full object-contain"
+            />
           </div>
 
           {/* Heading */}
@@ -295,41 +293,9 @@ function BookingSuccessAppContent() {
 
       {/* Success animation */}
       <style jsx global>{`
-        .success-badge {
-          background: radial-gradient(circle at 30% 25%, #3B78D4 0%, #1E56A8 38%, #133B76 72%, #0B2550 100%);
-          box-shadow:
-            0 22px 40px -12px rgba(19, 59, 118, 0.65),
-            0 8px 14px -6px rgba(19, 59, 118, 0.45),
-            inset 0 4px 8px rgba(255, 255, 255, 0.35),
-            inset 0 -8px 14px rgba(5, 18, 42, 0.55);
-          transform: scale(0);
-          animation: sBadge 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
-          will-change: transform;
-        }
-        .success-gloss {
-          background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%);
-          filter: blur(1px);
-        }
-        .success-check {
-          stroke-dasharray: 44;
-          stroke-dashoffset: 44;
-          animation: sCheck 0.36s cubic-bezier(0.65, 0, 0.35, 1) 0.38s forwards;
-        }
-        .success-glow {
-          background: radial-gradient(circle, rgba(30, 86, 168, 0.16) 0%, rgba(30, 86, 168, 0) 70%);
+        .success-pop {
           opacity: 0;
-          animation: sFade 0.8s ease-out 0.15s forwards;
-        }
-        .success-ring {
-          opacity: 0;
-          animation: sRing 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
-          will-change: transform, opacity;
-        }
-        .success-ring-2 { animation-delay: 0.55s; }
-        .success-dot {
-          opacity: 0;
-          transform: rotate(var(--a)) translateY(0) scale(0.4);
-          animation: sDot 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.42s forwards;
+          animation: sPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
           will-change: transform, opacity;
         }
         .success-rise {
@@ -341,20 +307,11 @@ function BookingSuccessAppContent() {
           transform: translateY(110%);
           animation: sDock 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
         }
-        @keyframes sBadge {
-          0% { transform: scale(0); }
-          100% { transform: scale(1); }
-        }
-        @keyframes sCheck { to { stroke-dashoffset: 0; } }
-        @keyframes sFade { to { opacity: 1; } }
-        @keyframes sRing {
-          0% { opacity: 0.9; transform: scale(1); }
-          100% { opacity: 0; transform: scale(1.75); }
-        }
-        @keyframes sDot {
-          0% { opacity: 0; transform: rotate(var(--a)) translateY(0) scale(0.4); }
-          25% { opacity: 1; }
-          100% { opacity: 0; transform: rotate(var(--a)) translateY(-68px) scale(1); }
+        @keyframes sPop {
+          0% { opacity: 0; transform: scale(0.3); }
+          65% { opacity: 1; transform: scale(1.12); }
+          85% { transform: scale(0.96); }
+          100% { opacity: 1; transform: scale(1); }
         }
         @keyframes sRise {
           0% { opacity: 0; transform: translateY(14px); }
@@ -362,10 +319,9 @@ function BookingSuccessAppContent() {
         }
         @keyframes sDock { to { transform: translateY(0); } }
         @media (prefers-reduced-motion: reduce) {
-          .success-badge, .success-check, .success-glow, .success-rise, .success-dock {
-            animation: none !important; opacity: 1 !important; transform: none !important; stroke-dashoffset: 0 !important;
+          .success-pop, .success-rise, .success-dock {
+            animation: none !important; opacity: 1 !important; transform: none !important;
           }
-          .success-ring, .success-dot { display: none; }
         }
       `}</style>
 
