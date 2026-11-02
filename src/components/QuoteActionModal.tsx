@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { submitBookVisitToCRM } from "@/lib/crm";
 import { 
@@ -39,7 +38,6 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const { toast } = useToast();
   
   const [formData, setFormData] = useState({
     name: "",
@@ -106,10 +104,6 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
     });
 
     if (duplicateCheck.isDuplicate) {
-      toast({
-        title: "Request Already Received",
-        description: duplicateCheck.message,
-      });
       setIsOpen(false);
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(`${quoteData.systemSize}kW System`)}`;
       goToBookingSuccess(router, dupUrl);
@@ -211,10 +205,6 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
 
       const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(`${quoteData.systemSize}kW System`)}&msg=${whatsappMessage}`;
 
-      toast({
-        title: "Installation Request Received!",
-        description: "Redirecting to your confirmation..."
-      });
       setIsOpen(false);
       setFormData({ name: "", phone: "", pincode: "" });
 

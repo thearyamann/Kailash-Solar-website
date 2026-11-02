@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Phone, ArrowLeft, MessageCircle, Check } from "lucide-react";
 import { getLastSubmission } from "@/lib/submission-tracker";
 import { getPincodeRegion } from "@/lib/pincode";
+import { useToast } from "@/hooks/use-toast";
 
 function getLiveCustomerData() {
   if (typeof window === "undefined") {
@@ -102,6 +103,13 @@ function getLiveCustomerData() {
 
 function BookingSuccessAppContent() {
   const searchParams = useSearchParams();
+  const { dismiss } = useToast();
+
+  // Never show a toast/popup over the success screen
+  useEffect(() => {
+    dismiss();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [details, setDetails] = useState({
     name: "",
     phone: "",
@@ -195,7 +203,7 @@ function BookingSuccessAppContent() {
           </Link>
         </header>
 
-        <main className="flex-1 px-6 pt-14 pb-[calc(7.5rem+env(safe-area-inset-bottom))] sm:pb-6 flex flex-col items-center overscroll-contain">
+        <main className="success-content flex-1 px-6 pt-14 pb-[calc(7.5rem+env(safe-area-inset-bottom))] sm:pb-6 flex flex-col items-center overscroll-contain">
 
           {/* 3D success tick (same as CFOH site) */}
           {/* 132px image = 96px visible circle, same size as the previous tick */}
@@ -293,7 +301,11 @@ function BookingSuccessAppContent() {
 
       {/* Success animation */}
       <style jsx global>{`
+        /* No transform on the wrapper: it would make the fixed bottom bar scroll with the page */
         .success-screen {
+          animation: sFade 0.3s ease-out both;
+        }
+        .success-content {
           animation: sScreen 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
         .success-pop {
@@ -314,6 +326,10 @@ function BookingSuccessAppContent() {
           0% { opacity: 0; transform: translateY(24px); }
           100% { opacity: 1; transform: translateY(0); }
         }
+        @keyframes sFade {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
         @keyframes sPop {
           0% { opacity: 0; transform: scale(0.3); }
           65% { opacity: 1; transform: scale(1.12); }
@@ -326,7 +342,7 @@ function BookingSuccessAppContent() {
         }
         @keyframes sDock { to { transform: translateY(0); } }
         @media (prefers-reduced-motion: reduce) {
-          .success-screen, .success-pop, .success-rise, .success-dock {
+          .success-screen, .success-content, .success-pop, .success-rise, .success-dock {
             animation: none !important; opacity: 1 !important; transform: none !important;
           }
         }

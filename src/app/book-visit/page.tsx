@@ -120,10 +120,6 @@ export default function BookVisitPage() {
     });
 
     if (duplicateCheck.isDuplicate) {
-      toast({
-        title: "Request Already Received",
-        description: duplicateCheck.message,
-      });
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
       goToBookingSuccess(router, dupUrl);
       return;
@@ -259,10 +255,6 @@ export default function BookVisitPage() {
 
     const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formattedBill)}&msg=${whatsappMessage}${crmResult.lead_id ? `&lead_id=${encodeURIComponent(crmResult.lead_id)}` : ""}`;
 
-    toast({
-      title: "Site Visit Scheduled!",
-      description: "Redirecting to your confirmation..."
-    });
 
     setIsSuccess(true);
 

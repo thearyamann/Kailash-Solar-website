@@ -162,10 +162,6 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     });
 
     if (duplicateCheck.isDuplicate) {
-      toast({
-        title: "Request Already Received",
-        description: duplicateCheck.message,
-      });
       setIsOpen(false);
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
       goToBookingSuccess(router, dupUrl);
@@ -286,10 +282,6 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
 
     const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}&msg=${whatsappMessage}${crmResult.lead_id ? `&lead_id=${encodeURIComponent(crmResult.lead_id)}` : ""}`;
 
-    toast({
-      title: "Consultation Booked!",
-      description: "Redirecting to your confirmation..."
-    });
     setIsOpen(false);
 
     // Immediately run dedicated animated success page

@@ -73,10 +73,6 @@ const ContactSection = () => {
     });
 
     if (duplicateCheck.isDuplicate) {
-      toast({
-        title: "Request Already Received",
-        description: duplicateCheck.message,
-      });
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
       goToBookingSuccess(router, dupUrl);
       return;
@@ -155,10 +151,6 @@ const ContactSection = () => {
 
       const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}&msg=${whatsappMessage}`;
 
-      toast({
-        title: "Inquiry Submitted!",
-        description: "Redirecting to your confirmation..."
-      });
       
       setFormData({
         name: "",

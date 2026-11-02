@@ -172,10 +172,6 @@ Calculate your savings: ${window.location.href}`;
       sessionStorage.setItem("kailash_submitted_bill", results ? `${results.systemSize}kW System` : "");
     }
 
-    toast({
-      title: "Request Submitted!",
-      description: "Redirecting to your confirmation...",
-    });
     setShowProposalForm(false);
 
     const redirectUrl = `/booking-success?name=${encodeURIComponent(proposalForm.name.trim())}&phone=${encodeURIComponent(proposalForm.phone.trim())}&bill=${encodeURIComponent(results ? `${results.systemSize}kW System` : "")}`;

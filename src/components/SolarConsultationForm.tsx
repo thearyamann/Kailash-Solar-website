@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { goToBookingSuccess } from "@/lib/go-to-success";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { submitBookVisitToCRM } from "@/lib/crm";
 import { Info, Check, Calculator, Zap, IndianRupee, ArrowRight, Phone, CheckCircle2, MessageCircle, AlertCircle, Loader2 } from "lucide-react";
@@ -25,7 +24,6 @@ import {
 
 export function SolarConsultationForm() {
   const router = useRouter();
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -108,10 +106,6 @@ export function SolarConsultationForm() {
     });
 
     if (duplicateCheck.isDuplicate) {
-      toast({
-        title: "Request Already Received",
-        description: duplicateCheck.message,
-      });
       const dupUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}`;
       goToBookingSuccess(router, dupUrl);
       return;
@@ -205,10 +199,6 @@ export function SolarConsultationForm() {
 
     const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formData.monthlyBill || "")}&msg=${whatsappMessage}`;
 
-    toast({
-      title: "Consultation Booked!",
-      description: "Redirecting to your confirmation..."
-    });
 
     // Immediately run dedicated animated success page
     goToBookingSuccess(router, redirectUrl);
