@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { goToBookingSuccess } from "@/lib/go-to-success";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -302,10 +303,12 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
         <div className="w-full bg-card rounded-xl overflow-hidden relative flex flex-col max-h-[90vh] overflow-y-auto hide-scrollbar focus:outline-none">
           {/* Top Image Banner */}
           <div className="relative h-[140px] sm:h-[160px] w-full bg-slate-200 shrink-0">
-            <img 
-              src="/Happyfamily.png" 
-              alt="Happy family with solar" 
-              className="w-full h-full object-cover object-[55%_10%]"
+            <Image
+              src="/Happyfamily.png"
+              alt="Happy family with solar"
+              fill
+              sizes="(min-width: 640px) 512px, 100vw"
+              className="object-cover object-[55%_10%]"
             />
           </div>
 

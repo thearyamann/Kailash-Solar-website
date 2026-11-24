@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { goToBookingSuccess } from "@/lib/go-to-success";
 import { ArrowLeft, Phone, CheckCircle2, MessageCircle, Loader2, AlertCircle } from "lucide-react";
@@ -280,11 +281,13 @@ export default function BookVisitPage() {
 
         {/* Top Image Banner */}
         <div className="relative h-[220px] w-full bg-slate-200 shrink-0">
-          <img 
-            src="/Happyfamily.png" 
-            alt="Happy family with solar" 
-            fetchPriority="high"
-            className="w-full h-full object-cover object-[55%_10%]"
+          <Image
+            src="/Happyfamily.png"
+            alt="Happy family with solar"
+            fill
+            priority
+            sizes="(min-width: 640px) 640px, 100vw"
+            className="object-cover object-[55%_10%]"
           />
           {/* Subtle gradient overlay for header readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent pointer-events-none" />
