@@ -27,3 +27,6 @@ dist-ssr
 .next
 out
 
+
+# Private marketing docs (repo is public)
+docs/ads/
