@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { submitBookVisitToCRM } from "@/lib/crm";
+import { trackMetaLead } from "@/lib/meta-pixel";
 import { 
   validatePincode, 
   isServiceablePincode, 
@@ -114,7 +115,7 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
     setIsSubmitting(true);
 
     // Sync lead to Zoho CRM + instant WhatsApp alert to the team (never blocks the form)
-    await submitBookVisitToCRM({
+    const crmResult = await submitBookVisitToCRM({
       name: trimmedName,
       phone: formData.phone,
       city: pinCheck.region || "Meerut",
@@ -182,11 +183,10 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
           'event': 'generate_lead',
           'form_name': 'quote_booking',
           'lead_type': 'quote',
-          'pincode': trimmedPin
+          'pincode': trimmedPin,
+          'lead_id': crmResult.lead_id
         });
-        if ((window as any).fbq) {
-          (window as any).fbq('track', 'Lead');
-        }
+        trackMetaLead({ formName: 'quote_booking', phone: formData.phone, pincode: trimmedPin, leadId: crmResult.lead_id });
       }
 
       // Record submission to suppress all popups across the site

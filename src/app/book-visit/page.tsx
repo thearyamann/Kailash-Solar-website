@@ -17,6 +17,7 @@ import {
   OUTSIDE_REGION_ERROR 
 } from "@/lib/pincode";
 import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
+import { trackMetaLead } from "@/lib/meta-pixel";
 import { 
   recordSubmission, 
   checkDuplicateSubmission 
@@ -227,9 +228,7 @@ export default function BookVisitPage() {
           'pincode': trimmedPin,
           'lead_id': crmResult.lead_id
         });
-        if ((window as any).fbq) {
-          (window as any).fbq('track', 'Lead');
-        }
+        trackMetaLead({ formName: 'book_visit_page', phone: formData.phone, pincode: trimmedPin, leadId: crmResult.lead_id });
       }
 
     } catch (e) {

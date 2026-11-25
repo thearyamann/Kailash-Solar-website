@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { submitBookVisitToCRM } from "@/lib/crm";
+import { trackMetaLead } from "@/lib/meta-pixel";
 import { 
   validatePincode, 
   isServiceablePincode, 
@@ -82,7 +83,7 @@ const ContactSection = () => {
     const fullAddress = `${trimmedPin} (${pinCheck.region})`;
 
     // Sync lead to Zoho CRM + instant WhatsApp alert to the team (never blocks the form)
-    await submitBookVisitToCRM({
+    const crmResult = await submitBookVisitToCRM({
       name: trimmedName,
       phone: formData.phone,
       city: pinCheck.region || "Meerut",
@@ -130,8 +131,10 @@ const ContactSection = () => {
           'event': 'generate_lead',
           'form_name': 'contact_us',
           'lead_type': 'contact_us',
-          'pincode': trimmedPin
+          'pincode': trimmedPin,
+          'lead_id': crmResult.lead_id
         });
+        trackMetaLead({ formName: 'contact_us', phone: formData.phone, pincode: trimmedPin, leadId: crmResult.lead_id });
       }
 
       // Record submission to suppress all popups across the site

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { submitBookVisitToCRM } from "@/lib/crm";
+import { trackMetaLead } from "@/lib/meta-pixel";
 import { Info, Check, Calculator, Zap, IndianRupee, ArrowRight, Phone, CheckCircle2, MessageCircle, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -116,7 +117,7 @@ export function SolarConsultationForm() {
     const fullAddress = `${trimmedPin} (${pinCheck.region})`;
 
     // Sync lead to Zoho CRM + instant WhatsApp alert to the team (never blocks the form)
-    await submitBookVisitToCRM({
+    const crmResult = await submitBookVisitToCRM({
       name: trimmedName,
       phone: formData.phone,
       city: pinCheck.region || "Meerut",
@@ -171,11 +172,10 @@ export function SolarConsultationForm() {
           'event': 'generate_lead',
           'form_name': 'inline_consultation',
           'lead_type': 'book_visit',
-          'pincode': trimmedPin
+          'pincode': trimmedPin,
+          'lead_id': crmResult.lead_id
         });
-        if ((window as any).fbq) {
-          (window as any).fbq('track', 'Lead');
-        }
+        trackMetaLead({ formName: 'inline_consultation', phone: formData.phone, pincode: trimmedPin, leadId: crmResult.lead_id });
       }
 
     } catch (error) {
