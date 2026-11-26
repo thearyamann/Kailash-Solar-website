@@ -11,7 +11,7 @@ const BlogSection = () => {
       category: 'Financing',
       readTime: '15 min read',
       href: '/blog/solar-panel-loan-meerut',
-      image: { src: '/solarloan.png' },
+      image: { src: '/opt/solarloan.webp' },
     },
     {
       title: 'How to Get PM Surya Ghar Subsidy in Meerut (Step-by-Step Guide 2025)',
@@ -29,7 +29,7 @@ const BlogSection = () => {
       category: 'Pricing Guide',
       readTime: '15 min read',
       href: '/blog/solar-panel-price-meerut',
-      image: { src: '/priceflyer.png' },
+      image: { src: '/opt/priceflyer.webp' },
     },
     {
       title: 'Why Kailash Solar Is a Leading Solar Company in Meerut',
@@ -38,7 +38,7 @@ const BlogSection = () => {
       category: 'Meerut Guide',
       readTime: '10 min read',
       href: '/blog/best-solar-company-in-meerut',
-      image: { src: '/Happyfamily.png' },
+      image: { src: '/opt/Happyfamily.webp' },
     },
     {
       title: '3kW vs 5kW Solar System in Meerut: Price, Subsidy & Guide',
@@ -47,7 +47,7 @@ const BlogSection = () => {
       category: 'System Sizing',
       readTime: '12 min read',
       href: '/blog/3kw-vs-5kw-solar-system-meerut',
-      image: { src: '/van.png' }, // placeholder image
+      image: { src: '/opt/van.webp' }, // placeholder image
     },
     {
       title: 'Powering Meerut with Solar: How Kailash Solar Is Helping Homes Save',
@@ -56,7 +56,7 @@ const BlogSection = () => {
       category: 'Solar Guide',
       readTime: '8 min read',
       href: '/blog/powering-meerut-with-solar-kailash-solar',
-      image: { src: '/vaniimage.png' },
+      image: { src: '/opt/vaniimage.webp' },
     },
     {
       title: 'How to Choose the Right Solar Panel for Your Home in Meerut',
@@ -65,7 +65,7 @@ const BlogSection = () => {
       category: 'Buying Guide',
       readTime: '10 min read',
       href: '/blog/how-to-choose-solar-panels-home-meerut',
-      image: { src: '/solarpanelbest.png' },
+      image: { src: '/opt/solarpanelbest.webp' },
     }
   ];
 

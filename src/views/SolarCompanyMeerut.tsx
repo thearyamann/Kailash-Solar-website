@@ -96,7 +96,8 @@ const SolarCompanyMeerut = () => {
       <section id="home" className="relative min-h-[75dvh] md:min-h-[80vh] flex flex-col justify-between md:justify-center overflow-hidden pt-20 pb-0 md:pb-10">
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
           <video
-            src="/herosection_loop.mp4"
+            src="/opt/hero-loop.mp4"
+            poster="/opt/hero-loop-poster.webp"
             autoPlay
             loop
             muted
@@ -203,16 +204,16 @@ const SolarCompanyMeerut = () => {
           
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 md:gap-x-12 md:gap-y-16">
             {[
-              { title: "Local Meerut Company", desc: "Based right here in Meerut, ensuring ultra-fast service and support whenever you need it.", img: "/engineer.png" },
-              { title: "Subsidy Assistance", desc: "We handle the entire PM Surya Ghar Yojana subsidy paperwork for you from start to finish.", img: "/subsidy.png" },
-              { title: "Tier-1 Solar Panels", desc: "We only use premium Tier-1 modules (Adani, Waaree) built for maximum efficiency.", img: "/solarpanel.png" },
-              { title: "Expert Engineers", desc: "Our in-house professional engineers guarantee safe, structurally sound, and aesthetic rooftop installations.", img: "/expert.png" },
-              { title: "30-Year Warranty", desc: "Enjoy complete peace of mind with a 30-year performance warranty on your solar panels.", img: "/warranty.png" },
-              { title: "Quick Installation", desc: "From site survey to commissioning, we complete residential projects in record time.", img: "/installation.png" },
+              { title: "Local Meerut Company", desc: "Based right here in Meerut, ensuring ultra-fast service and support whenever you need it.", img: "/opt/engineer.webp" },
+              { title: "Subsidy Assistance", desc: "We handle the entire PM Surya Ghar Yojana subsidy paperwork for you from start to finish.", img: "/opt/subsidy.webp" },
+              { title: "Tier-1 Solar Panels", desc: "We only use premium Tier-1 modules (Adani, Waaree) built for maximum efficiency.", img: "/opt/solarpanel.webp" },
+              { title: "Expert Engineers", desc: "Our in-house professional engineers guarantee safe, structurally sound, and aesthetic rooftop installations.", img: "/opt/expert.webp" },
+              { title: "30-Year Warranty", desc: "Enjoy complete peace of mind with a 30-year performance warranty on your solar panels.", img: "/opt/warranty.webp" },
+              { title: "Quick Installation", desc: "From site survey to commissioning, we complete residential projects in record time.", img: "/opt/installation.webp" },
             ].map((feature, i) => (
               <div key={i} className="flex flex-col items-center text-center group">
                 <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 md:mb-8 shadow-sm transition-all duration-500 ">
-                  <img src={feature.img} alt={feature.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 " />
+                  <img src={feature.img} alt={feature.title} loading="lazy" decoding="async" width={600} height={600} className="w-full h-full object-cover transition-transform duration-700 " />
                 </div>
                 <h3 className="text-[14px] sm:text-base md:text-2xl font-bold mb-1.5 md:mb-3 text-slate-900 leading-tight">{feature.title}</h3>
                 <p className="text-[11px] sm:text-sm md:text-base text-slate-600 leading-snug md:leading-relaxed max-w-sm line-clamp-3 md:line-clamp-none mt-1">{feature.desc}</p>
@@ -229,7 +230,7 @@ const SolarCompanyMeerut = () => {
             
             <div className="w-full lg:w-1/2 relative group">
               <div className="hidden lg:block absolute inset-0 bg-accent/20 rounded-[2rem] transform rotate-3 transition-transform duration-500 group-hover:rotate-6" />
-              <img src="/van.png" alt="Benefits of solar panels in Meerut" loading="lazy" className="relative rounded-2xl lg:rounded-[2rem] shadow-md lg:shadow-lg w-full object-cover z-10" />
+              <img src="/opt/van.webp" alt="Benefits of solar panels in Meerut" loading="lazy" decoding="async" width={1100} height={1467} className="relative rounded-2xl lg:rounded-[2rem] shadow-md lg:shadow-lg w-full object-cover z-10" />
             </div>
 
             <div className="w-full lg:w-1/2 space-y-6 lg:space-y-8">
@@ -273,17 +274,17 @@ const SolarCompanyMeerut = () => {
           
           <div className="grid grid-cols-2 gap-4 md:gap-8 max-w-5xl mx-auto">
             {[
-              { name: "Happy Customer", location: "Shastri Nagar, Meerut", img: "/happy costumer.jpeg" },
-              { name: "Happy Customer", location: "Pallavpuram, Meerut", img: "/happycostumer2.jpeg" },
-              { name: "Happy Customer", location: "Modipuram, Meerut", img: "/happycostumer3.jpeg" },
-              { name: "Happy Customer", location: "Partapur, Meerut", img: "/happycostumer5.jpeg" },
-              { name: "Happy Customer", location: "Jagriti Vihar, Meerut", img: "/happycostumer6.jpeg" },
-              { name: "Happy Family", location: "Ganga Nagar, Meerut", img: "/ganganagar.jpeg" },
+              { name: "Happy Customer", location: "Shastri Nagar, Meerut", img: "/opt/happy-customer-1.webp" },
+              { name: "Happy Customer", location: "Pallavpuram, Meerut", img: "/opt/happy-customer-2.webp" },
+              { name: "Happy Customer", location: "Modipuram, Meerut", img: "/opt/happy-customer-3.webp" },
+              { name: "Happy Customer", location: "Partapur, Meerut", img: "/opt/happy-customer-5.webp" },
+              { name: "Happy Customer", location: "Jagriti Vihar, Meerut", img: "/opt/happy-customer-6.webp" },
+              { name: "Happy Family", location: "Ganga Nagar, Meerut", img: "/opt/ganganagar.webp" },
             ].map((customer, i) => (
               <BookVisitModal key={i}>
                 <div className="group cursor-pointer text-left">
                   <div className="rounded-2xl md:rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[4/3] mb-3 md:mb-5 bg-slate-200">
-                    <img src={customer.img} alt={`Happy Customer in ${customer.location}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <img src={customer.img} alt={`Happy Customer in ${customer.location}`} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   </div>
                   <div className="px-1 md:px-2">
                     <h3 className="text-slate-900 font-bold text-[14px] md:text-xl mb-1 leading-tight">{customer.name}</h3>
@@ -300,7 +301,7 @@ const SolarCompanyMeerut = () => {
               <div className="col-span-2 relative flex flex-col items-center justify-center rounded-2xl md:rounded-[2rem] p-8 md:p-16 overflow-hidden cursor-pointer group hover:scale-[1.02] transition-transform duration-500 shadow-sm hover:shadow-xl">
                 <div 
                   className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url('/Happyfamily.png')` }}
+                  style={{ backgroundImage: `url('/opt/Happyfamily.webp')` }}
                 ></div>
                 <div className="absolute inset-0 bg-slate-900/60 group-hover:bg-slate-900/50 transition-colors duration-500"></div>
                 
@@ -501,7 +502,7 @@ const SolarCompanyMeerut = () => {
       <section id="contact" className="py-24 text-white relative overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('/panel.jpg')` }}
+          style={{ backgroundImage: `url('/opt/panel.webp')` }}
         ></div>
         <div className="absolute inset-0 bg-primary/40"></div>
         <div className="container mx-auto px-4 relative z-10">
