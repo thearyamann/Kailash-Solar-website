@@ -115,11 +115,12 @@ const SolarCompanyMeerut = () => {
           {/* TEXT BLOCK: Centered on mobile, normal grid on desktop */}
           <div className="px-4 md:px-0 flex-grow flex flex-col justify-center md:col-span-7 space-y-4 md:space-y-5 pt-6 md:pt-0">
 
-            <h1 className="text-[30px] leading-[1.15] md:text-4xl lg:text-5xl font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
-              <span className="block animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both">
-                Meerut's No.1 <br className="hidden md:block" /> Solar Company
-              </span>
-              <span className="block text-accent drop-shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 fill-mode-both mt-1 md:mt-2">for Home Solar</span>
+            <h1 className="text-[length:min(calc(7.9vw_-_3px),30px)] md:text-[min(3.2vw,48px)] leading-[1.15] [text-wrap:balance] font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
+              {/* Two lines: balanced over two lines on phones, "Meerut's No.1 Solar Company" / "for Home Solar" on desktop */}
+              <span className="md:block md:whitespace-nowrap animate-in fade-in duration-700 fill-mode-both">
+                Meerut's No.1 Solar Company
+              </span>{' '}
+              <span className="md:block text-white animate-in fade-in duration-700 delay-300 fill-mode-both md:mt-2">for <span className="text-accent">Home Solar</span></span>
             </h1>
             
             <p className="text-[16px] md:text-xl text-white/90 font-medium leading-snug max-w-xl pb-20 md:pb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-500 fill-mode-both">
