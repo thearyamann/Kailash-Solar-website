@@ -95,19 +95,19 @@ const SolarCompanyMeerut = () => {
 
       <section id="home" className="relative min-h-[75dvh] md:min-h-[80vh] flex flex-col justify-between md:justify-center overflow-hidden pt-20 pb-0 md:pb-10">
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
-          {/* Team photo. To change it, replace public/meerut-hero.png (wide, ~3:2, people on the right side). */}
-          <Image
-            src="/meerut-hero.png"
-            alt="Kailash Solar team installing rooftop solar panels in Meerut"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[72%_center] md:object-[60%_center]"
+          <video
+            src="/herosection_loop.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="w-full h-full object-cover object-[92%_0%] md:object-[50%_0%] scale-x-[-1]"
           />
-          {/* Darker on the text side (left on desktop, top on mobile) so the heading never fights the photo */}
-          <div className="absolute inset-0 bg-black/35 md:bg-gradient-to-r md:from-black/85 md:via-black/55 md:to-black/20" />
+          {/* Lighter dark overlay to keep text readable but show more video */}
+          <div className="absolute inset-0 bg-slate-900/30" />
           {/* Bottom shadow for logos */}
-          <div className="absolute inset-x-0 bottom-0 h-[80%] md:h-[55%] bg-gradient-to-t from-black md:from-black/80 via-black/85 md:via-black/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-[80%] md:h-[70%] bg-gradient-to-t from-black md:from-black/80 via-black/90 md:via-black/50 to-transparent pointer-events-none" />
         </div>
         
         <div className="container relative z-10 mx-auto px-0 sm:px-6 flex flex-col flex-grow h-full md:grid md:grid-cols-12 md:gap-8 lg:gap-12 md:items-center">
@@ -115,7 +115,7 @@ const SolarCompanyMeerut = () => {
           {/* TEXT BLOCK: Centered on mobile, normal grid on desktop */}
           <div className="px-4 md:px-0 flex-grow flex flex-col justify-center md:col-span-7 space-y-4 md:space-y-5 pt-6 md:pt-0">
 
-            <h1 className="text-[38px] leading-[1.1] md:text-5xl lg:text-6xl font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
+            <h1 className="text-[30px] leading-[1.15] md:text-4xl lg:text-5xl font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
               <span className="block animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both">
                 Meerut's No.1 <br className="hidden md:block" /> Solar Company
               </span>
