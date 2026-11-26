@@ -29,6 +29,47 @@ const SOURCES: Record<string, { label: string; leadSource: string }> = {
 
 const str = (v: unknown) => (v === undefined || v === null ? "" : String(v).trim());
 
+// Short Zoho tags per channel (Zoho tag names must stay short); other channels go in the notes only.
+const CHANNEL_TAGS: Record<string, string> = {
+  "Google Ads": "Google Ads Lead",
+  "Meta Ads (Facebook/Instagram)": "Meta Ads Lead",
+  "Google Search (free)": "Google Organic Lead",
+};
+
+/**
+ * Turns the browser's attribution (see lib/attribution.ts) into lines for Zoho / the team alert.
+ * Everything is treated as untrusted text: only known fields, clipped, single-line.
+ */
+function describeAttribution(raw: unknown): { channel: string; lines: string[]; tag?: string } | null {
+  if (!raw || typeof raw !== "object") return null;
+  const clean = (v: unknown, max = 120) => str(v).replace(/[\r\n\t]+/g, " ").slice(0, max);
+  const touch = (t: any) => (t && typeof t === "object" ? t : null);
+  const a = raw as { first?: unknown; last?: unknown };
+  const last = touch(a.last) || touch(a.first);
+  const first = touch(a.first);
+  if (!last) return null;
+
+  const channel = clean(last.channel, 60) || "Direct / Unknown";
+  const lines = [
+    `Lead Source (ad/channel): ${channel}`,
+    clean(last.utm_campaign) && `Campaign: ${clean(last.utm_campaign)}`,
+    clean(last.utm_term) && `Keyword: ${clean(last.utm_term)}`,
+    clean(last.utm_content) && `Ad: ${clean(last.utm_content)}`,
+    clean(last.utm_source) && `UTM: ${clean(last.utm_source)} / ${clean(last.utm_medium) || "-"}`,
+    clean(last.landing_page) && `Landing page: ${clean(last.landing_page)}`,
+    clean(last.referrer, 200) && `Came from: ${clean(last.referrer, 200)}`,
+    clean(last.gclid, 300) && `GCLID: ${clean(last.gclid, 300)}`,
+    clean(last.gbraid, 300) && `GBRAID: ${clean(last.gbraid, 300)}`,
+    clean(last.wbraid, 300) && `WBRAID: ${clean(last.wbraid, 300)}`,
+    clean(last.fbclid, 300) && `FBCLID: ${clean(last.fbclid, 300)}`,
+    first && first !== last && clean(first.channel, 60) && clean(first.channel, 60) !== channel
+      ? `First visit came from: ${clean(first.channel, 60)}`
+      : "",
+  ].filter(Boolean) as string[];
+
+  return { channel, lines, tag: CHANNEL_TAGS[channel] };
+}
+
 /**
  * Website Lead Endpoint: POST /api/book-visit
  * Used by every website form (Book Visit page/modal, Consultation, Quote, Contact):
@@ -76,6 +117,8 @@ export async function POST(request: NextRequest) {
       monthlyBill && `Monthly Bill: ${monthlyBill}`,
       message && `Message: ${message}`,
     ].filter(Boolean) as string[];
+    const attribution = describeAttribution(body.attribution);
+    if (attribution) details.push("", ...attribution.lines);
 
     let leadId: string | undefined;
     let isNewLead = false;
@@ -109,10 +152,12 @@ export async function POST(request: NextRequest) {
         }
 
         // Tag in Zoho CRM to immediately stop cold follow-ups
-        await addTagsToZohoLead(
-          leadId,
-          isBooking ? ["Hot Lead - Interested", "Website Lead", "Site Visit Booked", "Site Visit Scheduled"] : ["Hot Lead - Interested", "Website Lead"]
-        );
+        await addTagsToZohoLead(leadId, [
+          ...(isBooking
+            ? ["Hot Lead - Interested", "Website Lead", "Site Visit Booked", "Site Visit Scheduled"]
+            : ["Hot Lead - Interested", "Website Lead"]),
+          ...(attribution?.tag ? [attribution.tag] : []),
+        ]);
         await addNoteToZohoLead(
           leadId,
           isBooking ? "Website Site Visit Booked" : `Website Lead: ${source.label}`,
@@ -138,6 +183,11 @@ export async function POST(request: NextRequest) {
         preferredDate && `📅 *Preferred Visit Date:* ${preferredDate}`,
         plantSize && `⚡ *Solar Plant:* ${plantSize} kW`,
         monthlyBill && `💡 *Monthly Bill:* ${monthlyBill}`,
+        attribution &&
+          `📣 *Came from:* ${attribution.channel}` +
+            (attribution.lines.find((l) => l.startsWith("Keyword: "))
+              ? ` (${attribution.lines.find((l) => l.startsWith("Keyword: "))})`
+              : ""),
       ]
         .filter(Boolean)
         .join("\n"),

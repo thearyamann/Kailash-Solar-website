@@ -1,6 +1,7 @@
 /**
  * Zoho CRM & WhatsApp Automation API Integration
  */
+import { getAttribution } from "./attribution";
 
 export interface BookVisitPayload {
   name: string;
@@ -79,6 +80,8 @@ export async function submitBookVisitToCRM(payload: BookVisitPayload): Promise<B
     monthly_bill: payload.monthly_bill || "",
     message: payload.message || "",
     source: payload.source || "book_visit",
+    // Where the visitor came from (Google Ads click ID, UTM tags, referrer) — see lib/attribution.ts
+    attribution: getAttribution(),
   };
 
   try {

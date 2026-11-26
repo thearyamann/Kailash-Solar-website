@@ -5,6 +5,7 @@ import MetaPixel from "../components/MetaPixel";
 import { Providers } from '../components/providers';
 import { GoogleTagManager } from '@next/third-parties/google';
 import NavigationLoader from '../components/NavigationLoader';
+import AttributionCapture from '../components/AttributionCapture';
 import { PostHogProvider } from './providers';
 import '../index.css'; // Use existing global styles
 
@@ -144,6 +145,7 @@ export default function RootLayout({
       </head>
       <body>
         <NavigationLoader />
+        <AttributionCapture />
         <GoogleTagManager gtmId="GTM-WXGHXT7R" />
         <PostHogProvider>
           <Providers>
