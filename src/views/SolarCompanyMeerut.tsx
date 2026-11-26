@@ -95,19 +95,19 @@ const SolarCompanyMeerut = () => {
 
       <section id="home" className="relative min-h-[75dvh] md:min-h-[80vh] flex flex-col justify-between md:justify-center overflow-hidden pt-20 pb-0 md:pb-10">
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
-          <video
-            src="/herosection_loop.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover object-[92%_0%] md:object-[50%_0%] scale-x-[-1]"
+          {/* Team photo. To change it, replace public/meerut-hero.png (wide, ~3:2, people on the right side). */}
+          <Image
+            src="/meerut-hero.png"
+            alt="Kailash Solar team installing rooftop solar panels in Meerut"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[72%_center] md:object-[60%_center]"
           />
-          {/* Lighter dark overlay to keep text readable but show more video */}
-          <div className="absolute inset-0 bg-slate-900/30" />
+          {/* Darker on the text side (left on desktop, top on mobile) so the heading never fights the photo */}
+          <div className="absolute inset-0 bg-black/35 md:bg-gradient-to-r md:from-black/85 md:via-black/55 md:to-black/20" />
           {/* Bottom shadow for logos */}
-          <div className="absolute inset-x-0 bottom-0 h-[80%] md:h-[70%] bg-gradient-to-t from-black md:from-black/80 via-black/90 md:via-black/50 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-[80%] md:h-[55%] bg-gradient-to-t from-black md:from-black/80 via-black/85 md:via-black/40 to-transparent pointer-events-none" />
         </div>
         
         <div className="container relative z-10 mx-auto px-0 sm:px-6 flex flex-col flex-grow h-full md:grid md:grid-cols-12 md:gap-8 lg:gap-12 md:items-center">
@@ -117,36 +117,36 @@ const SolarCompanyMeerut = () => {
 
             <h1 className="text-[38px] leading-[1.1] md:text-5xl lg:text-6xl font-bold font-montserrat text-white tracking-tight mt-2 md:mt-0 drop-shadow-md">
               <span className="block animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both">
-                Meerut's No.1 Choice <br className="hidden md:block" /> for Home
-              </span> 
-              <span className="block text-accent drop-shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 fill-mode-both mt-1 md:mt-2">Solar Panels</span>
+                Meerut's No.1 <br className="hidden md:block" /> Solar Company
+              </span>
+              <span className="block text-accent drop-shadow-sm animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 fill-mode-both mt-1 md:mt-2">for Home Solar</span>
             </h1>
             
             <p className="text-[16px] md:text-xl text-white/90 font-medium leading-snug max-w-xl pb-20 md:pb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-500 fill-mode-both">
               Install rooftop solar and claim up to <span className="text-accent md:text-white font-extrabold">₹1,08,000 PM Surya Ghar subsidy</span> — with easy EMIs and a free site visit.
             </p>
             
-            <div className="grid grid-cols-3 gap-2 md:flex md:items-center md:gap-6 pt-1 md:pt-2 text-sm font-semibold text-white animate-in fade-in slide-in-from-bottom-6 duration-700 delay-700 fill-mode-both">
+            <div className="grid grid-cols-3 gap-2 md:inline-flex md:items-center md:gap-6 mt-1 md:mt-2 px-3 py-3 md:px-5 md:py-3 rounded-2xl bg-black/50 backdrop-blur-md border border-white/15 shadow-lg text-sm font-semibold text-white animate-in fade-in slide-in-from-bottom-6 duration-700 delay-700 fill-mode-both">
               
               {/* Block 1: PM Surya Ghar Vendor */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-2 md:gap-3 text-center md:text-left">
-                <Image src="/pmsurya.webp" alt="PM Surya Ghar Vendor" width={150} height={50} priority className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
-                <div className="hidden md:block w-[1px] h-10 bg-white/30" />
-                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">PM Surya Ghar<br/>Vendor</h4>
+                <Image src="/pmsurya.webp" alt="PM Surya Ghar Vendor" width={150} height={50} priority className="h-11 md:h-14 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
+                <div className="hidden md:block w-[1px] h-10 bg-white/40" />
+                <h4 className="text-white font-bold text-[11px] leading-[1.15] md:text-sm md:tracking-wide drop-shadow-md">PM Surya Ghar<br/>Vendor</h4>
               </div>
 
               {/* Block 2: MNRE */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-2 md:gap-3 text-center md:text-left">
-                <Image src="/mnre-logo.svg" alt="MNRE" width={150} height={50} priority className="h-10 md:h-12 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
-                <div className="hidden md:block w-[1px] h-10 bg-white/30" />
-                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">MNRE<br/>Approved</h4>
+                <Image src="/mnre-logo.svg" alt="MNRE" width={150} height={50} priority className="h-11 md:h-14 w-auto object-contain brightness-0 invert flex-shrink-0 drop-shadow-lg" />
+                <div className="hidden md:block w-[1px] h-10 bg-white/40" />
+                <h4 className="text-white font-bold text-[11px] leading-[1.15] md:text-sm md:tracking-wide drop-shadow-md">MNRE<br/>Approved</h4>
               </div>
 
               {/* Block 3: UPNEDA */}
               <div className="flex flex-col md:flex-row items-center justify-start gap-1 md:gap-3 text-center md:text-left">
-                <Image src="/upneda-white.png" alt="UPNEDA Approved" width={100} height={100} priority className="h-12 md:h-14 w-auto object-contain brightness-0 invert flex-shrink-0 -mb-1 md:mb-0 drop-shadow-lg" />
-                <div className="hidden md:block w-[1px] h-10 bg-white/30" />
-                <h4 className="text-white font-bold text-[10px] leading-[1.1] md:text-xs md:tracking-wide drop-shadow-md">UPNEDA<br/>Approved</h4>
+                <Image src="/upneda-white.png" alt="UPNEDA Approved" width={100} height={100} priority className="h-14 md:h-16 w-auto object-contain brightness-0 invert flex-shrink-0 -mb-1 md:mb-0 drop-shadow-lg" />
+                <div className="hidden md:block w-[1px] h-10 bg-white/40" />
+                <h4 className="text-white font-bold text-[11px] leading-[1.15] md:text-sm md:tracking-wide drop-shadow-md">UPNEDA<br/>Approved</h4>
               </div>
             </div>
 
