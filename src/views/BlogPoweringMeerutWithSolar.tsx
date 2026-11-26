@@ -24,7 +24,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 
-const SITE_URL = 'https://kailashsolar.com';
+const SITE_URL = 'https://www.kailashsolar.com';
 const SLUG = '/blog/powering-meerut-with-solar-kailash-solar';
 
 const faqs = [

@@ -30,9 +30,9 @@ const jsonLd = {
     {
       "@type": "LocalBusiness",
       "name": "Kailash Solar Private Limited",
-      "image": "https://kailashsolar.com/og-image.jpg",
-      "@id": "https://kailashsolar.com/solar-company-meerut/#localbusiness",
-      "url": "https://kailashsolar.com/solar-company-meerut/",
+      "image": "https://www.kailashsolar.com/og-image.jpg",
+      "@id": "https://www.kailashsolar.com/solar-company-meerut/#localbusiness",
+      "url": "https://www.kailashsolar.com/solar-company-meerut",
       "telephone": "+918999999654",
       "email": "sales@kailashsolar.com",
       "address": {
@@ -57,7 +57,7 @@ const jsonLd = {
       "areaServed": ["Meerut", "Ghaziabad", "Muzaffarnagar", "Hapur", "Bulandshahr"],
       "description": "Kailash Solar is a UPNEDA-registered and PM Surya Ghar empanelled solar EPC company in Meerut, offering rooftop solar installation, subsidy assistance, and net metering for homes and businesses.",
       "sameAs": [
-        "https://kailashsolar.com"
+        "https://www.kailashsolar.com"
       ]
     },
     {
@@ -67,13 +67,13 @@ const jsonLd = {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://kailashsolar.com"
+          "item": "https://www.kailashsolar.com"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "Solar Company in Meerut",
-          "item": "https://kailashsolar.com/solar-company-meerut/"
+          "item": "https://www.kailashsolar.com/solar-company-meerut"
         }
       ]
     }

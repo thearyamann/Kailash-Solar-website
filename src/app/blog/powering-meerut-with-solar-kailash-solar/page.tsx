@@ -6,16 +6,16 @@ export const metadata: Metadata = {
   description: 'See how Kailash Solar is helping homes in Meerut switch to rooftop solar, reduce electricity bills, and make solar installation simple with easy and affordable options.',
   keywords: 'solar company in Meerut, solar panel in Meerut, rooftop solar Meerut, solar for home in Meerut, residential solar system Meerut, solar energy in Meerut, solar panel for home, best solar company in Meerut, reduce electricity bill with solar, rooftop solar panel, solar installation in Meerut, solar subsidy in Meerut, solar system for home',
   alternates: {
-    canonical: 'https://kailashsolar.com/blog/powering-meerut-with-solar-kailash-solar'
+    canonical: 'https://www.kailashsolar.com/blog/powering-meerut-with-solar-kailash-solar'
   },
   openGraph: {
     title: 'Powering Meerut with Solar: How Kailash Solar Is Helping Homes Save',
     description: 'See how Kailash Solar is helping homes in Meerut switch to rooftop solar, reduce electricity bills, and make solar installation simple with easy and affordable options.',
-    url: 'https://kailashsolar.com/blog/powering-meerut-with-solar-kailash-solar',
+    url: 'https://www.kailashsolar.com/blog/powering-meerut-with-solar-kailash-solar',
     siteName: 'Kailash Solar',
     images: [
       {
-        url: 'https://kailashsolar.com/vaniimage.png',
+        url: 'https://www.kailashsolar.com/vaniimage.png',
         width: 1200,
         height: 630,
         alt: 'rooftop solar panels on a home in Meerut — Kailash Solar',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Powering Meerut with Solar: How Kailash Solar Is Helping Homes Save',
     description: 'See how Kailash Solar is helping homes in Meerut switch to rooftop solar, reduce electricity bills, and make solar installation simple with easy options.',
-    images: ['https://kailashsolar.com/vaniimage.png'],
+    images: ['https://www.kailashsolar.com/vaniimage.png'],
   }
 };
 
@@ -40,19 +40,19 @@ const articleSchema = {
   "author": {
     "@type": "Organization",
     "name": "Kailash Solar",
-    "url": "https://kailashsolar.com"
+    "url": "https://www.kailashsolar.com"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Kailash Solar",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://kailashsolar.com/favicon.png"
+      "url": "https://www.kailashsolar.com/favicon.png"
     }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://kailashsolar.com/blog/powering-meerut-with-solar-kailash-solar"
+    "@id": "https://www.kailashsolar.com/blog/powering-meerut-with-solar-kailash-solar"
   }
 };
 

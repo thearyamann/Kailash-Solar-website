@@ -6,16 +6,16 @@ export const metadata: Metadata = {
   description: 'A complete guide for homeowners in Meerut on choosing the best solar panels. Learn about efficiency, warranty, types, and how to select a reliable installer.',
   keywords: 'solar panels for home in Meerut, best solar panels for home, rooftop solar panels in Meerut, solar installation in Meerut, solar company in Meerut, PM Surya Ghar subsidy',
   alternates: {
-    canonical: 'https://kailashsolar.com/blog/how-to-choose-solar-panels-home-meerut'
+    canonical: 'https://www.kailashsolar.com/blog/how-to-choose-solar-panels-home-meerut'
   },
   openGraph: {
     title: 'How to Choose the Right Solar Panel for Your Home in Meerut',
     description: 'Learn how to choose the right solar panel for your home in Meerut. Consider efficiency, warranty, degradation, and the importance of a quality installer.',
-    url: 'https://kailashsolar.com/blog/how-to-choose-solar-panels-home-meerut',
+    url: 'https://www.kailashsolar.com/blog/how-to-choose-solar-panels-home-meerut',
     siteName: 'Kailash Solar',
     images: [
       {
-        url: 'https://kailashsolar.com/og-image.jpg',
+        url: 'https://www.kailashsolar.com/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'How to Choose Solar Panels for Home in Meerut — Kailash Solar',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'How to Choose the Right Solar Panel for Your Home in Meerut',
     description: 'Learn how to choose the right solar panel for your home in Meerut. Complete homeowner guide by Kailash Solar.',
-    images: ['https://kailashsolar.com/og-image.jpg'],
+    images: ['https://www.kailashsolar.com/og-image.jpg'],
   }
 };
 
@@ -40,19 +40,19 @@ const articleSchema = {
   "author": {
     "@type": "Organization",
     "name": "Kailash Solar",
-    "url": "https://kailashsolar.com"
+    "url": "https://www.kailashsolar.com"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Kailash Solar",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://kailashsolar.com/og.jpg"
+      "url": "https://www.kailashsolar.com/og.jpg"
     }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://kailashsolar.com/blog/how-to-choose-solar-panels-home-meerut"
+    "@id": "https://www.kailashsolar.com/blog/how-to-choose-solar-panels-home-meerut"
   }
 };
 

@@ -6,16 +6,16 @@ export const metadata: Metadata = {
   description: "Learn how to choose the best solar company in Meerut. Check for UPNEDA registration, PM Surya Ghar subsidy help, warranties, and why Kailash Solar is a trusted choice.",
   keywords: "how to choose solar company, best solar company Meerut, solar buyer guide Meerut, residential solar Meerut, Kailash Solar Meerut, UPNEDA registered solar Meerut",
   alternates: {
-    canonical: "https://kailashsolar.com/blog/best-solar-company-in-meerut"
+    canonical: "https://www.kailashsolar.com/blog/best-solar-company-in-meerut"
   },
   openGraph: {
     title: "How to Choose the Best Solar Company in Meerut (Buyer's Guide)",
     description: "Learn how to choose the right solar company in Meerut for your home, including checking PM Surya Ghar eligibility and warranties.",
-    url: "https://kailashsolar.com/blog/best-solar-company-in-meerut",
+    url: "https://www.kailashsolar.com/blog/best-solar-company-in-meerut",
     siteName: "Kailash Solar",
     images: [
       {
-        url: "https://kailashsolar.com/panel.jpg",
+        url: "https://www.kailashsolar.com/panel.jpg",
         width: 1200,
         height: 630,
         alt: "Kailash Solar team installing home solar panels in Meerut",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "How to Choose the Best Solar Company in Meerut (Buyer's Guide)",
     description: "Learn how to choose the right solar company in Meerut for your home, including checking PM Surya Ghar eligibility.",
-    images: ["https://kailashsolar.com/panel.jpg"],
+    images: ["https://www.kailashsolar.com/panel.jpg"],
   }
 };
 
@@ -38,18 +38,18 @@ const structuredData = {
     {
       "@type": "Article",
       "headline": "How to Choose the Best Solar Company in Meerut (Buyer's Guide)",
-      "image": "https://kailashsolar.com/panel.jpg",
+      "image": "https://www.kailashsolar.com/panel.jpg",
       "author": {
         "@type": "Organization",
         "name": "Kailash Solar",
-        "url": "https://kailashsolar.com"
+        "url": "https://www.kailashsolar.com"
       },
       "publisher": {
         "@type": "Organization",
         "name": "Kailash Solar",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://kailashsolar.com/favicon.png"
+          "url": "https://www.kailashsolar.com/favicon.png"
         }
       },
       "datePublished": "2025-01-15T08:00:00+05:30",

@@ -110,7 +110,7 @@ const HeroSection = () => {
                 className="group h-12 px-6 w-full sm:w-auto"
                 asChild
               >
-                <a href="/solar-company-meerut/">
+                <a href="/solar-company-meerut">
                   Visit Meerut Branch
                   <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>

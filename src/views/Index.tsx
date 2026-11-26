@@ -22,8 +22,8 @@ const structuredData = {
       "@type": "Organization",
       "name": "Kailash Solar",
       "alternateName": "Kailash Solar EPC",
-      "url": "https://kailashsolar.com",
-      "logo": "https://kailashsolar.com/favicon.png",
+      "url": "https://www.kailashsolar.com",
+      "logo": "https://www.kailashsolar.com/favicon.png",
       "description": "Premium commercial & industrial solar EPC in Meerut. Adani & Waaree panels, fast payback, end-to-end installation.",
       "foundingDate": "2010",
       "address": {
@@ -53,7 +53,7 @@ const structuredData = {
     {
       "@type": "WebSite",
       "name": "Kailash Solar",
-      "url": "https://kailashsolar.com",
+      "url": "https://www.kailashsolar.com",
       "description": "Premium commercial & industrial solar EPC in Meerut. Adani & Waaree panels, fast payback, end-to-end installation.",
       "publisher": {
         "@type": "Organization",
@@ -64,7 +64,7 @@ const structuredData = {
       "@type": "LocalBusiness",
       "name": "Kailash Solar",
       "description": "Premium solar EPC company serving commercial and industrial clients in Meerut.",
-      "url": "https://kailashsolar.com",
+      "url": "https://www.kailashsolar.com",
       "telephone": "+91-97590-66666",
       "email": "sales@kailashsolar.com",
       "address": {
@@ -125,7 +125,7 @@ const structuredData = {
   ]
 };
 
-const SITE_URL = "https://kailashsolar.com";
+const SITE_URL = "https://www.kailashsolar.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 const Index = () => {

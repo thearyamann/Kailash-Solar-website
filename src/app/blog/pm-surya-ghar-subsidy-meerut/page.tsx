@@ -6,16 +6,16 @@ export const metadata: Metadata = {
   description: 'Complete guide to PM Surya Ghar: Muft Bijli Yojana subsidy in Meerut, UP. Claim up to ₹1,08,000 in total combined subsidy for your home rooftop solar. Step-by-step process, eligibility & PVVNL net metering explained.',
   keywords: 'PM Surya Ghar subsidy Meerut, PM Surya Ghar Muft Bijli Yojana UP, solar subsidy Meerut 2025, UPNEDA subsidy Meerut, rooftop solar subsidy UP, PM Surya Ghar apply online Meerut',
   alternates: {
-    canonical: 'https://kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut'
+    canonical: 'https://www.kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut'
   },
   openGraph: {
     title: 'PM Surya Ghar Subsidy in Meerut | Up to ₹1,08,000 | Complete Guide',
     description: 'How to claim up to ₹1,08,000 PM Surya Ghar subsidy in Meerut, UP. Central + UPNEDA state subsidy explained. Eligibility, process & PVVNL net metering — by Kailash Solar.',
-    url: 'https://kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut',
+    url: 'https://www.kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut',
     siteName: 'Kailash Solar',
     images: [
       {
-        url: 'https://kailashsolar.com/og-image.jpg',
+        url: 'https://www.kailashsolar.com/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'PM Surya Ghar Solar Subsidy Guide for Meerut — Kailash Solar',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'PM Surya Ghar Subsidy in Meerut | Up to ₹1,08,000',
     description: 'Claim up to ₹1,08,000 PM Surya Ghar subsidy in Meerut. Central + UPNEDA state subsidy guide by Kailash Solar.',
-    images: ['https://kailashsolar.com/og-image.jpg'],
+    images: ['https://www.kailashsolar.com/og-image.jpg'],
   }
 };
 
@@ -40,19 +40,19 @@ const articleSchema = {
   "author": {
     "@type": "Organization",
     "name": "Kailash Solar",
-    "url": "https://kailashsolar.com"
+    "url": "https://www.kailashsolar.com"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Kailash Solar",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://kailashsolar.com/og.jpg"
+      "url": "https://www.kailashsolar.com/og.jpg"
     }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut"
+    "@id": "https://www.kailashsolar.com/blog/pm-surya-ghar-subsidy-meerut"
   }
 };
 
