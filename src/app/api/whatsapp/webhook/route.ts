@@ -3,9 +3,12 @@ import crypto from "crypto";
 import { addNoteToZohoLead, addTagsToZohoLead, createZohoLead, findZohoLeadByPhone, hasZohoCredentials, zohoTagNames } from "@/lib/zoho";
 import { sendCustomerAcknowledgement, sendTeamLeadAlert, teamWhatsappNumber } from "@/lib/whatsapp";
 import { istNowString, readEnv, toWhatsappNumber } from "@/lib/env";
+import { sendTeamReminderList } from "@/lib/team-reminders";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
+
+let teamListRunning = false;
 
 const OPT_OUT_PATTERN = /^\s*(stop|unsubscribe|band karo|mat bhejo|no more messages)\s*[.!]*\s*$/i;
 
@@ -75,7 +78,18 @@ async function handleIncomingMessage(msg: any, contacts: any[]) {
 
   // Messages from our own team number (e.g. to keep the 24h alert window open) are not leads.
   if (fromPhone === teamWhatsappNumber()) {
-    console.log("[Incoming WhatsApp] Message from team number — ignored.");
+    // The team's "Hi" opens WhatsApp's free 24-hour window: reply with today's follow-up list.
+    if (!hasZohoCredentials()) return;
+    if (teamListRunning) return; // a second "Hi" while the list is being built
+    teamListRunning = true;
+    try {
+      const r = await sendTeamReminderList(fromPhone);
+      console.log(`[Team reminders] listed=${r.listed} messages=${r.sent}${r.error ? ` error=${r.error}` : ""}`);
+    } catch (err) {
+      console.error("[Team reminders] failed:", err);
+    } finally {
+      teamListRunning = false;
+    }
     return;
   }
 

@@ -71,7 +71,11 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
-  const dryRun = searchParams.get("dry_run") === "1";
+  // Paid reminder templates to customers are OFF (owner's decision, 29 Nov 2026): the team gets a free
+  // follow-up list on WhatsApp instead (see lib/team-reminders.ts). This job now only reports what it
+  // would have sent. Set CUSTOMER_WHATSAPP_REMINDERS=on to send to customers again.
+  const customerSendsOn = readEnv("CUSTOMER_WHATSAPP_REMINDERS") === "on";
+  const dryRun = searchParams.get("dry_run") === "1" || !customerSendsOn;
   const onlyPhone = toWhatsappNumber(searchParams.get("only_phone"));
   // Dry runs can simulate a future day, e.g. ?dry_run=1&as_of=2026-11-02
   const asOf = searchParams.get("as_of");
