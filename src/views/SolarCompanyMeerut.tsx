@@ -89,7 +89,7 @@ const SolarCompanyMeerut = () => {
         />
 
       {/* Auto-opening popup modal (same as homepage) */}
-      <BookVisitModal autoOpenDelay={7000} />
+      <BookVisitModal autoOpenDelay={25000} />
 
       <Header />
 
@@ -160,7 +160,7 @@ const SolarCompanyMeerut = () => {
           </div>
 
           {/* FORM BLOCK: Bottom sheet on mobile, right column on desktop */}
-          <div className="w-full md:col-span-5 animate-in fade-in slide-in-from-bottom-12 md:slide-in-from-right-8 duration-1000 delay-200 mt-6 md:mt-0">
+          <div className="w-full md:col-span-5 animate-in fade-in duration-500 mt-6 md:mt-0">
             <SolarConsultationForm />
           </div>
         </div>

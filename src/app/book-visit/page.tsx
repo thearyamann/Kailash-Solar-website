@@ -77,29 +77,53 @@ export default function BookVisitPage() {
     // let the phone start opening the keyboard first, then glide up
     requestAnimationFrame(() => window.scrollTo({ top: target, behavior: "smooth" }));
   };
-  // Keyboard awareness (iPhone + Android): the visual viewport shrinks when the keyboard is up.
-  // While it's up, the button bar is hidden behind the keyboard anyway, so the page drops the room it
-  // keeps for the bar (no white gap above the keyboard). When it closes, the page settles back so the
-  // photo strip, heading, subsidy line and all fields are in view again.
-  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  // Keyboard awareness (iPhone + Android). The visual viewport shrinks when the keyboard is up.
+  // - The page keeps exactly enough room at the bottom for the keyboard (so the phone can always
+  //   scroll the field you're typing in above it), instead of the room for the hidden button bar.
+  // - The active field is gently scrolled into the visible area above the keyboard, also when
+  //   moving from one field to the next.
+  // - When the keyboard closes, the page settles back so the photo strip, heading, subsidy line
+  //   and all fields are in view, and the button bar returns.
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const keyboardOpen = keyboardHeight > 0;
   useEffect(() => {
     const vv = window.visualViewport;
     if (!vv) return;
     let wasOpen = false;
+    const keepFieldVisible = () => {
+      const el = document.activeElement as HTMLElement | null;
+      if (!el || el.tagName !== "INPUT") return;
+      const r = el.getBoundingClientRect();
+      const top = vv.offsetTop + 72; // below the back / language buttons
+      const bottom = vv.offsetTop + vv.height - 16;
+      if (r.top >= top && r.bottom <= bottom) return; // already fully visible
+      // put the field about a quarter of the way down the visible area
+      const delta = r.top - (vv.offsetTop + Math.max(80, vv.height * 0.25));
+      window.scrollBy({ top: delta, behavior: "smooth" });
+    };
     const onResize = () => {
-      const open = window.innerHeight - vv.height > 150;
-      if (open === wasOpen) return;
-      wasOpen = open;
-      setKeyboardOpen(open);
-      if (!open && window.matchMedia("(max-width: 639px)").matches) {
+      const kb = Math.max(0, window.innerHeight - vv.height);
+      const open = kb > 150;
+      setKeyboardHeight(open ? kb : 0);
+      if (open) {
+        setTimeout(keepFieldVisible, 80);
+      } else if (wasOpen && window.matchMedia("(max-width: 639px)").matches) {
         const target = SHEET_TOP - PHOTO_STRIP;
         if (window.scrollY > target + 4) {
           setTimeout(() => window.scrollTo({ top: target, behavior: "smooth" }), 60);
         }
       }
+      wasOpen = open;
+    };
+    const onFocusIn = () => {
+      if (wasOpen) setTimeout(keepFieldVisible, 60);
     };
     vv.addEventListener("resize", onResize);
-    return () => vv.removeEventListener("resize", onResize);
+    document.addEventListener("focusin", onFocusIn);
+    return () => {
+      vv.removeEventListener("resize", onResize);
+      document.removeEventListener("focusin", onFocusIn);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -108,22 +132,6 @@ export default function BookVisitPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Once the form sheet reaches the top bar, give the bar a white background (like a native app),
-  // so the heading never runs behind the back / language buttons.
-  const [barSolid, setBarSolid] = useState(false);
-  useEffect(() => {
-    const check = () => {
-      const sheet = document.getElementById("booking-sheet");
-      setBarSolid(!!sheet && sheet.getBoundingClientRect().top < 64 && window.innerWidth < 640);
-    };
-    check();
-    window.addEventListener("scroll", check, { passive: true });
-    window.addEventListener("resize", check);
-    return () => {
-      window.removeEventListener("scroll", check);
-      window.removeEventListener("resize", check);
-    };
-  }, []);
 
   // Load saved profile data from localStorage
   useEffect(() => {
@@ -319,14 +327,12 @@ export default function BookVisitPage() {
       <div className="w-full sm:max-w-[400px] relative flex flex-col min-h-[100dvh] sm:min-h-0 sm:bg-white sm:rounded-3xl sm:border sm:border-slate-200 sm:overflow-hidden">
         
         {/* Floating Native App Header (stays put while the sheet scrolls) */}
-        <div className={`fixed sm:absolute top-0 left-0 w-full z-50 px-4 pt-[env(safe-area-inset-top)] h-16 flex items-center justify-between pointer-events-none [&>*]:pointer-events-auto transition-colors duration-200 ${
-          barSolid ? "bg-white border-b border-slate-200" : "bg-transparent border-b border-transparent"
-        }`}>
+        <div className="fixed sm:absolute top-0 left-0 w-full z-50 px-4 pt-[env(safe-area-inset-top)] h-16 flex items-center justify-between pointer-events-none [&>*]:pointer-events-auto">
           <Link 
             href="/solar-company-meerut" 
             aria-label="Back to home"
             className={`w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center active:scale-90 transition-all ${
-              barSolid ? "bg-slate-100 text-slate-700" : "bg-black/20 text-white"
+              "bg-black/30 text-white"
             }`}
           >
             <ArrowLeft className="w-5 h-5" />
@@ -338,7 +344,7 @@ export default function BookVisitPage() {
             }}
             aria-label={lang === "hi" ? "Switch to English" : "हिंदी में देखें"}
             className={`h-9 px-3.5 rounded-full backdrop-blur-md text-[13px] font-semibold active:scale-95 transition-all ${
-              barSolid ? "bg-slate-100 text-slate-700" : "bg-black/25 text-white"
+              "bg-black/30 text-white"
             }`}
           >
             {t.switchTo}
@@ -364,8 +370,9 @@ export default function BookVisitPage() {
           id="booking-sheet"
           lang={lang}
           className={`px-5 pt-8 mt-[250px] rounded-t-[28px] sm:pb-8 sm:-mt-8 sm:min-h-0 flex-grow flex flex-col bg-white relative z-10 ${
-            keyboardOpen ? "pb-5 min-h-0" : "pb-[calc(7rem+env(safe-area-inset-bottom))] min-h-[calc(100dvh-110px)]"
+            keyboardOpen ? "min-h-0" : "pb-[calc(7rem+env(safe-area-inset-bottom))] min-h-[calc(100dvh-110px)]"
           }`}
+          style={keyboardOpen ? { paddingBottom: keyboardHeight + 24 } : undefined}
         >
           <div className={`w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2 `} />
           

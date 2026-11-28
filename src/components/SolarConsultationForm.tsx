@@ -193,7 +193,7 @@ export function SolarConsultationForm() {
   };
 
   return (
-    <div className="bg-card rounded-t-[32px] rounded-b-none md:rounded-[20px] p-6 pt-5 md:pt-7 sm:p-7 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] md:shadow-2xl relative z-20 w-full md:max-w-md mx-auto border-t md:border border-border/50">
+    <div className="bg-card rounded-t-[32px] rounded-b-none md:rounded-[20px] p-6 pt-5 md:pt-7 sm:p-7 relative z-20 w-full md:max-w-md mx-auto border-t md:border border-border/50">
       
       {/* Mobile drag handle */}
       <div className="w-12 h-1.5 bg-border/60 rounded-full mx-auto mb-6 md:hidden" />
@@ -224,7 +224,7 @@ export function SolarConsultationForm() {
             href={`https://wa.me/918999999654?text=${submittedWhatsappMsg || 'Hi'}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 items-center gap-2"
+            className="inline-flex h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold transition-all active:scale-95 items-center gap-2"
           >
             <MessageCircle className="w-5 h-5" />
             Open WhatsApp Now
@@ -294,7 +294,7 @@ export function SolarConsultationForm() {
                 </div>
               </div>
               {pincodeVerifier.isInvalid && (
-                <div className="mt-1.5 px-3 py-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-start gap-2 shadow-sm animate-in fade-in slide-in-from-top-1">
+                <div className="mt-1.5 px-3 py-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-start gap-2 animate-in fade-in slide-in-from-top-1">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>{OUTSIDE_REGION_ERROR}</span>
                 </div>

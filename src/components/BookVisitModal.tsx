@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cleanPhoneInput, isValidMobile, isValidName, NAME_ERROR, PHONE_ERROR } from "@/lib/form-validation";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -30,10 +30,14 @@ import {
   estimatePlantSizeFromBill 
 } from "@/lib/crm";
 
+const POPUP_CLOSED_KEY = "kailash_popup_closed_at";
+const POPUP_COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
+
 export function BookVisitModal({ children, autoOpenDelay }: { children?: React.ReactNode, autoOpenDelay?: number }) {
   const router = useRouter();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const autoOpenedRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -74,60 +78,60 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     localStorage.setItem("kailash_user_profile", JSON.stringify({ ...parsed, ...formData }));
   }, [formData]);
 
+  // Auto-open: it should help, not interrupt someone exploring the site.
+  // - At most once per visit, after the visitor has browsed for a while (autoOpenDelay, min 25s).
+  // - Never while they're typing in a form or another pop-up is open (waits for a calm moment).
+  // - Once they close it, it stays away for 3 days on that phone.
+  // - Never again after any form on the site has been filled (isPopupSuppressed).
   useEffect(() => {
-    if (autoOpenDelay && autoOpenDelay > 0) {
-      // Check if user has already submitted ANY form or auto-opened this session
-      const hasAutoOpened = sessionStorage.getItem("kailash_modal_auto_opened");
-      const isSuppressed = isPopupSuppressed();
-      
-      if (!hasAutoOpened && !isSuppressed) {
-        const timer = setTimeout(() => {
-          if (!document.querySelector('[role="dialog"]')) {
-            setIsOpen(true);
-            sessionStorage.setItem("kailash_modal_auto_opened", "true");
-          }
-        }, autoOpenDelay);
-        return () => clearTimeout(timer);
-      }
+    if (!autoOpenDelay || autoOpenDelay <= 0) return;
+    try {
+      if (isPopupSuppressed()) return;
+      if (sessionStorage.getItem("kailash_modal_auto_opened")) return;
+      const closedAt = Number(localStorage.getItem(POPUP_CLOSED_KEY) || 0);
+      if (closedAt && Date.now() - closedAt < POPUP_COOLDOWN_MS) return;
+    } catch {
+      return;
     }
+
+    let timer: ReturnType<typeof setTimeout>;
+    let tries = 0;
+    const busy = () => {
+      const el = document.activeElement;
+      const typing = !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT");
+      return typing || !!document.querySelector('[role="dialog"]');
+    };
+    const tryOpen = () => {
+      if (isPopupSuppressed()) return;
+      if (busy()) {
+        // wait for a calm moment, but don't keep trying forever
+        if (++tries <= 12) timer = setTimeout(tryOpen, 5000);
+        return;
+      }
+      autoOpenedRef.current = true;
+      setIsOpen(true);
+      try {
+        sessionStorage.setItem("kailash_modal_auto_opened", "true");
+      } catch {
+        /* ignore */
+      }
+    };
+    timer = setTimeout(tryOpen, Math.max(autoOpenDelay, 25000));
+    return () => clearTimeout(timer);
   }, [autoOpenDelay]);
 
-  // Handle re-triggering 15s and 40s after the modal is closed
-  useEffect(() => {
-    let retriggerTimer: NodeJS.Timeout;
-    
-    // Only run this logic for the main auto-opening instance to prevent multiple modals triggering
-    if (autoOpenDelay && autoOpenDelay > 0) {
-      // If the modal is closed, has been auto-opened before, and hasn't been submitted
-      if (!isOpen && sessionStorage.getItem("kailash_modal_auto_opened") && !isPopupSuppressed()) {
-        
-        const retriggerCount = parseInt(sessionStorage.getItem("kailash_modal_retrigger_count") || "0", 10);
-        
-        const handleRetrigger = (nextCount: string) => {
-          if (!document.querySelector('[role="dialog"]')) {
-            setIsOpen(true);
-          }
-          // We increment the count regardless to avoid being stuck in a trigger loop forever
-          sessionStorage.setItem("kailash_modal_retrigger_count", nextCount);
-        };
-
-        if (retriggerCount === 0) {
-          retriggerTimer = setTimeout(() => {
-            handleRetrigger("1");
-          }, 15000); // First re-trigger after 15 seconds
-        } else if (retriggerCount === 1) {
-          retriggerTimer = setTimeout(() => {
-            handleRetrigger("2");
-          }, 50000); // Second re-trigger after 50 seconds
-        }
-        // Stop re-triggering after the second time
+  // Closing an auto-opened pop-up starts the 3-day quiet period.
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open && autoOpenedRef.current) {
+      autoOpenedRef.current = false;
+      try {
+        localStorage.setItem(POPUP_CLOSED_KEY, String(Date.now()));
+      } catch {
+        /* ignore */
       }
     }
-    
-    return () => {
-      if (retriggerTimer) clearTimeout(retriggerTimer);
-    };
-  }, [isOpen, autoOpenDelay]);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -276,7 +280,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       {children && (
         <DialogTrigger asChild>
           {children}
@@ -313,7 +317,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                   href={`https://wa.me/918999999654?text=${submittedWhatsappMsg || 'Hi'}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 items-center gap-2"
+                  className="inline-flex h-[48px] px-6 rounded-[12px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold transition-all active:scale-95 items-center gap-2"
                 >
                   <MessageCircle className="w-5 h-5" />
                   Open WhatsApp Now
@@ -386,7 +390,7 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                         </div>
                       </div>
                       {pincodeVerifier.isInvalid && (
-                        <div className="mt-1 px-3 py-1.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-[11px] font-medium flex items-start gap-1.5 shadow-sm animate-in fade-in slide-in-from-top-1">
+                        <div className="mt-1 px-3 py-1.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-[11px] font-medium flex items-start gap-1.5 animate-in fade-in slide-in-from-top-1">
                           <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                           <span>{OUTSIDE_REGION_ERROR}</span>
                         </div>
