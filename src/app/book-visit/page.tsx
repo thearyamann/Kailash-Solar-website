@@ -94,29 +94,69 @@ export default function BookVisitPage() {
       top: vv ? vv.offsetTop : 0,
       height: vv ? vv.height : window.innerHeight,
     });
+    // Where the page should be scrolled so `el` sits clear of the keyboard + autofill bar, given how
+    // tall the visible area is with the keyboard up. Field goes ~96px from the top, but the page never
+    // lifts past the end of the form (bill options reach the bottom, no white space under them) as
+    // long as the field stays at least 90px above the bottom of what's visible.
+    const targetScrollFor = (el: HTMLElement, visHeight: number) => {
+      const r = el.getBoundingClientRect();
+      const fieldTop = r.top + window.scrollY;
+      const fieldBottom = r.bottom + window.scrollY;
+      let target = fieldTop - 96;
+      const lastRow = document.getElementById("bill-options");
+      if (lastRow) {
+        const formEnd = lastRow.getBoundingClientRect().bottom + window.scrollY;
+        const formEndTarget = formEnd - (visHeight - 12);
+        if (formEndTarget < target && fieldTop - formEndTarget >= 76 && fieldBottom - formEndTarget <= visHeight - 90) {
+          target = formEndTarget;
+        }
+      }
+      return Math.max(0, Math.round(target));
+    };
+    // Visible height with the keyboard up: measured last time it opened, else a safe estimate.
+    let keyboardVisibleHeight = 0;
+    const expectedVisibleHeight = () => keyboardVisibleHeight || Math.round(window.innerHeight * 0.62);
+    const ensureRoom = () => {
+      // room at the bottom so the page can scroll far enough (set directly, before scrolling)
+      const room = Math.round(Math.max(window.innerHeight, window.screen?.height || 0) * 0.55);
+      const sheet = document.getElementById("booking-sheet");
+      if (sheet) sheet.style.paddingBottom = `${room}px`;
+      setBottomRoom(room);
+    };
+    // Safety net after the keyboard has settled: only moves if the field still isn't comfortably visible.
     const keepFieldVisible = () => {
       const el = document.activeElement as HTMLElement | null;
       if (!el || el.tagName !== "INPUT") return;
       const r = el.getBoundingClientRect();
       const v = visible();
-      const minTop = v.top + 76; // clear of the back / language buttons
-      const maxBottom = v.top + Math.min(v.height * 0.58, window.innerHeight * 0.42); // above keyboard + autofill bar
-      if (r.top >= minTop && r.bottom <= maxBottom) return; // comfortably visible already
-      const desiredTop = v.top + 96;
-      let delta = r.top - desiredTop;
-      // Never lift past the end of the form: the last row (bill options) should reach the bottom of
-      // the visible area, not leave white space under it — as long as the field stays clear of the
-      // keyboard / autofill bar (at least 90px above the bottom of what's visible).
-      const lastRow = document.getElementById("bill-options");
-      if (lastRow && delta > 0) {
-        const formEndDelta = lastRow.getBoundingClientRect().bottom - (v.top + v.height - 12);
-        const fieldBottomAfter = r.bottom - Math.max(0, formEndDelta);
-        if (formEndDelta < delta && fieldBottomAfter <= v.top + v.height - 90 && r.top - Math.max(0, formEndDelta) >= minTop) {
-          delta = Math.max(0, formEndDelta);
-        }
-      }
-      if (Math.abs(delta) < 4) return;
-      window.scrollBy({ top: delta, behavior: "smooth" });
+      if (r.top >= v.top + 70 && r.bottom <= v.top + v.height - 80) return; // already clear
+      const target = targetScrollFor(el, v.height);
+      if (Math.abs(target - window.scrollY) < 4) return;
+      window.scrollTo({ top: target, behavior: "smooth" });
+    };
+    // Tap on a field (finger lifted, not a scroll): put the field where it will end up BEFORE the
+    // keyboard opens. The iPhone then sees it's already visible and doesn't do its own scroll, so
+    // the page moves exactly once (no up-and-down).
+    let touchStartY = 0;
+    let touchStartX = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+      touchStartX = e.touches[0]?.clientX ?? 0;
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (!t || t.tagName !== "INPUT" || t === document.activeElement) return;
+      const p = e.changedTouches[0];
+      if (!p || Math.abs(p.clientY - touchStartY) > 10 || Math.abs(p.clientX - touchStartX) > 10) return; // a scroll, not a tap
+      ensureRoom();
+      slidingUntil.current = Date.now() + 600;
+      // instant (the site's CSS makes scrolling smooth by default; here the field must already be
+      // in place when the phone checks it, a split second later)
+      const html = document.documentElement;
+      const prev = html.style.scrollBehavior;
+      html.style.scrollBehavior = "auto";
+      window.scrollTo({ top: targetScrollFor(t, expectedVisibleHeight()), behavior: "auto" });
+      html.style.scrollBehavior = prev;
     };
     // ONE smooth move, after the keyboard has finished opening and stopped resizing the screen.
     // (Moving earlier, or several times, measured the screen mid-animation and made the page
@@ -132,18 +172,26 @@ export default function BookVisitPage() {
       if (!t || t.tagName !== "INPUT") return;
       if (leaveTimer) clearTimeout(leaveTimer);
       // enough room to lift any field to the top, whatever the keyboard size
-      setBottomRoom(Math.round(Math.max(window.innerHeight, window.screen?.height || 0) * 0.55));
+      ensureRoom();
       setTyping(true);
       keepFieldVisibleSoon();
     };
     // End typing mode: remove the extra room, bring the button bar back, settle the page.
+    let roomTimer: ReturnType<typeof setTimeout> | undefined;
     const finishTyping = () => {
       if (settleTimer) clearTimeout(settleTimer);
       setTyping(false);
       setKeyboardShown(false);
-      setBottomRoom(0);
+      // glide back first, THEN remove the extra room (removing it first cut the glide short)
       const target = SHEET_TOP - PHOTO_STRIP;
       if (window.scrollY > target + 4) window.scrollTo({ top: target, behavior: "smooth" });
+      if (roomTimer) clearTimeout(roomTimer);
+      roomTimer = setTimeout(() => {
+        if (document.activeElement?.tagName === "INPUT") return; // typing again
+        setBottomRoom(0);
+        const sheet = document.getElementById("booking-sheet");
+        if (sheet) sheet.style.paddingBottom = "";
+      }, 650);
     };
     const onFocusOut = () => {
       if (leaveTimer) clearTimeout(leaveTimer);
@@ -177,6 +225,9 @@ export default function BookVisitPage() {
           keyboardSeen = true;
           setKeyboardShown(true);
         }
+        if (vv.height < fullHeight - 150) {
+          keyboardVisibleHeight = Math.round(vv.height); // remember for the next tap
+        }
         if (inputActive) keepFieldVisibleSoon(250);
       } else if (keyboardSeen && vv.height > fullHeight - 80) {
         keyboardSeen = false;
@@ -186,14 +237,19 @@ export default function BookVisitPage() {
       }
     };
     document.addEventListener("focusin", onFocusIn);
+    document.addEventListener("touchstart", onTouchStart, { passive: true });
+    document.addEventListener("touchend", onTouchEnd, { passive: true });
     document.addEventListener("focusout", onFocusOut);
     vv?.addEventListener("resize", onViewportResize);
     return () => {
       document.removeEventListener("focusin", onFocusIn);
+      document.removeEventListener("touchstart", onTouchStart);
+      document.removeEventListener("touchend", onTouchEnd);
       document.removeEventListener("focusout", onFocusOut);
       vv?.removeEventListener("resize", onViewportResize);
       if (settleTimer) clearTimeout(settleTimer);
       if (leaveTimer) clearTimeout(leaveTimer);
+      if (roomTimer) clearTimeout(roomTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -441,9 +497,9 @@ export default function BookVisitPage() {
           id="booking-sheet"
           lang={lang}
           className={`px-5 pt-8 mt-[250px] rounded-t-[28px] sm:pb-8 sm:-mt-8 sm:min-h-0 flex-grow flex flex-col bg-white relative z-10 ${
-            keyboardOpen ? "min-h-0" : "pb-[calc(7rem+env(safe-area-inset-bottom))] min-h-[calc(100dvh-110px)]"
+            bottomRoom > 0 ? "min-h-0" : "pb-[calc(7rem+env(safe-area-inset-bottom))] min-h-[calc(100dvh-110px)]"
           }`}
-          style={keyboardOpen ? { paddingBottom: bottomRoom } : undefined}
+          style={bottomRoom > 0 ? { paddingBottom: bottomRoom } : undefined}
         >
           <div className={`w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2 `} />
           
