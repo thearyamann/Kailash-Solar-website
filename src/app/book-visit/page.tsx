@@ -69,60 +69,92 @@ export default function BookVisitPage() {
   const PHOTO_STRIP = 110;
   const slidingUntil = useRef(0);
   const isSliding = () => Date.now() < slidingUntil.current;
+  // The page moves right after a field is tapped (typing mode below); for that moment, ignore taps
+  // that land on a bill option or the language button by accident.
   const startFilling = () => {
-    if (typeof window === "undefined" || !window.matchMedia("(max-width: 639px)").matches) return;
-    const target = SHEET_TOP - PHOTO_STRIP;
-    if (window.scrollY >= target - 4) return; // already up (or the visitor scrolled further)
-    slidingUntil.current = Date.now() + 500;
-    // let the phone start opening the keyboard first, then glide up
-    requestAnimationFrame(() => window.scrollTo({ top: target, behavior: "smooth" }));
+    slidingUntil.current = Date.now() + 600;
   };
-  // Keyboard awareness (iPhone + Android). The visual viewport shrinks when the keyboard is up.
-  // - The page keeps exactly enough room at the bottom for the keyboard (so the phone can always
-  //   scroll the field you're typing in above it), instead of the room for the hidden button bar.
-  // - The active field is gently scrolled into the visible area above the keyboard, also when
-  //   moving from one field to the next.
-  // - When the keyboard closes, the page settles back so the photo strip, heading, subsidy line
-  //   and all fields are in view, and the button bar returns.
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const keyboardOpen = keyboardHeight > 0;
+  // Typing mode (iPhone + Android). Doesn't rely on measuring the keyboard (some iPhones shrink both
+  // window heights together, so the keyboard can't be detected that way):
+  // - As soon as a field is tapped, the page adds room at the bottom so it can always scroll,
+  //   hides the (keyboard-covered) button bar, and moves the field into the TOP part of the visible
+  //   area, so neither the keyboard nor the iPhone autofill / suggestion bar can cover it.
+  // - Same when moving between fields.
+  // - When no field is active any more, the room goes away, the bar returns and the page settles
+  //   back so the photo strip, heading, subsidy line and all fields are in view.
+  const [typing, setTyping] = useState(false);
+  const [bottomRoom, setBottomRoom] = useState(0);
+  const keyboardOpen = typing;
   useEffect(() => {
+    if (!window.matchMedia("(max-width: 639px)").matches) return;
     const vv = window.visualViewport;
-    if (!vv) return;
-    let wasOpen = false;
+    const visible = () => ({
+      top: vv ? vv.offsetTop : 0,
+      height: vv ? vv.height : window.innerHeight,
+    });
     const keepFieldVisible = () => {
       const el = document.activeElement as HTMLElement | null;
       if (!el || el.tagName !== "INPUT") return;
       const r = el.getBoundingClientRect();
-      const top = vv.offsetTop + 72; // below the back / language buttons
-      const bottom = vv.offsetTop + vv.height - 16;
-      if (r.top >= top && r.bottom <= bottom) return; // already fully visible
-      // put the field about a quarter of the way down the visible area
-      const delta = r.top - (vv.offsetTop + Math.max(80, vv.height * 0.25));
-      window.scrollBy({ top: delta, behavior: "smooth" });
-    };
-    const onResize = () => {
-      const kb = Math.max(0, window.innerHeight - vv.height);
-      const open = kb > 150;
-      setKeyboardHeight(open ? kb : 0);
-      if (open) {
-        setTimeout(keepFieldVisible, 80);
-      } else if (wasOpen && window.matchMedia("(max-width: 639px)").matches) {
-        const target = SHEET_TOP - PHOTO_STRIP;
-        if (window.scrollY > target + 4) {
-          setTimeout(() => window.scrollTo({ top: target, behavior: "smooth" }), 60);
+      const v = visible();
+      const minTop = v.top + 76; // clear of the back / language buttons
+      const maxBottom = v.top + Math.min(v.height * 0.58, window.innerHeight * 0.42); // above keyboard + autofill bar
+      if (r.top >= minTop && r.bottom <= maxBottom) return; // comfortably visible already
+      const desiredTop = v.top + 96;
+      let delta = r.top - desiredTop;
+      // Never lift past the end of the form: the last row (bill options) should reach the bottom of
+      // the visible area, not leave white space under it — as long as the field stays clear of the
+      // keyboard / autofill bar (at least 90px above the bottom of what's visible).
+      const lastRow = document.getElementById("bill-options");
+      if (lastRow && delta > 0) {
+        const formEndDelta = lastRow.getBoundingClientRect().bottom - (v.top + v.height - 12);
+        const fieldBottomAfter = r.bottom - Math.max(0, formEndDelta);
+        if (formEndDelta < delta && fieldBottomAfter <= v.top + v.height - 90 && r.top - Math.max(0, formEndDelta) >= minTop) {
+          delta = Math.max(0, formEndDelta);
         }
       }
-      wasOpen = open;
+      if (Math.abs(delta) < 4) return;
+      window.scrollBy({ top: delta, behavior: "smooth" });
     };
-    const onFocusIn = () => {
-      if (wasOpen) setTimeout(keepFieldVisible, 60);
+    // run now and again once the keyboard animation has finished (iPhone can ignore the first one)
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const keepFieldVisibleSoon = () => {
+      timers.push(setTimeout(keepFieldVisible, 120), setTimeout(keepFieldVisible, 480));
     };
-    vv.addEventListener("resize", onResize);
+    let leaveTimer: ReturnType<typeof setTimeout> | undefined;
+    const onFocusIn = (e: FocusEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (!t || t.tagName !== "INPUT") return;
+      if (leaveTimer) clearTimeout(leaveTimer);
+      // enough room to lift any field to the top, whatever the keyboard size
+      setBottomRoom(Math.round(Math.max(window.innerHeight, window.screen?.height || 0) * 0.55));
+      setTyping(true);
+      keepFieldVisibleSoon();
+    };
+    const onFocusOut = () => {
+      if (leaveTimer) clearTimeout(leaveTimer);
+      // small delay so jumping from one field to the next doesn't flicker
+      leaveTimer = setTimeout(() => {
+        const el = document.activeElement as HTMLElement | null;
+        if (el && el.tagName === "INPUT") return;
+        setTyping(false);
+        setBottomRoom(0);
+        const target = SHEET_TOP - PHOTO_STRIP;
+        if (window.scrollY > target + 4) window.scrollTo({ top: target, behavior: "smooth" });
+      }, 220);
+    };
+    const onViewportResize = () => {
+      if (document.activeElement?.tagName === "INPUT") keepFieldVisibleSoon();
+    };
     document.addEventListener("focusin", onFocusIn);
+    document.addEventListener("focusout", onFocusOut);
+    vv?.addEventListener("resize", onViewportResize);
     return () => {
-      vv.removeEventListener("resize", onResize);
       document.removeEventListener("focusin", onFocusIn);
+      document.removeEventListener("focusout", onFocusOut);
+      vv?.removeEventListener("resize", onViewportResize);
+      timers.forEach(clearTimeout);
+      if (leaveTimer) clearTimeout(leaveTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -372,7 +404,7 @@ export default function BookVisitPage() {
           className={`px-5 pt-8 mt-[250px] rounded-t-[28px] sm:pb-8 sm:-mt-8 sm:min-h-0 flex-grow flex flex-col bg-white relative z-10 ${
             keyboardOpen ? "min-h-0" : "pb-[calc(7rem+env(safe-area-inset-bottom))] min-h-[calc(100dvh-110px)]"
           }`}
-          style={keyboardOpen ? { paddingBottom: keyboardHeight + 24 } : undefined}
+          style={keyboardOpen ? { paddingBottom: bottomRoom } : undefined}
         >
           <div className={`w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2 `} />
           
