@@ -60,46 +60,53 @@ export default function BookVisitPage() {
   const pincodeVerifier = usePincodeVerifier(formData.pincode);
   const { lang, setLang, t } = useFormLanguage();
 
-  // Once the visitor starts filling the form, slide the sheet up over the photo so every
-  // field, the bill options and the button are on screen together (even with the keyboard open).
-  const [compact, setCompact] = useState(false);
-  // The sheet moves while it slides; ignore taps that land on a button during that moment,
-  // so tapping "Full Name" can never also pick a bill option or switch the language.
+  // Native scrolling, no animation tricks: the photo is fixed behind and the form sheet is a normal
+  // part of the page. When a field is tapped we scroll the page so the sheet sits just under a strip
+  // of the photo (PHOTO_STRIP px). The sheet's min-height lets the page scroll exactly that far and no
+  // further (unless the content needs it), so the heading never slides under the top bar and there
+  // is no empty space. Swiping down is just normal scrolling and brings the photo back.
+  const SHEET_TOP = 250;
+  const PHOTO_STRIP = 110;
   const slidingUntil = useRef(0);
   const isSliding = () => Date.now() < slidingUntil.current;
-  // Swipe down (or tap the photo strip) at the top of the page to bring the full photo back.
-  const showPhoto = () => {
-    if (!compact) return;
-    const el = document.activeElement as HTMLElement | null;
-    if (el && el.tagName === "INPUT") el.blur();
-    slidingUntil.current = Date.now() + 600;
-    setCompact(false);
+  const startFilling = () => {
+    if (typeof window === "undefined" || !window.matchMedia("(max-width: 639px)").matches) return;
+    const target = SHEET_TOP - PHOTO_STRIP;
+    if (window.scrollY >= target - 4) return; // already up (or the visitor scrolled further)
+    slidingUntil.current = Date.now() + 500;
+    // let the phone start opening the keyboard first, then glide up
+    requestAnimationFrame(() => window.scrollTo({ top: target, behavior: "smooth" }));
   };
+  // Keyboard awareness (iPhone + Android): the visual viewport shrinks when the keyboard is up.
+  // While it's up, the button bar is hidden behind the keyboard anyway, so the page drops the room it
+  // keeps for the bar (no white gap above the keyboard). When it closes, the page settles back so the
+  // photo strip, heading, subsidy line and all fields are in view again.
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
   useEffect(() => {
-    if (!compact) return;
-    let startY: number | null = null;
-    const onStart = (e: TouchEvent) => {
-      startY = window.scrollY <= 0 ? e.touches[0].clientY : null;
-    };
-    const onMove = (e: TouchEvent) => {
-      if (startY !== null && e.touches[0].clientY - startY > 60) {
-        startY = null;
-        showPhoto();
+    const vv = window.visualViewport;
+    if (!vv) return;
+    let wasOpen = false;
+    const onResize = () => {
+      const open = window.innerHeight - vv.height > 150;
+      if (open === wasOpen) return;
+      wasOpen = open;
+      setKeyboardOpen(open);
+      if (!open && window.matchMedia("(max-width: 639px)").matches) {
+        const target = SHEET_TOP - PHOTO_STRIP;
+        if (window.scrollY > target + 4) {
+          setTimeout(() => window.scrollTo({ top: target, behavior: "smooth" }), 60);
+        }
       }
     };
-    const onWheel = (e: WheelEvent) => {
-      if (window.scrollY <= 0 && e.deltaY < -40) showPhoto();
-    };
-    window.addEventListener("touchstart", onStart, { passive: true });
-    window.addEventListener("touchmove", onMove, { passive: true });
-    window.addEventListener("wheel", onWheel, { passive: true });
-    return () => {
-      window.removeEventListener("touchstart", onStart);
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("wheel", onWheel);
-    };
+    vv.addEventListener("resize", onResize);
+    return () => vv.removeEventListener("resize", onResize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [compact]);
+  }, []);
+
+  const showPhoto = () => {
+    if (isSliding()) return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Once the form sheet reaches the top bar, give the bar a white background (like a native app),
   // so the heading never runs behind the back / language buttons.
@@ -112,22 +119,11 @@ export default function BookVisitPage() {
     check();
     window.addEventListener("scroll", check, { passive: true });
     window.addEventListener("resize", check);
-    const t = setInterval(check, 250); // also follows the slide animation
     return () => {
       window.removeEventListener("scroll", check);
       window.removeEventListener("resize", check);
-      clearInterval(t);
     };
   }, []);
-
-  const startFilling = () => {
-    if (compact) return;
-    slidingUntil.current = Date.now() + 600;
-    setCompact(true);
-    if (typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
 
   // Load saved profile data from localStorage
   useEffect(() => {
@@ -340,7 +336,6 @@ export default function BookVisitPage() {
             onClick={() => {
               if (!isSliding()) setLang(lang === "hi" ? "en" : "hi");
             }}
-            data-solid={barSolid}
             aria-label={lang === "hi" ? "Switch to English" : "हिंदी में देखें"}
             className={`h-9 px-3.5 rounded-full backdrop-blur-md text-[13px] font-semibold active:scale-95 transition-all ${
               barSolid ? "bg-slate-100 text-slate-700" : "bg-black/25 text-white"
@@ -351,7 +346,7 @@ export default function BookVisitPage() {
         </div>
 
         {/* Photo: fixed behind on phones, so the form sheet slides up over it like a native app */}
-        <div onClick={() => { if (!isSliding()) showPhoto(); }} className="fixed sm:relative top-0 left-0 z-0 h-[300px] sm:h-[220px] w-full bg-slate-200 shrink-0">
+        <div onClick={showPhoto} className="fixed sm:relative top-0 left-0 z-0 h-[300px] sm:h-[220px] w-full bg-slate-200 shrink-0">
           <Image
             src="/opt/van.webp"
             alt="Kailash Solar van and team member in Meerut"
@@ -368,14 +363,14 @@ export default function BookVisitPage() {
         <div
           id="booking-sheet"
           lang={lang}
-          className={`px-5 pt-8 pb-[calc(7rem+env(safe-area-inset-bottom))] mt-[250px] min-h-[calc(100dvh-110px)] rounded-t-[28px] sm:pb-8 sm:-mt-8 sm:min-h-0 sm:translate-y-0 flex-grow flex flex-col bg-white relative z-10 will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
-            compact ? "-translate-y-[140px]" : "translate-y-0"
+          className={`px-5 pt-8 mt-[250px] rounded-t-[28px] sm:pb-8 sm:-mt-8 sm:min-h-0 flex-grow flex flex-col bg-white relative z-10 ${
+            keyboardOpen ? "pb-5 min-h-0" : "pb-[calc(7rem+env(safe-area-inset-bottom))] min-h-[calc(100dvh-110px)]"
           }`}
         >
           <div className={`w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2 `} />
           
           <div className="mt-1 mb-6 sm:mb-7">
-            <h1 className={`text-[clamp(22px,7vw,27px)] sm:text-[27px] leading-[1.2] tracking-[-0.01em] font-bold font-montserrat text-slate-900 sm:mb-5 transition-[margin] duration-300 ${compact ? "mb-0" : "mb-4"}`}>
+            <h1 className={`text-[clamp(22px,7vw,27px)] sm:text-[27px] leading-[1.2] tracking-[-0.01em] font-bold font-montserrat text-slate-900 mb-4 sm:mb-5`}>
               {t.headingStart}
               <span className="text-accent whitespace-nowrap">
                 {"₹0"}
@@ -386,8 +381,7 @@ export default function BookVisitPage() {
               </span>
               {t.headingEnd}
             </h1>
-            {/* The sub-line folds away while filling, to make room for all the fields */}
-            <p className={`text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 leading-normal overflow-hidden transition-[max-height,opacity] duration-300 motion-reduce:transition-none sm:max-h-20 sm:opacity-100 ${compact ? "max-h-0 opacity-0" : "max-h-20 opacity-100"}`}>
+            <p className="text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 leading-normal">
               {t.subStart}<span className="text-accent">{t.subAccent}</span>
             </p>
           </div>
@@ -580,7 +574,9 @@ export default function BookVisitPage() {
         </div>
 
           {/* App Bottom Action Bar: outside the sliding sheet so it stays pinned to the bottom of the screen */}
-          <div className="fixed sm:relative bottom-0 left-0 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5 sm:pt-0 sm:pb-6 bg-white/95 backdrop-blur-md sm:bg-white border-t border-slate-200 sm:border-0 z-[100] flex gap-3">
+          <div className={`fixed sm:relative bottom-0 left-0 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5 sm:pt-0 sm:pb-6 bg-white/95 backdrop-blur-md sm:bg-white border-t border-slate-200 sm:border-0 z-[100] flex gap-3 transition-opacity duration-150 ${
+            keyboardOpen ? "opacity-0 pointer-events-none sm:opacity-100 sm:pointer-events-auto" : "opacity-100"
+          }`}>
             <Button 
               type="submit"
               form="booking-form" 

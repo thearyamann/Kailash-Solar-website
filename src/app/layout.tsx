@@ -18,6 +18,9 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  // Android: when the keyboard opens, don't shrink the page (same as iPhone). Keeps the booking
+  // form steady and the bottom button bar from jumping up over the fields.
+  interactiveWidget: 'resizes-visual',
 };
 
 export const metadata: Metadata = {
