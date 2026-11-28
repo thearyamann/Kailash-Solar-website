@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { siteConfig } from '../config/site';
 import FAQSchema from "../components/FAQSchema";
 import MetaPixel from "../components/MetaPixel";
+import LiveSiteOnly from "../components/LiveSiteOnly";
 import { Providers } from '../components/providers';
 import { GoogleTagManager } from '@next/third-parties/google';
 import NavigationLoader from '../components/NavigationLoader';
@@ -141,12 +142,13 @@ export default function RootLayout({
         />
         <FAQSchema />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(calculatorSchema) }} />
-        <MetaPixel pixelId="1071029479055771" />
+        {/* Tracking only on the real site: local test runs must never send leads to Meta / Google */}
+        <LiveSiteOnly><MetaPixel pixelId="1071029479055771" /></LiveSiteOnly>
       </head>
       <body>
         <NavigationLoader />
         <AttributionCapture />
-        <GoogleTagManager gtmId="GTM-WXGHXT7R" />
+        <LiveSiteOnly><GoogleTagManager gtmId="GTM-WXGHXT7R" /></LiveSiteOnly>
         <PostHogProvider>
           <Providers>
             {children}

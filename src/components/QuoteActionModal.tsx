@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { cleanPhoneInput, isValidMobile, isValidName, NAME_ERROR, PHONE_ERROR } from "@/lib/form-validation";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { goToBookingSuccess } from "@/lib/go-to-success";
@@ -8,7 +9,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { sendInquiryEmail } from "@/lib/inquiry-email";
 import { submitBookVisitToCRM } from "@/lib/crm";
 import { trackMetaLead } from "@/lib/meta-pixel";
 import { 
@@ -82,13 +83,13 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
     const trimmedName = formData.name.trim();
     const trimmedPin = formData.pincode.trim();
     
-    if (!trimmedName || !/^[A-Za-z\s]+$/.test(trimmedName)) {
-      setSubmitError("Name should contain only letters and spaces.");
+    if (!trimmedName || !isValidName(trimmedName)) {
+      setSubmitError(NAME_ERROR);
       return;
     }
     
-    if (!/^\d{10}$/.test(formData.phone)) {
-      setSubmitError("Phone number must be exactly 10 digits.");
+    if (!isValidMobile(formData.phone)) {
+      setSubmitError(PHONE_ERROR);
       return;
     }
 
@@ -126,37 +127,16 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
       source: "quote",
     });
 
-    try {
-      // Send to supabase edge function using fetch for better error transparency
-      const { data: { session } } = await supabase.auth.getSession();
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tjikswdntqctoqqrnjkq.supabase.co';
-      
-      const response = await fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify({
-          name: trimmedName,
-          phone: formData.phone,
-          address: `${trimmedPin} (${pinCheck.region})`,
-          monthlyBill: `${quoteData.systemSize}kW System`,
-          customerType: "residential"
-        })
-      });
-      
-      if (!response.ok) {
-        let errorMsg = "Failed to submit inquiry";
-        try {
-          const errorData = await response.json();
-          errorMsg = errorData.error || errorMsg;
-        } catch (e) {
-          errorMsg = `Server error: ${response.status} ${response.statusText}`;
-        }
-        throw new Error(errorMsg);
-      }
+    // Backup email copy in the background; it must never show an error after the lead is saved.
+    sendInquiryEmail({
+      name: trimmedName,
+      phone: formData.phone,
+      address: `${trimmedPin} (${pinCheck.region})`,
+      monthlyBill: `${quoteData.systemSize}kW System`,
+      customerType: "residential"
+    });
 
+    try {
       // Send to WhatsApp
       const whatsappMessage = encodeURIComponent(
         `Hi, I want to book my installation.\n\n` +
@@ -286,14 +266,14 @@ export function QuoteActionModal({ children, quoteData }: QuoteActionModalProps)
                   type="tel" 
                   placeholder="WhatsApp Number (10 digits)*" 
                   required 
-                  maxLength={10} 
+                  maxLength={16} 
                   pattern="[0-9]{10}" 
                   title="Please enter a valid 10-digit mobile number" 
                   value={formData.phone} 
                   onChange={e => {
                     setSubmitError("");
-                    const val = e.target.value.replace(/\D/g, '');
-                    if (val.length <= 10) setFormData({ ...formData, phone: val });
+                    const val = cleanPhoneInput(e.target.value);
+                    setFormData({ ...formData, phone: val });
                   }} 
                   className="h-full border-0 rounded-none bg-transparent px-3 text-[15px] focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent w-full shadow-none" 
                 />

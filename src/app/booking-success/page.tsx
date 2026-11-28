@@ -2,12 +2,13 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import CelebrationConfetti from "@/components/CelebrationConfetti";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Phone, ArrowLeft, MessageCircle, Check } from "lucide-react";
 import { getLastSubmission } from "@/lib/submission-tracker";
 import { getPincodeRegion } from "@/lib/pincode";
 import { useToast } from "@/hooks/use-toast";
+import { useFormLanguage } from "@/lib/form-language";
 
 function getLiveCustomerData() {
   if (typeof window === "undefined") {
@@ -101,6 +102,8 @@ function getLiveCustomerData() {
   };
 }
 
+const REDIRECT_SECONDS = 12;
+
 function BookingSuccessAppContent() {
   const searchParams = useSearchParams();
   const { dismiss } = useToast();
@@ -170,25 +173,38 @@ function BookingSuccessAppContent() {
     return () => clearTimeout(t);
   }, []);
 
+  // After a short look at the confirmation, take the visitor back to the home page.
+  // Stops if they tap Stay / WhatsApp / Call, so we never pull them away mid-action.
+  const router = useRouter();
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(REDIRECT_SECONDS);
+  useEffect(() => {
+    if (secondsLeft === null) return;
+    if (secondsLeft <= 0) {
+      router.replace("/solar-company-meerut");
+      return;
+    }
+    const t = setTimeout(() => setSecondsLeft((s) => (s === null ? null : s - 1)), 1000);
+    return () => clearTimeout(t);
+  }, [secondsLeft, router]);
+  const stopRedirect = () => setSecondsLeft(null);
+
+  const { lang, t } = useFormLanguage();
   const tickRef = useRef<HTMLDivElement>(null);
-  const firstName = details.name ? details.name.split(" ")[0] : "";
+  const firstWord = details.name ? details.name.split(" ")[0] : "";
+  const firstName = firstWord ? firstWord.charAt(0).toUpperCase() + firstWord.slice(1) : "";
   const rows = [
-    details.name && { label: "Name", value: <span className="capitalize">{details.name}</span> },
-    details.phone && { label: "WhatsApp", value: `+91 ${details.phone.slice(-10)}` },
-    details.pincode && { label: "PIN code", value: details.pincode },
-    details.bill && { label: "Monthly bill", value: details.bill },
-    details.leadId && { label: "Booking ID", value: `#${details.leadId.replace(/^ks_lead_/, "")}` },
+    details.name && { label: t.rowName, value: <span className="capitalize">{details.name}</span> },
+    details.phone && { label: t.rowWhatsapp, value: `+91 ${details.phone.slice(-10)}` },
+    details.pincode && { label: t.rowPin, value: details.pincode },
+    details.bill && { label: t.rowBill, value: t.billOptions[details.bill] || details.bill },
+    details.leadId && { label: t.rowBooking, value: `#${details.leadId.replace(/^ks_lead_/, "")}` },
   ].filter(Boolean) as { label: string; value: React.ReactNode }[];
 
-  const steps = [
-    { title: "Confirmation call", text: "Our engineer confirms your visit on WhatsApp." },
-    { title: "Free site survey", text: "We check your rooftop and size the right system." },
-    { title: "Subsidy & installation", text: "We handle the subsidy, loan and net-meter paperwork." },
-  ];
+  const steps = t.steps;
 
   return (
-    <div className="min-h-[100dvh] bg-white sm:bg-slate-100 flex justify-center sm:items-center sm:py-10 select-none font-sans success-screen">
-      <div className="w-full max-w-[420px] bg-white min-h-[100dvh] sm:min-h-0 sm:rounded-[28px] sm:shadow-[0_20px_60px_-20px_rgba(15,23,42,0.25)] relative flex flex-col">
+    <div lang={lang} className="min-h-[100dvh] bg-white sm:bg-slate-100 flex justify-center sm:items-center sm:py-10 select-none font-sans success-screen">
+      <div className="w-full sm:max-w-[420px] bg-white min-h-[100dvh] sm:min-h-0 sm:rounded-[28px] sm:border sm:border-slate-200 relative flex flex-col">
 
         <CelebrationConfetti originRef={tickRef} delay={320} />
 
@@ -222,11 +238,11 @@ function BookingSuccessAppContent() {
           {/* Heading */}
           <div className="text-center mb-8 success-rise" style={{ animationDelay: "0.42s" }}>
             <h1 className="text-[24px] leading-tight font-bold font-montserrat text-slate-900 tracking-tight">
-              Site visit booked
+              {t.booked}
             </h1>
             <p className="text-[14.5px] text-slate-500 mt-2 max-w-[290px] mx-auto leading-relaxed">
-              {firstName ? <>Thanks, <span className="capitalize text-slate-700 font-medium">{firstName}</span>. </> : "Thank you. "}
-              Our engineer will call you within 30 minutes.
+              {t.thanks(firstName)}
+              {t.callSoon}
             </p>
           </div>
 
@@ -246,7 +262,7 @@ function BookingSuccessAppContent() {
               </div>
               <div className="mt-3 flex items-center justify-center gap-1.5 text-[12.5px] font-semibold text-accent">
                 <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                Eligible for up to ₹1,08,000 PM Surya Ghar subsidy
+                {t.subsidyLine}
               </div>
             </section>
           )}
@@ -254,7 +270,7 @@ function BookingSuccessAppContent() {
           {/* What happens next */}
           <section className="w-full mt-8 success-rise" style={{ animationDelay: "0.62s" }}>
             <h2 className="text-[12px] uppercase tracking-[0.08em] font-semibold text-slate-400 mb-4">
-              What happens next
+              {t.nextTitle}
             </h2>
             <ol className="relative">
               {steps.map((step, i) => (
@@ -276,23 +292,33 @@ function BookingSuccessAppContent() {
         </main>
 
         {/* Bottom action bar: only the two actions that matter */}
-        <div className="fixed sm:sticky bottom-0 left-0 right-0 max-w-[420px] mx-auto px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-5 bg-white/90 backdrop-blur-xl border-t border-slate-100 sm:rounded-b-[28px] z-30 success-dock">
+        <div className="fixed sm:sticky bottom-0 left-0 right-0 sm:max-w-[420px] mx-auto px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-5 bg-white/90 backdrop-blur-xl border-t border-slate-100 sm:rounded-b-[28px] z-30 success-dock">
+          {secondsLeft !== null && (
+            <div className="mb-2.5 flex items-center justify-center gap-2 text-[12.5px] text-slate-500">
+              <span>{t.goingHome(secondsLeft)}</span>
+              <button type="button" onClick={stopRedirect} className="font-semibold text-[#133B76] underline underline-offset-2">
+                {t.stayHere}
+              </button>
+            </div>
+          )}
           <div className="flex gap-3">
             <a
               href={`https://wa.me/918999999654?text=${details.whatsappMsg}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={stopRedirect}
               className="flex-[1.6] h-[52px] rounded-2xl bg-[#133B76] active:bg-[#0E2C59] active:scale-[0.98] text-white font-semibold text-[15px] flex items-center justify-center gap-2 transition-all"
             >
               <MessageCircle className="w-5 h-5" />
-              Chat on WhatsApp
+              {t.chatWhatsapp}
             </a>
             <a
               href="tel:+918999999654"
+              onClick={stopRedirect}
               className="flex-1 h-[52px] rounded-2xl bg-slate-100 active:bg-slate-200 active:scale-[0.98] text-slate-900 font-semibold text-[15px] flex items-center justify-center gap-2 transition-all"
             >
               <Phone className="w-[18px] h-[18px]" />
-              Call Us
+              {t.callUs}
             </a>
           </div>
         </div>

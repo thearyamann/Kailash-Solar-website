@@ -123,6 +123,16 @@ export async function POST(request: NextRequest) {
     let leadId: string | undefined;
     let isNewLead = false;
 
+    // Customer confirmation via the approved UTILITY template (free-form text would not be delivered
+    // because the customer has not messaged us in the last 24 hours). It doesn't need the Zoho ID,
+    // so it starts now and runs alongside the CRM calls to keep the form fast.
+    const ackPromise = sendCustomerAcknowledgement(waPhone).then((ack) => {
+      if (!ack.ok) console.error(`✗ Customer acknowledgement to +${waPhone} failed: ${ack.error}`);
+    });
+
+    // Follow-up Zoho writes (tags + note) run in parallel with the team alert below.
+    const followUps: Promise<unknown>[] = [ackPromise];
+
     if (hasZohoCredentials()) {
       try {
         const existingLead = await findZohoLeadByPhone(waPhone);
@@ -151,17 +161,20 @@ export async function POST(request: NextRequest) {
           if (Object.keys(updates).length) await updateZohoLead(leadId, updates);
         }
 
-        // Tag in Zoho CRM to immediately stop cold follow-ups
-        await addTagsToZohoLead(leadId, [
-          ...(isBooking
-            ? ["Hot Lead - Interested", "Website Lead", "Site Visit Booked", "Site Visit Scheduled"]
-            : ["Hot Lead - Interested", "Website Lead"]),
-          ...(attribution?.tag ? [attribution.tag] : []),
-        ]);
-        await addNoteToZohoLead(
-          leadId,
-          isBooking ? "Website Site Visit Booked" : `Website Lead: ${source.label}`,
-          `Customer submitted ${source.label} on ${nowStr}.\n${details.join("\n")}`
+        // Tag in Zoho CRM to immediately stop cold follow-ups, and add the note (both in parallel)
+        const id = leadId;
+        followUps.push(
+          addTagsToZohoLead(id, [
+            ...(isBooking
+              ? ["Hot Lead - Interested", "Website Lead", "Site Visit Booked", "Site Visit Scheduled"]
+              : ["Hot Lead - Interested", "Website Lead"]),
+            ...(attribution?.tag ? [attribution.tag] : []),
+          ]).catch((e) => console.error("Zoho tag error:", e)),
+          addNoteToZohoLead(
+            id,
+            isBooking ? "Website Site Visit Booked" : `Website Lead: ${source.label}`,
+            `Customer submitted ${source.label} on ${nowStr}.\n${details.join("\n")}`
+          ).catch((e) => console.error("Zoho note error:", e))
         );
       } catch (zohoErr) {
         // The team alert below still goes out so the lead is never lost.
@@ -172,7 +185,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Instant free-form alert to the Kailash Solar team number
-    await sendTeamLeadAlert({
+    const teamAlert = sendTeamLeadAlert({
       name,
       phone: waPhone,
       city,
@@ -194,12 +207,10 @@ export async function POST(request: NextRequest) {
       source: source.label,
       leadId,
       isNewLead,
-    });
+    }).catch((e) => console.error("Team lead alert error:", e));
 
-    // Customer confirmation via the approved UTILITY template (free-form text would not be delivered
-    // because the customer has not messaged us in the last 24 hours).
-    const ack = await sendCustomerAcknowledgement(waPhone);
-    if (!ack.ok) console.error(`✗ Customer acknowledgement to +${waPhone} failed: ${ack.error}`);
+    // Wait for everything together (not one after another) before answering the form.
+    await Promise.allSettled([teamAlert, ...followUps]);
 
     return NextResponse.json(
       {

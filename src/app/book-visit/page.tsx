@@ -1,20 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { cleanPhoneInput, isValidMobile, isValidName } from "@/lib/form-validation";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { goToBookingSuccess } from "@/lib/go-to-success";
 import { ArrowLeft, Phone, CheckCircle2, MessageCircle, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { sendInquiryEmail } from "@/lib/inquiry-email";
+import { useFormLanguage } from "@/lib/form-language";
 import { 
   validatePincode, 
   isServiceablePincode, 
-  getPincodeRegion, 
-  OUTSIDE_REGION_ERROR 
+  getPincodeRegion,
 } from "@/lib/pincode";
 import { usePincodeVerifier } from "@/hooks/use-pincode-verifier";
 import { trackMetaLead } from "@/lib/meta-pixel";
@@ -29,12 +28,23 @@ import {
 } from "@/lib/crm";
 import Link from "next/link";
 
+// Same values as before (CRM, WhatsApp message and plant-size estimate depend on them);
+// the button labels come from the language text (English / Hindi).
+const BILL_VALUES = ["< 1500", "1500 - 2500", "2500 - 5000", "> 5000"];
+
 export default function BookVisitPage() {
   const router = useRouter();
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  // Which field the message belongs to ("name" | "phone" | "pincode" | "bill-options" | "send").
+  // Field messages show right under that field, so the rest of the form never jumps.
+  const [errorField, setErrorField] = useState("");
+  const clearError = () => {
+    setSubmitError("");
+    setErrorField("");
+  };
+  const fieldError = (field: string) => (errorField === field ? submitError : "");
   const [submittedWhatsappMsg, setSubmittedWhatsappMsg] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -48,6 +58,76 @@ export default function BookVisitPage() {
   });
 
   const pincodeVerifier = usePincodeVerifier(formData.pincode);
+  const { lang, setLang, t } = useFormLanguage();
+
+  // Once the visitor starts filling the form, slide the sheet up over the photo so every
+  // field, the bill options and the button are on screen together (even with the keyboard open).
+  const [compact, setCompact] = useState(false);
+  // The sheet moves while it slides; ignore taps that land on a button during that moment,
+  // so tapping "Full Name" can never also pick a bill option or switch the language.
+  const slidingUntil = useRef(0);
+  const isSliding = () => Date.now() < slidingUntil.current;
+  // Swipe down (or tap the photo strip) at the top of the page to bring the full photo back.
+  const showPhoto = () => {
+    if (!compact) return;
+    const el = document.activeElement as HTMLElement | null;
+    if (el && el.tagName === "INPUT") el.blur();
+    slidingUntil.current = Date.now() + 600;
+    setCompact(false);
+  };
+  useEffect(() => {
+    if (!compact) return;
+    let startY: number | null = null;
+    const onStart = (e: TouchEvent) => {
+      startY = window.scrollY <= 0 ? e.touches[0].clientY : null;
+    };
+    const onMove = (e: TouchEvent) => {
+      if (startY !== null && e.touches[0].clientY - startY > 60) {
+        startY = null;
+        showPhoto();
+      }
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (window.scrollY <= 0 && e.deltaY < -40) showPhoto();
+    };
+    window.addEventListener("touchstart", onStart, { passive: true });
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onStart);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("wheel", onWheel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compact]);
+
+  // Once the form sheet reaches the top bar, give the bar a white background (like a native app),
+  // so the heading never runs behind the back / language buttons.
+  const [barSolid, setBarSolid] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      const sheet = document.getElementById("booking-sheet");
+      setBarSolid(!!sheet && sheet.getBoundingClientRect().top < 64 && window.innerWidth < 640);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    const t = setInterval(check, 250); // also follows the slide animation
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+      clearInterval(t);
+    };
+  }, []);
+
+  const startFilling = () => {
+    if (compact) return;
+    slidingUntil.current = Date.now() + 600;
+    setCompact(true);
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   // Load saved profile data from localStorage
   useEffect(() => {
@@ -83,36 +163,32 @@ export default function BookVisitPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitError("");
+    clearError();
 
     const trimmedName = formData.name.trim();
     const trimmedPin = formData.pincode.trim();
 
-    if (!trimmedName || !/^[A-Za-z\s]+$/.test(trimmedName)) {
-      setSubmitError("Name should contain only letters and spaces.");
-      toast({ title: "Invalid Name", description: "Name should contain only letters and spaces.", variant: "destructive" });
-      return;
-    }
-    
-    if (!/^\d{10}$/.test(formData.phone)) {
-      setSubmitError("Phone number must be exactly 10 digits.");
-      toast({ title: "Invalid Phone", description: "Phone number must be exactly 10 digits.", variant: "destructive" });
-      return;
-    }
+    // One clear message above the form + jump straight to the field that needs fixing
+    const fail = (field: string, msg: string) => {
+      setSubmitError(msg);
+      setErrorField(field);
+      if (typeof document === "undefined") return;
+      const el = document.getElementById(field);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      el?.focus({ preventScroll: true });
+    };
+
+    if (!trimmedName || !isValidName(trimmedName)) return fail("name", t.nameError);
+    if (!isValidMobile(formData.phone)) return fail("phone", t.phoneError);
 
     // PIN code validation - strictly Meerut, Modipuram & Modinagar
     const pinCheck = validatePincode(trimmedPin);
     if (!pinCheck.isValid) {
-      setSubmitError(pinCheck.error!);
-      toast({ title: "Region Not Serviceable", description: pinCheck.error!, variant: "destructive" });
-      return;
+      const digits = trimmedPin.replace(/\D/g, "");
+      return fail("pincode", !digits ? t.pinRequired : digits.length !== 6 ? t.pinInvalid : t.outsideRegion);
     }
 
-    if (!formData.monthlyBill) {
-      setSubmitError("Please select your monthly electricity bill.");
-      toast({ title: "Required Field", description: "Please select your monthly electricity bill.", variant: "destructive" });
-      return;
-    }
+    if (!formData.monthlyBill) return fail("bill-options", t.billError);
 
     // Check duplicate submission
     const duplicateCheck = checkDuplicateSubmission({
@@ -168,13 +244,11 @@ export default function BookVisitPage() {
     const crmResult = await submitBookVisitToCRM(crmPayload);
 
     if (!crmResult.success) {
-      const errorMsg = crmResult.error || "Submission error. Please try again.";
+      const errorMsg = (crmResult.error || "").toLowerCase().includes("mobile")
+        ? t.phoneError
+        : t.sendError;
       setSubmitError(errorMsg);
-      toast({
-        title: "Submission Error",
-        description: errorMsg,
-        variant: "destructive",
-      });
+      setErrorField("send");
       setIsSubmitting(false);
       return;
     }
@@ -188,28 +262,9 @@ export default function BookVisitPage() {
       leadId: crmResult.lead_id,
     };
     
-    // 2. Trigger Supabase notifications & PostHog / Meta analytics in background
+    // 2. Lead is saved: fire Meta / Google / PostHog lead events right away, then the
+    //    backup email in the background (it can never block or cancel the lead events).
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tjikswdntqctoqqrnjkq.supabase.co';
-      
-      const response = await fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify(submissionPayload)
-      });
-
-      if (!response.ok) {
-        // Fallback to supabase functions client if direct fetch has issues
-        await supabase.functions.invoke(
-          "send-inquiry-email",
-          { body: submissionPayload }
-        );
-      }
-
       if (typeof window !== 'undefined') {
         import('posthog-js').then((ph) => {
           ph.default.capture('form_submitted', {
@@ -232,8 +287,9 @@ export default function BookVisitPage() {
       }
 
     } catch (e) {
-      console.error("Submission inquiry notification error:", e);
+      console.error("Lead tracking error:", e);
     }
+    sendInquiryEmail(submissionPayload);
 
     // 3. Record submission to suppress popups across the site
     recordSubmission({
@@ -256,52 +312,83 @@ export default function BookVisitPage() {
     const redirectUrl = `/booking-success?name=${encodeURIComponent(trimmedName)}&phone=${encodeURIComponent(formData.phone)}&pincode=${encodeURIComponent(trimmedPin)}&region=${encodeURIComponent(pinCheck.region || "")}&bill=${encodeURIComponent(formattedBill)}&msg=${whatsappMessage}${crmResult.lead_id ? `&lead_id=${encodeURIComponent(crmResult.lead_id)}` : ""}`;
 
 
-    setIsSuccess(true);
 
     // Immediately run dedicated animated success page
     goToBookingSuccess(router, redirectUrl);
   };
 
   return (
-    <div className="min-h-[100dvh] [-webkit-tap-highlight-color:transparent] bg-slate-50 sm:bg-muted flex flex-col items-center justify-start sm:py-8">
+    <div className="min-h-[100dvh] [-webkit-tap-highlight-color:transparent] bg-white sm:bg-muted flex flex-col items-center justify-start sm:py-8">
       
-      <div className="w-full max-w-[400px] bg-white sm:rounded-3xl sm:shadow-2xl relative flex flex-col min-h-[100dvh] sm:min-h-0">
+      <div className="w-full sm:max-w-[400px] relative flex flex-col min-h-[100dvh] sm:min-h-0 sm:bg-white sm:rounded-3xl sm:border sm:border-slate-200 sm:overflow-hidden">
         
-        {/* Floating Native App Header */}
-        <div className="absolute top-0 w-full z-50 px-4 h-16 flex items-center justify-between">
+        {/* Floating Native App Header (stays put while the sheet scrolls) */}
+        <div className={`fixed sm:absolute top-0 left-0 w-full z-50 px-4 pt-[env(safe-area-inset-top)] h-16 flex items-center justify-between pointer-events-none [&>*]:pointer-events-auto transition-colors duration-200 ${
+          barSolid ? "bg-white border-b border-slate-200" : "bg-transparent border-b border-transparent"
+        }`}>
           <Link 
             href="/solar-company-meerut" 
             aria-label="Back to home"
-            className="w-10 h-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-white active:scale-90 transition-transform"
+            className={`w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center active:scale-90 transition-all ${
+              barSolid ? "bg-slate-100 text-slate-700" : "bg-black/20 text-white"
+            }`}
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
+          <button
+            type="button"
+            onClick={() => {
+              if (!isSliding()) setLang(lang === "hi" ? "en" : "hi");
+            }}
+            data-solid={barSolid}
+            aria-label={lang === "hi" ? "Switch to English" : "हिंदी में देखें"}
+            className={`h-9 px-3.5 rounded-full backdrop-blur-md text-[13px] font-semibold active:scale-95 transition-all ${
+              barSolid ? "bg-slate-100 text-slate-700" : "bg-black/25 text-white"
+            }`}
+          >
+            {t.switchTo}
+          </button>
         </div>
 
-        {/* Top Image Banner */}
-        <div className="relative h-[220px] w-full bg-slate-200 shrink-0">
+        {/* Photo: fixed behind on phones, so the form sheet slides up over it like a native app */}
+        <div onClick={() => { if (!isSliding()) showPhoto(); }} className="fixed sm:relative top-0 left-0 z-0 h-[300px] sm:h-[220px] w-full bg-slate-200 shrink-0">
           <Image
-            src="/Happyfamily.png"
-            alt="Happy family with solar"
+            src="/opt/van.webp"
+            alt="Kailash Solar van and team member in Meerut"
             fill
             priority
             sizes="(min-width: 640px) 640px, 100vw"
-            className="object-cover object-[55%_10%]"
+            className="object-cover object-[50%_42%]"
           />
           {/* Subtle gradient overlay for header readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent pointer-events-none" />
         </div>
 
         {/* Form Container (Bottom Sheet Effect) */}
-        <div className="px-5 pt-8 pb-[calc(8rem+env(safe-area-inset-bottom))] sm:pb-8 flex-grow flex flex-col bg-white rounded-t-[32px] -mt-8 relative z-10 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
-          <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2" />
+        <div
+          id="booking-sheet"
+          lang={lang}
+          className={`px-5 pt-8 pb-[calc(7rem+env(safe-area-inset-bottom))] mt-[250px] min-h-[calc(100dvh-110px)] rounded-t-[28px] sm:pb-8 sm:-mt-8 sm:min-h-0 sm:translate-y-0 flex-grow flex flex-col bg-white relative z-10 will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+            compact ? "-translate-y-[140px]" : "translate-y-0"
+          }`}
+        >
+          <div className={`w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2 `} />
           
-          <div className="mb-7 mt-1">
-            <h1 className="text-[25px] sm:text-[27px] leading-[1.25] font-bold font-montserrat text-slate-900 mb-4 sm:mb-5">
-              Get Solar Panels at <span className="text-accent">Zero Down Payment</span>
+          <div className="mt-1 mb-6 sm:mb-7">
+            <h1 className={`text-[clamp(22px,7vw,27px)] sm:text-[27px] leading-[1.2] tracking-[-0.01em] font-bold font-montserrat text-slate-900 sm:mb-5 transition-[margin] duration-300 ${compact ? "mb-0" : "mb-4"}`}>
+              {t.headingStart}
+              <span className="text-accent whitespace-nowrap">
+                {"₹0"}
+                {/* Small terms-and-conditions star at the top-right of the 0. Raised with relative
+                    positioning (not <sup>) so it never changes the line spacing or touches other text. */}
+                <span aria-hidden="true" className="relative -top-[0.75em] ml-[1px] text-[0.45em] leading-none font-bold">*</span>
+                {t.headingAccent}
+              </span>
+              {t.headingEnd}
             </h1>
-            <p className="text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 leading-normal">
-              Book a free site visit and claim your <span className="text-accent">₹1,08,000 subsidy before it ends!</span>
+            {/* The sub-line folds away while filling, to make room for all the fields */}
+            <p className={`text-[13.5px] sm:text-[14.5px] font-bold text-slate-800 leading-normal overflow-hidden transition-[max-height,opacity] duration-300 motion-reduce:transition-none sm:max-h-20 sm:opacity-100 ${compact ? "max-h-0 opacity-0" : "max-h-20 opacity-100"}`}>
+              {t.subStart}<span className="text-accent">{t.subAccent}</span>
             </p>
           </div>
           
@@ -319,7 +406,7 @@ export default function BookVisitPage() {
                 href={`https://wa.me/918999999654?text=${submittedWhatsappMsg || 'Hi'}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-[52px] px-8 rounded-[16px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold shadow-lg shadow-[#25D366]/20 transition-all active:scale-95 items-center gap-2"
+                className="inline-flex h-[52px] px-8 rounded-[16px] bg-[#25D366] hover:bg-[#128C7E] text-white font-bold transition-all active:scale-95 items-center gap-2"
               >
                 <MessageCircle className="w-5 h-5" />
                 Open WhatsApp Now
@@ -332,8 +419,8 @@ export default function BookVisitPage() {
               </Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-3.5 flex-grow flex flex-col">
-              {submitError && (
+            <form id="booking-form" noValidate onSubmit={handleSubmit} onFocusCapture={startFilling} className="space-y-3.5 flex-grow flex flex-col">
+              {errorField === "send" && submitError && (
                 <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl flex items-start gap-2.5 text-xs sm:text-sm font-medium animate-in fade-in slide-in-from-top-2">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span className="leading-snug">{submitError}</span>
@@ -348,19 +435,22 @@ export default function BookVisitPage() {
                     autoComplete="name"
                     autoCapitalize="words"
                     enterKeyHint="next"
-                    placeholder="Full Name*" 
+                    placeholder={t.namePlaceholder} 
                     aria-label="Full Name"
                     required 
                     value={formData.name} 
                     onChange={e => {
-                      setSubmitError("");
+                      clearError();
                       setFormData({ ...formData, name: e.target.value });
                     }} 
-                    className="h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all" 
+                    aria-invalid={!!fieldError("name")}
+                    className="h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 aria-[invalid=true]:border-destructive rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all" 
                   />
+                  {fieldError("name") && <p className="mt-1.5 px-1 text-[12.5px] font-medium text-destructive animate-in fade-in duration-200">{fieldError("name")}</p>}
                 </div>
                 
                 {/* WhatsApp Phone */}
+                <div>
                 <div className="relative flex items-center">
                   <div className="absolute left-0 h-[52px] flex items-center justify-center px-3.5 text-slate-600 font-bold bg-slate-100 border border-r-0 border-slate-200 rounded-l-[14px] z-10 pointer-events-none">
                     +91
@@ -371,18 +461,26 @@ export default function BookVisitPage() {
                     enterKeyHint="next"
                     type="tel" 
                     inputMode="numeric"
-                    maxLength={10}
-                    placeholder="WhatsApp Number*" 
+                    maxLength={16}
+                    placeholder={t.phonePlaceholder} 
                     aria-label="WhatsApp Number"
                     required 
                     value={formData.phone} 
                     onChange={e => {
-                      setSubmitError("");
-                      const val = e.target.value.replace(/\D/g, '');
-                      setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) });
+                      clearError();
+                      const val = cleanPhoneInput(e.target.value);
+                      setFormData({ ...formData, phone: val });
+                      // Full valid number: move straight on to the PIN code. Not for "91…", which may
+                      // still be a +91 prefix being typed (cleanPhoneInput drops it at the 11th digit).
+                      if (isValidMobile(val) && val !== formData.phone && !val.startsWith("91")) {
+                        document.getElementById("pincode")?.focus();
+                      }
                     }} 
-                    className="h-[52px] pl-[64px] pr-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all w-full relative" 
+                    aria-invalid={!!fieldError("phone")}
+                    className="h-[52px] pl-[64px] pr-4 bg-slate-50 border border-slate-200 hover:border-slate-300 aria-[invalid=true]:border-destructive rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white transition-all w-full relative" 
                   />
+                </div>
+                {fieldError("phone") && <p className="mt-1.5 px-1 text-[12.5px] font-medium text-destructive animate-in fade-in duration-200">{fieldError("phone")}</p>}
                 </div>
 
                 {/* PIN Code Verification */}
@@ -395,20 +493,26 @@ export default function BookVisitPage() {
                       type="text"
                       inputMode="numeric"
                       maxLength={6}
-                      placeholder="PIN Code (6 digits)*" 
+                      placeholder={t.pinPlaceholder} 
                       aria-label="PIN Code"
                       required 
                       value={formData.pincode} 
                       onChange={e => {
-                        setSubmitError("");
+                        clearError();
                         const val = e.target.value.replace(/\D/g, '').slice(0, 6);
                         setFormData({ ...formData, pincode: val });
+                        // Valid PIN: close the keyboard so the bill options and button are in view
+                        if (val.length === 6 && val !== formData.pincode && isServiceablePincode(val)) {
+                          (e.target as HTMLInputElement).blur();
+                        }
                       }} 
                       className={`h-[52px] pl-4 pr-11 bg-slate-50 border rounded-[14px] text-[15px] font-medium placeholder:text-slate-400 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 transition-all ${
                         pincodeVerifier.isValid
                           ? "border-emerald-500 bg-emerald-50/20" 
                           : pincodeVerifier.isInvalid
                           ? "border-destructive bg-destructive/5" 
+                          : fieldError("pincode")
+                          ? "border-destructive"
                           : "border-slate-200 hover:border-slate-300 focus:border-slate-400 focus-visible:border-slate-400 focus-visible:bg-white"
                       }`}
                     />
@@ -424,73 +528,84 @@ export default function BookVisitPage() {
                       )}
                     </div>
                   </div>
+                  {fieldError("pincode") && !pincodeVerifier.isInvalid && <p className="mt-1.5 px-1 text-[12.5px] font-medium text-destructive animate-in fade-in duration-200">{fieldError("pincode")}</p>}
                   {pincodeVerifier.isInvalid && (
-                    <div className="mt-1.5 px-3 py-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-start gap-2 shadow-sm animate-in fade-in slide-in-from-top-1">
+                    <div className="mt-1.5 px-3 py-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-start gap-2 animate-in fade-in slide-in-from-top-1">
                       <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                      <span>{OUTSIDE_REGION_ERROR}</span>
+                      <span>{t.outsideRegion}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Monthly Electricity Bill */}
                 <div>
-                  <Select 
-                    value={formData.monthlyBill} 
-                    onValueChange={value => {
-                      setSubmitError("");
-                      setFormData({ 
-                        ...formData, 
-                        monthlyBill: value,
-                        plantSize: estimatePlantSizeFromBill(value)
-                      });
-                    }}
-                  >
-                    <SelectTrigger 
-                      aria-label="Monthly Electricity Bill"
-                      className="w-full h-[52px] px-4 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-[14px] text-[15px] font-medium focus:outline-none focus:ring-0 focus:border-slate-400 focus:bg-white text-slate-700 transition-all"
-                    >
-                      <SelectValue placeholder="Monthly Electricity Bill*" />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-[14px] z-[100] bg-white border-slate-200">
-                      <SelectItem value="< 1500" className="text-[15px] py-2.5">Less than ₹1,500</SelectItem>
-                      <SelectItem value="1500 - 2500" className="text-[15px] py-2.5">₹1,500 - ₹2,500</SelectItem>
-                      <SelectItem value="2500 - 5000" className="text-[15px] py-2.5">₹2,500 - ₹5,000</SelectItem>
-                      <SelectItem value="> 5000" className="text-[15px] py-2.5">More than ₹5,000</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <p className={`text-[13px] font-semibold mb-2 px-1 transition-colors ${fieldError("bill-options") ? "text-destructive" : "text-slate-600"}`}>
+                    {fieldError("bill-options") || t.billLabel}
+                  </p>
+                  <div id="bill-options" tabIndex={-1} role="radiogroup" aria-label="Monthly Electricity Bill" className="grid grid-cols-2 gap-2 outline-none">
+                    {BILL_VALUES.map(value => {
+                      const selected = formData.monthlyBill === value;
+                      return (
+                        <button
+                          key={value}
+                          type="button"
+                          role="radio"
+                          aria-checked={selected}
+                          onClick={() => {
+                            if (isSliding()) return;
+                            try { navigator.vibrate?.(8); } catch {}
+                            clearError();
+                            setFormData(prev => ({
+                              ...prev,
+                              monthlyBill: value,
+                              plantSize: estimatePlantSizeFromBill(value),
+                            }));
+                          }}
+                          className={`h-[48px] rounded-[14px] border text-[14px] font-semibold transition-all active:scale-[0.97] ${
+                            selected
+                              ? "border-primary bg-primary text-white"
+                              : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300"
+                          }`}
+                        >
+                          {t.billOptions[value]}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              {/* App Bottom Action Bar */}
-              <div className="fixed sm:relative bottom-0 left-0 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-0 bg-white sm:bg-transparent border-t border-slate-100 sm:border-0 z-[100] flex gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] sm:shadow-none">
-                <Button 
-                  type="submit" 
-                  disabled={isSubmitting || pincodeVerifier.isBlocked}
-                  className="flex-grow h-[52px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-white transition-transform active:scale-[0.98] flex items-center justify-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Redirecting...</span>
-                    </>
-                  ) : (
-                    "Book FREE Consultation"
-                  )}
-                </Button>
-                
-                <a 
-                  href="tel:+918999999654"
-                  className="flex-shrink-0 flex items-center justify-center w-[52px] h-[52px] rounded-[14px] bg-blue-600 text-white hover:bg-blue-700 transition-all active:scale-[0.98]"
-                  title="Call Us Now"
-                  aria-label="Call Us Now"
-                >
-                  <Phone className="w-[20px] h-[20px] fill-current" />
-                </a>
-              </div>
-              
             </form>
           )}
         </div>
+
+          {/* App Bottom Action Bar: outside the sliding sheet so it stays pinned to the bottom of the screen */}
+          <div className="fixed sm:relative bottom-0 left-0 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5 sm:pt-0 sm:pb-6 bg-white/95 backdrop-blur-md sm:bg-white border-t border-slate-200 sm:border-0 z-[100] flex gap-3">
+            <Button 
+              type="submit"
+              form="booking-form" 
+              disabled={isSubmitting}
+              className="flex-grow h-[52px] rounded-[14px] text-[16px] font-bold bg-primary hover:bg-primary/90 text-white transition-transform active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>{t.submitting}</span>
+                </>
+              ) : (
+                t.submit
+              )}
+            </Button>
+            
+            <a 
+              href="tel:+918999999654"
+              className="flex-shrink-0 flex items-center justify-center w-[52px] h-[52px] rounded-[14px] bg-blue-600 text-white hover:bg-blue-700 transition-all active:scale-[0.98]"
+              title={t.callLabel}
+              aria-label={t.callLabel}
+            >
+              <Phone className="w-[20px] h-[20px] fill-current" />
+            </a>
+          </div>
       </div>
     </div>
   );

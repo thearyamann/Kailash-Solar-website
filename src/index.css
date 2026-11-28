@@ -296,3 +296,13 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* iPhone Safari zooms the whole page when a field with text under 16px is tapped.
+   Keep every form field at 16px on phones so tapping a field never makes the page jump. */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

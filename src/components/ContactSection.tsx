@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { cleanPhoneInput, isValidMobile, isValidName, NAME_ERROR, PHONE_ERROR } from "@/lib/form-validation";
 import { useRouter } from "next/navigation";
 import { goToBookingSuccess } from "@/lib/go-to-success";
 import { Phone, Mail, MapPin, MessageCircle, Send, Building2, User, IndianRupee, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
@@ -9,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { sendInquiryEmail } from "@/lib/inquiry-email";
 import { submitBookVisitToCRM } from "@/lib/crm";
 import { trackMetaLead } from "@/lib/meta-pixel";
 import { 
@@ -42,13 +43,13 @@ const ContactSection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
-      toast({ title: "Invalid Name", description: "Name should contain only letters and spaces.", variant: "destructive" });
+    if (!isValidName(formData.name)) {
+      toast({ title: "Invalid Name", description: NAME_ERROR, variant: "destructive" });
       return;
     }
     
-    if (!/^\d{10}$/.test(formData.phone)) {
-      toast({ title: "Invalid Phone", description: "Phone number must be exactly 10 digits.", variant: "destructive" });
+    if (!isValidMobile(formData.phone)) {
+      toast({ title: "Invalid Phone", description: PHONE_ERROR, variant: "destructive" });
       return;
     }
 
@@ -94,18 +95,10 @@ const ContactSection = () => {
       source: "contact",
     });
 
+    // Backup email copy in the background; it must never show an error after the lead is saved.
+    sendInquiryEmail({ ...formData, name: trimmedName, address: fullAddress });
+
     try {
-      const { error: fnError } = await supabase.functions.invoke(
-        "send-inquiry-email",
-        { body: { ...formData, name: trimmedName, address: fullAddress } }
-      );
-      
-      if (fnError) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.error("Submit error:", fnError);
-        }
-        throw new Error("Failed to submit inquiry");
-      }
 
       const whatsappMessage = encodeURIComponent(
         `Hi, I'm interested in solar installation.\n\n` +
@@ -310,8 +303,8 @@ const ContactSection = () => {
                       required 
                       value={formData.phone} 
                       onChange={e => {
-                        const val = e.target.value.replace(/\D/g, '');
-                        setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) })
+                        const val = cleanPhoneInput(e.target.value);
+                        setFormData({ ...formData, phone: val })
                       }} 
                       className="h-full border-0 rounded-none bg-transparent px-4 text-base focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent w-full shadow-none" 
                     />

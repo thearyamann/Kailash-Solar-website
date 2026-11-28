@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { cleanPhoneInput, isValidMobile, isValidName, NAME_ERROR, PHONE_ERROR } from "@/lib/form-validation";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { goToBookingSuccess } from "@/lib/go-to-success";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { sendInquiryEmail } from "@/lib/inquiry-email";
 import { 
   validatePincode, 
   isServiceablePincode, 
@@ -135,13 +136,13 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
     const trimmedName = formData.name.trim();
     const trimmedPin = formData.pincode.trim();
 
-    if (!trimmedName || !/^[A-Za-z\s]+$/.test(trimmedName)) {
-      setSubmitError("Name should contain only letters and spaces.");
+    if (!trimmedName || !isValidName(trimmedName)) {
+      setSubmitError(NAME_ERROR);
       return;
     }
     
-    if (!/^\d{10}$/.test(formData.phone)) {
-      setSubmitError("Phone number must be exactly 10 digits.");
+    if (!isValidMobile(formData.phone)) {
+      setSubmitError(PHONE_ERROR);
       return;
     }
 
@@ -214,29 +215,15 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
       return;
     }
     
+    // Lead is saved in Zoho: fire the lead events first; the backup email runs in the background.
+    sendInquiryEmail({
+      ...formData,
+      name: trimmedName,
+      address: fullAddress,
+      leadId: crmResult.lead_id,
+    });
+
     try {
-      // Send to supabase edge function using fetch in background without blocking
-      const { data: { session } } = await supabase.auth.getSession();
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tjikswdntqctoqqrnjkq.supabase.co';
-      
-      const response = await fetch(`${supabaseUrl}/functions/v1/send-inquiry-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify({
-          ...formData,
-          name: trimmedName,
-          address: fullAddress,
-          leadId: crmResult.lead_id,
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error("Supabase request failed");
-      }
-
       if (typeof window !== 'undefined') {
         import('posthog-js').then((ph) => {
           ph.default.capture('form_submitted', {
@@ -416,8 +403,8 @@ export function BookVisitModal({ children, autoOpenDelay }: { children?: React.R
                         required 
                         value={formData.phone} 
                         onChange={e => {
-                          const val = e.target.value.replace(/\D/g, '');
-                          setFormData({ ...formData, phone: val.length <= 10 ? val : val.slice(0, 10) })
+                          const val = cleanPhoneInput(e.target.value);
+                          setFormData({ ...formData, phone: val })
                         }} 
                         className="h-full border-0 rounded-none bg-transparent px-3 text-[14px] focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent placeholder:text-muted-foreground/70 w-full shadow-none" 
                       />

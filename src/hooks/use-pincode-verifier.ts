@@ -37,7 +37,7 @@ export function usePincodeVerifier(pincode: string) {
       lastCheckedPinRef.current = cleaned;
       const isServiceable = isServiceablePincode(cleaned);
       setStatus(isServiceable ? "valid" : "invalid");
-    }, 450);
+    }, 150);
 
     return () => clearTimeout(timer);
   }, [pincode]);

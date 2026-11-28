@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react';
+import { cleanPhoneInput, isValidMobile, isValidName, NAME_ERROR, PHONE_ERROR } from "@/lib/form-validation";
 import { 
   Calculator, Sun, Zap, TrendingUp, Leaf, Share2, FileText, 
   IndianRupee, MapPin, Building2, Wallet, CalendarDays, 
@@ -143,13 +144,13 @@ Calculate your savings: ${window.location.href}`;
   const handleProposalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!/^[A-Za-z\s]+$/.test(proposalForm.name)) {
-      toast({ title: "Invalid Name", description: "Name should contain only letters and spaces.", variant: "destructive" });
+    if (!isValidName(proposalForm.name)) {
+      toast({ title: "Invalid Name", description: NAME_ERROR, variant: "destructive" });
       return;
     }
     
-    if (!/^\d{10}$/.test(proposalForm.phone)) {
-      toast({ title: "Invalid Phone", description: "Phone number must be exactly 10 digits.", variant: "destructive" });
+    if (!isValidMobile(proposalForm.phone)) {
+      toast({ title: "Invalid Phone", description: PHONE_ERROR, variant: "destructive" });
       return;
     }
 
@@ -437,8 +438,8 @@ Calculate your savings: ${window.location.href}`;
                                 required
                                 value={proposalForm.phone}
                                 onChange={(e) => {
-                                  const val = e.target.value.replace(/\D/g, '');
-                                  setProposalForm({ ...proposalForm, phone: val.length <= 10 ? val : val.slice(0, 10) });
+                                  const val = cleanPhoneInput(e.target.value);
+                                  setProposalForm({ ...proposalForm, phone: val });
                                 }}
                                 className="h-full border-0 rounded-none bg-transparent px-3.5 focus:ring-0 focus-visible:ring-0 focus-visible:border-transparent focus:border-transparent w-full shadow-none"
                               />

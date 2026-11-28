@@ -27,6 +27,20 @@ interface InquiryEmailRequest {
   monthlyBill: string;
   customerType: string;
   message: string;
+  leadSource: string;
+}
+
+/** Short label for the email subject: "Meta Ads", "Google Ads", "Google Search", ... */
+function shortSource(src: string | undefined): string {
+  const s = (src || "").toLowerCase();
+  if (s.startsWith("meta ads")) return "Meta Ads";
+  if (s.startsWith("google ads")) return "Google Ads";
+  if (s.startsWith("google search")) return "Google Search";
+  if (s.startsWith("facebook/instagram")) return "Facebook/Instagram (free)";
+  if (s.startsWith("whatsapp")) return "WhatsApp";
+  if (s.startsWith("youtube")) return "YouTube";
+  if (!s || s.startsWith("direct")) return "Direct";
+  return "Other";
 }
 
 function isServiceAreaPincode(pincode: string): boolean {
@@ -59,7 +73,7 @@ function validateInput(data: unknown): {
   if (!data || typeof data !== "object") {
     return { valid: false, error: "Invalid request body" };
   }
-  const { name, phone, address, monthlyBill, customerType, message } =
+  const { name, phone, address, monthlyBill, customerType, message, leadSource } =
     data as Record<string, unknown>;
 
   if (!name || typeof name !== "string" || name.trim().length === 0)
@@ -115,6 +129,8 @@ function validateInput(data: unknown): {
       monthlyBill: typeof monthlyBill === "string" ? monthlyBill.trim() : "",
       customerType: typeof customerType === "string" ? customerType : "",
       message: typeof message === "string" ? message.trim() : "",
+      // Where the lead came from (Meta Ads, Google Ads, Google Search...). Optional, never rejects a lead.
+      leadSource: typeof leadSource === "string" ? leadSource.replace(/[\r\n\t]+/g, " ").trim().slice(0, 300) : "",
     },
   };
 }
@@ -180,7 +196,7 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    const { name, phone, address, monthlyBill, customerType, message } =
+    const { name, phone, address, monthlyBill, customerType, message, leadSource } =
       validation.data;
 
     // Record inquiry server-side with IP (source of truth for rate limiting)
@@ -210,16 +226,18 @@ Phone: ${phone}
 Address: ${address}
 Monthly Bill: ₹${monthlyBill || "Not specified"}
 Customer Type: ${customerType || "Not specified"}
-Message: ${message || "No additional message"}`;
+Message: ${message || "No additional message"}
+Lead Source: ${leadSource || "Unknown"}`;
 
     const whatsappUrl = `https://wa.me/918999999654?text=${encodeURIComponent(whatsappText)}`;
 
     await resend.emails.send({
       from: "Kailash Solar <onboarding@resend.dev>",
       to: ["sales@kailashsolar.com"],
-      subject: `New Solar Inquiry from ${escapeHtml(name)}`,
+      subject: `[${shortSource(leadSource)}] New Solar Inquiry from ${escapeHtml(name)}`,
       html: `
         <h1>New Solar Inquiry Received</h1>
+        <p style="font-size: 16px; padding: 12px 16px; background: #FFF4E5; border-left: 4px solid #F59E0B; max-width: 568px;"><strong>Lead came from:</strong> ${escapeHtml(leadSource) || "Unknown"}</p>
         <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
           <tr><td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Name</td><td style="padding: 10px; border: 1px solid #ddd;">${escapeHtml(name)}</td></tr>
           <tr><td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Phone</td><td style="padding: 10px; border: 1px solid #ddd;">${escapeHtml(phone)}</td></tr>
