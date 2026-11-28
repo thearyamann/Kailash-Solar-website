@@ -27,9 +27,10 @@ const DUPLICATE_WINDOW_MS = 24 * 60 * 60 * 1000;
 export function isPopupSuppressed(): boolean {
   if (typeof window === "undefined") return false;
   try {
+    // Only a real form fill counts (recordSubmission sets these two). The old
+    // "kailash_modal_submitted" flag was also set just by tapping a field, so it's ignored.
     return (
       localStorage.getItem(STORAGE_KEY_FORM_SUBMITTED) === "true" ||
-      localStorage.getItem(STORAGE_KEY_MODAL_SUBMITTED) === "true" ||
       localStorage.getItem(STORAGE_KEY_LAST_SUBMISSION) !== null
     );
   } catch {

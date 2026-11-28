@@ -222,8 +222,8 @@ Calculate your savings: ${window.location.href}`;
               className="p-8 space-y-8"
               onFocusCapture={() => {
                 if (typeof window !== 'undefined') {
+                  // Started using this form: skip the pop-up for this visit only (a real form fill stops it for good)
                   sessionStorage.setItem("kailash_modal_auto_opened", "true");
-                  localStorage.setItem("kailash_modal_submitted", "true");
                 }
               }}
             >
