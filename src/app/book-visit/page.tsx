@@ -83,6 +83,8 @@ export default function BookVisitPage() {
   // - When no field is active any more, the room goes away, the bar returns and the page settles
   //   back so the photo strip, heading, subsidy line and all fields are in view.
   const [typing, setTyping] = useState(false);
+  // true only while the keyboard is actually on screen (the button bar hides only then)
+  const [keyboardShown, setKeyboardShown] = useState(false);
   const [bottomRoom, setBottomRoom] = useState(0);
   const keyboardOpen = typing;
   useEffect(() => {
@@ -116,10 +118,13 @@ export default function BookVisitPage() {
       if (Math.abs(delta) < 4) return;
       window.scrollBy({ top: delta, behavior: "smooth" });
     };
-    // run now and again once the keyboard animation has finished (iPhone can ignore the first one)
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    const keepFieldVisibleSoon = () => {
-      timers.push(setTimeout(keepFieldVisible, 120), setTimeout(keepFieldVisible, 480));
+    // ONE smooth move, after the keyboard has finished opening and stopped resizing the screen.
+    // (Moving earlier, or several times, measured the screen mid-animation and made the page
+    // jump down and up.) Every new resize / focus restarts the wait, so only the last one runs.
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+    const keepFieldVisibleSoon = (wait = 350) => {
+      if (settleTimer) clearTimeout(settleTimer);
+      settleTimer = setTimeout(keepFieldVisible, wait);
     };
     let leaveTimer: ReturnType<typeof setTimeout> | undefined;
     const onFocusIn = (e: FocusEvent) => {
@@ -131,20 +136,54 @@ export default function BookVisitPage() {
       setTyping(true);
       keepFieldVisibleSoon();
     };
+    // End typing mode: remove the extra room, bring the button bar back, settle the page.
+    const finishTyping = () => {
+      if (settleTimer) clearTimeout(settleTimer);
+      setTyping(false);
+      setKeyboardShown(false);
+      setBottomRoom(0);
+      const target = SHEET_TOP - PHOTO_STRIP;
+      if (window.scrollY > target + 4) window.scrollTo({ top: target, behavior: "smooth" });
+    };
     const onFocusOut = () => {
       if (leaveTimer) clearTimeout(leaveTimer);
       // small delay so jumping from one field to the next doesn't flicker
       leaveTimer = setTimeout(() => {
         const el = document.activeElement as HTMLElement | null;
         if (el && el.tagName === "INPUT") return;
-        setTyping(false);
-        setBottomRoom(0);
-        const target = SHEET_TOP - PHOTO_STRIP;
-        if (window.scrollY > target + 4) window.scrollTo({ top: target, behavior: "smooth" });
+        finishTyping();
       }, 220);
     };
+    // Keyboard on/off, measured against the full visible height seen without a keyboard.
+    // On iPhone, closing the keyboard with "Done" or a swipe keeps the field selected (no focus
+    // change), so this is what ends typing mode there — otherwise the page stays "stuck" with the
+    // button hidden.
+    let fullHeight = vv ? vv.height : window.innerHeight;
+    let width = window.innerWidth;
+    let keyboardSeen = false;
     const onViewportResize = () => {
-      if (document.activeElement?.tagName === "INPUT") keepFieldVisibleSoon();
+      if (!vv) return;
+      if (window.innerWidth !== width) {
+        // rotated: start measuring again
+        width = window.innerWidth;
+        fullHeight = vv.height;
+        keyboardSeen = false;
+        return;
+      }
+      const inputActive = document.activeElement?.tagName === "INPUT";
+      if (!inputActive && !keyboardSeen) fullHeight = Math.max(fullHeight, vv.height);
+      if (vv.height < fullHeight - 150) {
+        if (!keyboardSeen) {
+          keyboardSeen = true;
+          setKeyboardShown(true);
+        }
+        if (inputActive) keepFieldVisibleSoon(250);
+      } else if (keyboardSeen && vv.height > fullHeight - 80) {
+        keyboardSeen = false;
+        const el = document.activeElement as HTMLElement | null;
+        if (el && el.tagName === "INPUT") el.blur(); // keyboard closed: leave the field
+        finishTyping();
+      }
     };
     document.addEventListener("focusin", onFocusIn);
     document.addEventListener("focusout", onFocusOut);
@@ -153,7 +192,7 @@ export default function BookVisitPage() {
       document.removeEventListener("focusin", onFocusIn);
       document.removeEventListener("focusout", onFocusOut);
       vv?.removeEventListener("resize", onViewportResize);
-      timers.forEach(clearTimeout);
+      if (settleTimer) clearTimeout(settleTimer);
       if (leaveTimer) clearTimeout(leaveTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -614,7 +653,7 @@ export default function BookVisitPage() {
 
           {/* App Bottom Action Bar: outside the sliding sheet so it stays pinned to the bottom of the screen */}
           <div className={`fixed sm:relative bottom-0 left-0 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5 sm:pt-0 sm:pb-6 bg-white/95 backdrop-blur-md sm:bg-white border-t border-slate-200 sm:border-0 z-[100] flex gap-3 transition-opacity duration-150 ${
-            keyboardOpen ? "opacity-0 pointer-events-none sm:opacity-100 sm:pointer-events-auto" : "opacity-100"
+            keyboardShown ? "opacity-0 pointer-events-none sm:opacity-100 sm:pointer-events-auto" : "opacity-100"
           }`}>
             <Button 
               type="submit"
